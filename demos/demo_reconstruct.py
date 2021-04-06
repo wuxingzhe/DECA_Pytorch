@@ -31,6 +31,7 @@ def main(args):
     savefolder = args.savefolder
     device = args.device
     os.makedirs(savefolder, exist_ok=True)
+    print(str(args.iscrop))
 
     # load test images 
     testdata = datasets.TestData(args.inputpath, iscrop=args.iscrop, face_detector=args.detector)

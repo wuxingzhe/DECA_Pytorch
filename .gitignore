@@ -2,6 +2,7 @@
 ###################
 *.o
 *.so
+=*
 
 # Packages #
 ############
@@ -39,3 +40,8 @@ Thumbs.db
 *.pyc
 __pycache__
 
+# results #
+TestSamples/examples/results/
+
+# models #
+deca_model.tar

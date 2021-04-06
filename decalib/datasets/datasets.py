@@ -66,13 +66,14 @@ class TestData(Dataset):
         self.scale = scale
         self.iscrop = iscrop
         self.resolution_inp = crop_size
-        if face_detector == 'fan':
-            self.face_detector = detectors.FAN()
-        # elif face_detector == 'mtcnn':
-        #     self.face_detector = detectors.MTCNN()
-        else:
-            print(f'please check the detector: {face_detector}')
-            exit()
+        if self.iscrop:
+            if face_detector == 'fan':
+                self.face_detector = detectors.FAN()
+            # elif face_detector == 'mtcnn':
+            #     self.face_detector = detectors.MTCNN()
+            else:
+                print(f'please check the detector: {face_detector}')
+                exit()
 
     def __len__(self):
         return len(self.imagepath_list)
