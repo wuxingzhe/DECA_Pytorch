@@ -88,7 +88,7 @@ class FLAME(nn.Module):
         while curr_idx != -1:
             neck_kin_chain.append(curr_idx)
             curr_idx = self.parents[curr_idx]
-        self.register_buffer('neck_kin_chain', torch.stack(neck_kin_chain))
+        self.register_buffer('neck_kin_chain', torch.stack(neck_kin_chain)) # [1,0]
         
     def _find_dynamic_lmk_idx_and_bcoords(self, pose, dynamic_lmk_faces_idx,
                                           dynamic_lmk_b_coords,
