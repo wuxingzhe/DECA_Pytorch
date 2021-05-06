@@ -7,6 +7,7 @@ from skimage.io import imread
 import pickle
 import argparse
 import time
+from datetime import datetime
 import shutil
 import logging
 import numpy as np
@@ -26,7 +27,7 @@ from .models.decoders import Generator
 from .utils import util
 from .utils.rotation_converter import batch_euler2axis
 
-from .datasets.datasets import datasets
+from .datasets.test_datasets import QualitativeTestData
 from .datasets.train_datasets import TrainData
 from .datasets.train_subject_datasets import TrainSubjectData
 
@@ -36,27 +37,36 @@ from .util.deca_utils import decompose_code, displacement2normal, displacement2v
 torch.backends.cudnn.benchmark = True
 
 class deca_solver(object):
-    def __init__(self, config=None, mode = 'train_coarse',device='cuda'):
-        if config is None:
-            self.cfg = cfg
-        else:
-            self.cfg = config
+    def __init__(self, config=None, mode = 'train_coarse', device='cuda'):
+        self.config = config
         self.device = device
         self.mode = mode
-        self.image_size = self.cfg.dataset.image_size
-        self.uv_size = self.cfg.model.uv_size
+        self.image_size = self.config.dataset.image_size
+        self.uv_size = self.config.model.uv_size
 
-        self.save_path = os.path.join(self.cfg.save_dict_path, \
-            '{}_{}'.format(self.config.config, datetime))
+        # torch.backends.cudnn.benchmark = True
+        self.multi_gpus = False
+        if len(self.config.gpus.split(',')) > 1:
+            self.multi_gpus = True
+        os.environ['CUDA_VISIBLE_DEVICES'] = self.config.gpus
+
+        self.save_path = os.path.join(self.config.save_dict_path, \
+            '{}_{}'.format(self.config.config, datetime.now().strftime('%Y%m%d_%H%M%S')))
+        self.result_path = os.path.join(self.config.save_mesh_path, \
+            '{}_{}'.format(self.config.config, datetime.now().strftime('%Y%m%d_%H%M%S')))
         if not os.path.exists(self.save_path):
             os.makedirs(self.save_path)
+            print('make save path: '+self.save_path)
+        if not os.path.exists(self.result_path):
+            os.makedirs(self.result_path)
+            print('make result path: '+self.result_path)
 
         self._build()
         print('Build the code well for {}'.format(self.mode))
         # self._create_model(self.cfg.model)
         # self._setup_renderer(self.cfg.model)
 
-    def encode(self, images):
+    def encode(self, images, epoch):
         batch_size = images.shape[0]
         parameters = self.E_flame(images)
         codedict = decompose_code(parameters, self.param_dict)
@@ -66,16 +76,25 @@ class deca_solver(object):
             codedict['detail'] = detailcode
         codedict['images'] = images
 
+        # shape consistency
+        if epoch>2 and 'coarse' in self.mode:
+            idx = np.arange(self.config.train_params.size_per_person_in_batch)
+            random.shuffle(idx)
+            idx_all = []
+            for i in range(self.config.train_params.person_num_in_batch):
+                idx_all.extend(idx+i*(self.config.train_params.size_per_person_in_batch))
+            codedict['shape_shuffle'] = codedict['shape'][np.array(idx_all), :]
+
         return codedict
 
-    def decode(self, codedict):
+    def decode(self, codedict, epoch):
         images = codedict['images']
         batch_size = images.shape[0]
         
         ## decode
         verts, landmarks2d, landmarks3d = self.flame(shape_params=codedict['shape'], \
             expression_params=codedict['exp'], pose_params=codedict['pose'])
-        if self.cfg.model.use_tex:
+        if self.config.model.use_tex:
             albedo = self.flametex(codedict['tex'])
         else:
             albedo = torch.zeros([batch_size, 3, self.uv_size, self.uv_size], device=images.device) 
@@ -83,16 +102,42 @@ class deca_solver(object):
         ## projection
         landmarks2d = util.batch_orth_proj(landmarks2d, codedict['cam'])[:,:,:2]
         landmarks2d[:,:,1:] = -landmarks2d[:,:,1:]; 
-        # landmarks2d = landmarks2d*self.image_size/2 + self.image_size/2
+        landmarks2d = landmarks2d*self.image_size/2 + self.image_size/2
+        landmarks2d /= (self.image_size - 1)
         landmarks3d = util.batch_orth_proj(landmarks3d, codedict['cam'])
         landmarks3d[:,:,1:] = -landmarks3d[:,:,1:]
-        # landmarks3d = landmarks3d*self.image_size/2 + self.image_size/2
+        landmarks3d = landmarks3d*self.image_size/2 + self.image_size/2
+        landmarks3d /= (self.image_size - 1)
         trans_verts = util.batch_orth_proj(verts, codedict['cam'])
         trans_verts[:,:,1:] = -trans_verts[:,:,1:]
         normals = util.vertex_normals(verts, self.faces.expand(batch_size, -1, -1))
 
         output = {'albedo': albedo, 'verts': verts, 'trans_verts': trans_verts, \
                     'landmarks2d': landmarks2d, 'landmarks3d': landmarks3d, 'normals': normals}
+
+        # shape consistency
+        if 'coarse' in self.mode and epoch>2:
+            verts, landmarks2d, landmarks3d = self.flame(shape_params=codedict['shape_shuffle'], \
+                expression_params=codedict['exp'], pose_params=codedict['pose'])
+
+            ## projection
+            landmarks2d = util.batch_orth_proj(landmarks2d, codedict['cam'])[:,:,:2]
+            landmarks2d[:,:,1:] = -landmarks2d[:,:,1:]
+            landmarks2d = landmarks2d*self.image_size/2 + self.image_size/2
+            landmarks2d /= (self.image_size - 1)
+            landmarks3d = util.batch_orth_proj(landmarks3d, codedict['cam'])
+            landmarks3d[:,:,1:] = -landmarks3d[:,:,1:]
+            landmarks3d = landmarks3d*self.image_size/2 + self.image_size/2
+            landmarks3d /= (self.image_size - 1)
+            trans_verts = util.batch_orth_proj(verts, codedict['cam'])
+            trans_verts[:,:,1:] = -trans_verts[:,:,1:]
+            normals = util.vertex_normals(verts, self.faces.expand(batch_size, -1, -1))
+
+            output['landmarks2d_shuffle'] = landmarks2d
+            output['landmarks3d_shuffle'] = landmarks3d
+            output['verts_shuffle'] = verts
+            output['trans_verts_shuffle'] = trans_verts
+            output['normals_shuffle'] = normals
 
         if self.mode == 'train_detail':
             uv_z = self.D_detail(torch.cat([codedict['pose'][:,3:], codedict['exp'], \
@@ -115,64 +160,139 @@ class deca_solver(object):
             self.D_detail.train()
 
         for i, sample in enumerate(self.train_dataset):
-            parameters = self.encode(sample['images'].to(self.device))
-            output = self.decode(parameters)
+            if i == self.half_iters:
+                self._save_model_dict(epoch, half_epoch=True)
+                self.validate(epoch, half_epoch = True)
+            parameters = self.encode(sample['images'].to(self.device), epoch)
+            output = self.decode(parameters, epoch)
 
             if self.mode == 'train_coarse':
                 loss_ldmk = self.unsupervised_losses_conductor.landmarks_2d_loss( \
                     sample['kpts_gt'].to(self.device), output['landmarks2d'])
                 loss_eye_closure = self.unsupervised_losses_conductor.landmarks_eye_closure_loss( \
                     sample['kpts_gt'].to(self.device), output['landmarks2d'])
-                loss_total = self.cfg.train_params.ldmk_loss_factor * loss_ldmk +
-                    self.cfg.train_params.eye_closure_loss_factor * loss_eye_closure
+                loss_regular = self.unsupervised_losses_conductor.regular_loss( \
+                    [parameters['shape'], parameters['exp'], parameters['tex']])
+                loss_total = self.config.train_params.ldmk_loss_factor * loss_ldmk + self.config.train_params.regular_loss_factor * loss_regular
+                    + self.config.train_params.eye_closure_loss_factor * loss_eye_closure
 
                 if epoch > 2:
-                    loss_total += self.unsupervised_losses_conductor. \
-                        subject_consistency_loss(parameters['shape'])
-                    loss_total += self.unsupervised_losses_conductor.photometric_loss( \
-                        output['images'], output, parameters['light'])
+                    loss_photometric = self.unsupervised_losses_conductor.photometric_loss( \
+                        output['images'], output, parameters['light'], sample['seg_mask'].to(device))
 
-            self.optimizer.zero_grad()
+                    # shape consistency
+                    loss_ldmk_consistency = self.unsupervised_losses_conductor.landmarks_2d_loss( \
+                        sample['kpts_gt'].to(self.device), output['landmarks2d_shuffle'])
+                    loss_eye_closure_consistency = self.unsupervised_losses_conductor.landmarks_eye_closure_loss( \
+                        sample['kpts_gt'].to(self.device), output['landmarks2d_shuffle'])
+                    
+                    output['verts'] = output['verts_shuffle']
+                    output['trans_verts'] = output['trans_verts_shuffle']
+                    loss_photometric_consistency = self.unsupervised_losses_conductor.photometric_loss( \
+                        output['images'], output, parameters['light'], sample['seg_mask'].to(device))
+                    loss_consistency =  ( \
+                        loss_photometric_consistency * self.config.train_params.photometric_loss_factor + \
+                        loss_ldmk_consistency * self.config.train_params.ldmk_loss_factor + \
+                        loss_eye_closure_consistency * self.config.train_params.eye_closure_loss_factor)
+                    loss_total += self.config.train_params.shape_consistency_loss_factor * loss_consistency
+
+                    print('Epoch: %d, Step: %d, Lr: %f, TL: %f, LdmkL: %f, EyeL: %f, RegL: %f, PhoL: %f, ConL: %f, LdConL: %f, EyeConL: %f, PhoConL: %f' \
+                        % (epoch, i, self.lr, loss_total.item(), loss_ldmk.item(), loss_eye_closure.item(), loss_regular.item(), \
+                        loss_photometric.item(), loss_consistency.item(), loss_ldmk_consistency.item(), \
+                        loss_eye_closure_consistency.item(), loss_photometric_consistency.item()))
+
+                else:
+                    print('Epoch: %d, Step: %d, Lr: %f, TL: %f, LdmkL: %f, EyeL: %f, RegL: %f' % (epoch, i, self.lr, \
+                        loss_total.item(), loss_ldmk.item(), loss_eye_closure.item(), loss_regular.item()))
+
+            self.lr_scheduler.optimizer.zero_grad()
             loss_total.backward()
-            self.optimizer.step()
+            self.lr_scheduler.optimizer.step()
             
+        if self.mode == 'train_coarse':
+            self.E_flame.eval()
+        elif self.mode == 'train_detail':
+            self.E_detail.eval()
+            self.D_detail.eval()
             
 
     def trainval(self):
         config = self.config
-        logging.info('Training ..... ')
+        print('Training ..... ')
 
         for epoch in range(self.start_epoch, config.train_param.scheduler.epochs + 1):
             self.lr_scheduler.step()
+            self.lr = self.lr_scheduler.get_lr()[0]
             if epoch > 2:
                 self._build_train_loader(epoch)
             self.train(epoch)
             self._save_model_dict(epoch)
+            self.validate(epoch)
 
     # qualitive validation
-    def validate(self):
+    def validate(self, epoch, half_epoch = False):
         config = self.config
+        if self.mode == 'train_coarse':
+            self.E_flame.eval()
+        elif self.mode == 'train_detail':
+            self.E_detail.eval()
+            self.D_detail.eval()
 
-    def _save_model_dict(self, epoch):
+        for i, sample in enumerate(self.qualitative_validate_loader):
+            parameters = self.encode(sample['images'].to(self.device), 0)
+            output = self.decode(parameters, 0)
+
+            for j in range(output['verts'].shape[0]):
+                verts_j = output['verts'][j,:,:].cpu().numpy()
+                texture_j = util.tensor2image(output['albedo'][j,:,:,:].cpu().numpy())
+                img_name = str(epoch)+'_'+'_'.join(((sample['imagename'][j]).split('/'))[-3:])
+
+                faces = self.faces[0].cpu().numpy()
+                uvcoords = self.uvcoords[0].cpu().numpy()
+                uvfaces = self.uvfaces[0].cpu().numpy()
+
+                util.write_obj(img_name, verts_j, faces, 
+                        texture=texture_j, 
+                        uvcoords=uvcoords, 
+                        uvfaces=uvfaces)
 
 
+        if self.mode == 'train_coarse':
+            self.E_flame.train()
+        elif self.mode == 'train_detail':
+            self.E_detail.train()
+            self.D_detail.train()
 
-    # render init
-    def _setup_renderer(self, model_cfg):
-        self.render = SRenderY(self.image_size, obj_filename=model_cfg.topology_path, uv_size=model_cfg.uv_size).to(self.device)
-        # face mask for rendering details
-        mask = imread(model_cfg.face_eye_mask_path).astype(np.float32)/255.; mask = torch.from_numpy(mask[:,:,0])[None,None,:,:].contiguous()
-        self.uv_face_eye_mask = F.interpolate(mask, [model_cfg.uv_size, model_cfg.uv_size]).to(self.device)
-        mask = imread(model_cfg.face_mask_path).astype(np.float32)/255.; mask = torch.from_numpy(mask[:,:,0])[None,None,:,:].contiguous()
-        self.uv_face_mask = F.interpolate(mask, [model_cfg.uv_size, model_cfg.uv_size]).to(self.device)
-        # displacement correction
-        fixed_dis = np.load(model_cfg.fixed_displacement_path)
-        self.fixed_uv_dis = torch.tensor(fixed_dis).float().to(self.device)
-        # mean texture
-        mean_texture = imread(model_cfg.mean_tex_path).astype(np.float32)/255.; mean_texture = torch.from_numpy(mean_texture.transpose(2,0,1))[None,:,:,:].contiguous()
-        self.mean_texture = F.interpolate(mean_texture, [model_cfg.uv_size, model_cfg.uv_size]).to(self.device)
-        # dense mesh template, for save detail mesh
-        self.dense_template = np.load(model_cfg.dense_template_path, allow_pickle=True, encoding='latin1').item()
+    def _save_model_dict(self, epoch, half_epoch = False):
+        print('save network in: '+self.save_path)
+        if self.multi_gpus:
+            E_flame_state_dict = self.E_flame.module.state_dict()
+            if 'detail' in self.mode:
+                E_detail_state_dict = self.E_detail.module.state_dict()
+                D_detail_state_dict = self.D_detail.modele.state_dict()
+        else:
+            E_flame_state_dict = self.E_flame.state_dict()
+            if 'detail' in self.mode:
+                E_detail_state_dict = self.E_detail.state_dict()
+                D_detail_state_dict = self.D_detail.state_dict()
+
+        if half_epoch:
+            path_prefix = 'Epoch_half'
+        else:
+            path_prefix = 'Epoch'
+        torch.save({
+            'iters': epoch,
+            'net_state_dict': E_flame_state_dict},
+            os.path.join(self.save_path, path_prefix+'_%06d_E_flame.ckpt' % epoch))
+        if 'detail' in self.mode:
+            torch.save({
+                'iters': epoch,
+                'net_state_dict': E_detail_state_dict},
+                os.path.join(self.save_path, path_prefix+'_%06d_E_detail.ckpt' % epoch))
+            torch.save({
+                'iters': epoch,
+                'net_state_dict': D_detail_state_dict},
+                os.path.join(self.save_path, path_prefix+'_%06d_D_detail.ckpt' % epoch))
 
     # model init
     def _create_model(self, model_cfg):
@@ -186,44 +306,66 @@ class deca_solver(object):
         self.param_dict = {i:model_cfg.get('n_' + i) for i in model_cfg.param_list}
 
         verts, faces, aux = load_obj(model_cfg.topology_path)
-        self.faces = faces
+        self.faces = faces.verts_idx[None, ...] 
+        self.uvcoords = aux.verts_uvs[None, ...]      # (N, V, 2)
+        self.uvfaces = faces.textures_idx[None, ...] # (N, F, 3)
 
         # encoders
-        self.E_flame = ResnetEncoder(outsize=self.n_param).to(self.device) 
-        self.E_detail = ResnetEncoder(outsize=self.n_detail).to(self.device)
+        if self.multi_gpus:
+            self.E_flame = DataParallel(ResnetEncoder(outsize=self.n_param)).to(self.device)
+        else:
+            self.E_flame = ResnetEncoder(outsize=self.n_param).to(self.device) 
+        if 'detail' in self.mode:
+            if self.multi_gpus:
+                self.E_detail = DataParallel(ResnetEncoder(outsize=self.n_detail)).to(self.device)
+            else:
+                self.E_detail = ResnetEncoder(outsize=self.n_detail).to(self.device)
+
         # decoders
-        self.flame = FLAME(model_cfg).to(self.device)
+        if self.multi_gpus:
+            self.flame = DataParallel(FLAME(model_cfg)).to(self.device)
+        else:
+            self.flame = FLAME(model_cfg).to(self.device)
         if model_cfg.use_tex:
-            self.flametex = FLAMETex(model_cfg).to(self.device)
-        self.D_detail = Generator(latent_dim=self.n_detail+self.n_cond, out_channels=1, \
-            out_scale=model_cfg.max_z, sample_mode = 'bilinear').to(self.device)
+            if self.multi_gpus:
+                self.flametex = DataParallel(FLAMETex(model_cfg)).to(self.device)
+            else:
+                self.flametex = FLAMETex(model_cfg).to(self.device)
+        if 'detail' in self.mode:
+            if self.multi_gpus:
+                self.D_detail = DataParallel(Generator(latent_dim=self.n_detail+self.n_cond, out_channels=1, \
+                    out_scale=model_cfg.max_z, sample_mode = 'bilinear')).to(self.device)
+            else:
+                self.D_detail = Generator(latent_dim=self.n_detail+self.n_cond, out_channels=1, \
+                    out_scale=model_cfg.max_z, sample_mode = 'bilinear').to(self.device)
 
         # resume model
-        if hasattr(self.cfg, 'pretrained_model'):
-            if hasattr(self.cfg.pretrained_model, 'encoder_coarse') \
-                and os.path.exists(self.cfg.pretrained_model.encoder_coarse):
-                util.copy_state_dict(self.E_flame.state_dict(), \
-                    torch.load(self.cfg.pretrained_model.encoder_coarse))
+        if hasattr(self.config, 'pretrained_model'):
+            if hasattr(self.config.pretrained_model, 'encoder_coarse') \
+                and os.path.exists(self.config.pretrained_model.encoder_coarse):
+                self.E_flame.load_state_dict( \
+                    torch.load(self.config.pretrained_model.encoder_coarse))
                 print('load encoder coarse pretrained model: ' + \
-                    self.cfg.pretrained_model.encoder_coarse)
+                    self.config.pretrained_model.encoder_coarse)
 
-            if hasattr(self.cfg.pretrained_model, 'encoder_detail') \
-                and os.path.exists(self.cfg.pretrained_model.encoder_detail):
-                util.copy_state_dict(self.E_detail.state_dict(), \
-                    torch.load(self.cfg.pretrained_model.encoder_detail))
+            if hasattr(self.config.pretrained_model, 'encoder_detail') \
+                and os.path.exists(self.config.pretrained_model.encoder_detail):
+                self.E_detail.load_state_dict( \
+                    torch.load(self.config.pretrained_model.encoder_detail))
                 print('load encoder detail pretrained model: ' + \
-                    self.cfg.pretrained_model.encoder_detail)
+                    self.config.pretrained_model.encoder_detail)
 
-            if hasattr(self.cfg.pretrained_model, 'decoder_detail') \
-                and os.path.exists(self.cfg.pretrained_model.encoder_detail):
-                util.copy_state_dict(self.D_detail.state_dict(), \
-                    torch.load(self.cfg.pretrained_model.decoder_detail))
+            if hasattr(self.config.pretrained_model, 'decoder_detail') \
+                and os.path.exists(self.config.pretrained_model.encoder_detail):
+                self.D_detail.load_state_dict( \
+                    torch.load(self.config.pretrained_model.decoder_detail))
                 print('load decoder detail pretrained model: ' + \
-                    self.cfg.pretrained_model.decoder_detail)
+                    self.config.pretrained_model.decoder_detail)
 
         self.E_flame.eval()
-        self.E_detail.eval()
-        self.D_detail.eval()
+        if 'detail' in self.mode:
+            self.E_detail.eval()
+            self.D_detail.eval()
 
 	def _build_optimizer(self):		
 		config = self.config.train_param.optimizer
@@ -235,7 +377,7 @@ class deca_solver(object):
         if self.mode == 'train_coarse':
             optimizer = optim(self.E_flame.parameters(), **config.kwargs)
         elif self.mode == 'train_detail':
-            optimizer = optim([self.E_detail.parameters(), self.D_detail.parameters()], **config.kwargs)
+            optimizer = optim(itertools.chain(self.E_detail.parameters(), self.D_detail.parameters()), **config.kwargs)
         else:
             raise Warning('Invalid mode')
 		# optimizer = optim(model.parameters(), **config.kwargs)
@@ -259,19 +401,30 @@ class deca_solver(object):
         if self.mode == 'train_coarse':
             if epoch < 3:
                 self.train_dataset = TrainData(self.config)
+                self.train_loader = DataLoader(self.train_dataset, batch_size=self.config.train_params.batch_size,
+									num_workers=self.config.train_params.workers,
+									shuffle=True, pin_memory=True, drop_last=True)
             else:
                 self.train_dataset = TrainSubjectData(self.config)
+                self.train_loader = DataLoader(self.train_dataset, batch_size=self.config.train_params.batch_size,
+									num_workers=self.config.train_params.workers,
+									shuffle=False, pin_memory=True, drop_last=True)
+
+        self.half_iters = len(self.train_dataset)/(self.config.train_params.batch_size)//2
+
     
     def _build_val_loader(self):
         # qualitative validation dataset
-        self.qualitative_validate_dataset = datasets.TestData(self.config.test_params.qualitative_img_path, \
-            iscrop=self.config.test_params.iscrop, face_detector=self.config.test_params.detector)
+        self.qualitative_validate_dataset = QualitativeTestData(self.config)
+        self.qualitative_validate_loader = DataLoader(self.qualitative_validate_dataset, batch_size=self.config.test_params.batch_size,
+									num_workers=self.config.test_params.workers,
+									shuffle=True, pin_memory=True, drop_last=True)
 
     def _build(self):
-        config = self.cfg
-        self.start_epoch = 0
-        self._create_model(self.cfg.model)
-        self._setup_renderer(self.cfg.model)
+        config = self.config
+        self.start_epoch = 1
+        self._create_model(self.config.model)
+        self._setup_renderer(self.config.model)
 
         if 'train' in self.mode:
             self._build_optimizer()

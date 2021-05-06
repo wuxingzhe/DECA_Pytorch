@@ -44,7 +44,7 @@ def video2sequence(video_path):
     print('video frames are stored in {}'.format(videofolder))
     return imagepath_list
 
-class TrainData(Dataset):
+class QualitativeTestData(Dataset):
     def __init__(self, config, face_detector='mtcnn'):
         '''
             testpath: folder, imagepath_list, image path, video path
@@ -54,10 +54,10 @@ class TrainData(Dataset):
 
         self.imagepath_list = []
         # self.imgs_dir = self.config.train_params.imgs_dir
-        self.kpts_gt_dir = self.config.train_params.kpts_gt_dir
-        self.seg_masks_dir = self.config.train_params.seg_masks_dir
+        # self.kpts_gt_dir = self.config.train_params.kpts_gt_dir
+        # self.seg_masks_dir = self.config.train_params.seg_masks_dir
 
-        r1 = open(self.config.train_params.train_list)
+        r1 = open(self.config.test_params.qualitative_test_list)
         files_list = r1.readlines()
         r1.close()
         self.imagepath_list = [file_one.strip() for file_one in files_list]
@@ -99,16 +99,16 @@ class TrainData(Dataset):
         # imagename = imagepath.split('/')[-1].split('.')[0]
         root_path = '/'.join(imagepath.split('/')[:-2])
         imagename = os.path.basename(imagepath)
-        kpts_gt = np.load(os.path.join(root_path, self.kpts_gt_dir, imagename[:-3]+'npy'))
-        seg_mask = np.load(os.path.join(root_path, self.seg_masks_dir, imagename[:-3]+'npy'))
+        # kpts_gt = np.load(os.path.join(root_path, self.kpts_gt_dir, imagename[:-3]+'npy'))
+        # seg_mask = np.load(os.path.join(root_path, self.seg_masks_dir, imagename[:-3]+'npy'))
 
         image = np.array(imread(imagepath))
-        if image.shape[0] != self.image_size:
-            image = cv2.resize(image, (self.image_size, self.image_size))
         if len(image.shape) == 2:
             image = image[:,:,None].repeat(1,1,3)
         if len(image.shape) == 3 and image.shape[2] > 3:
             image = image[:,:,:3]
+        if image.shape[0] != self.image_size:
+            image = cv2.resize(image, (self.image_size, self.image_size))
 
         h, w, _ = image.shape
         if self.iscrop:
@@ -146,10 +146,7 @@ class TrainData(Dataset):
         # tform = estimate_transform('similarity', src_pts, DST_PTS)
         
         image = image/255.
-        kpts_gt = kpts_gt/255.0
-        seg_mask[seg_mask>100] = 255
-        seg_mask[seg_mask<=100] = 0
-        seg_mask = seg_mask/255.
+        # kpts_gt = kpts_gt/(self.image_size)
 
         # dst_image = warp(image, tform.inverse, output_shape=(self.resolution_inp, self.resolution_inp))
         dst_image = image.transpose(2,0,1)
@@ -157,9 +154,9 @@ class TrainData(Dataset):
 
         # sample['image'] = torch.FloatTensor(sample['image'])
         return {'image': torch.tensor(dst_image).float(),
-                'imagename': imagename,
-                'kpts_gt': torch.tensor(kpts_gt).float(),
-                'seg_mask': torch.tensor(seg_mask).float(),
+                'imagename': imagepath,
+                # 'kpts_gt': torch.tensor(kpts_gt).float(),
+                E 'seg_mask': torch.tensor(seg_mask).float(),
                 # 'tform': tform,
                 # 'original_image': torch.tensor(image.transpose(2,0,1)).float(),
                 }

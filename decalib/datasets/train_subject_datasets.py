@@ -117,9 +117,9 @@ class TrainSubjectData(Dataset):
         return old_size, center
 
     def get_list_index(self, index):
-        person_ind = index//(self.batch_size)//(self.size_per_person//self.size_per_person_in_batch) * \
+        person_ind = index//(self.batch_size)//((self.size_per_person)//(self.size_per_person_in_batch)) * \
             (self.person_num_in_batch) + (index%(self.batch_size))//(self.size_per_person_in_batch)
-        ind_in_person = index//(self.batch_size)%(self.size_per_person//self.size_per_person_in_batch) * \
+        ind_in_person = index//(self.batch_size)%((self.size_per_person)//(self.size_per_person_in_batch)) * \
             (self.size_per_person_in_batch) + (index%(self.batch_size))%(self.size_per_person_in_batch)
 
         return self.person_seq[person_ind], self.seq_in_person[ind_in_person]
@@ -138,6 +138,8 @@ class TrainSubjectData(Dataset):
             image = image[:,:,None].repeat(1,1,3)
         if len(image.shape) == 3 and image.shape[2] > 3:
             image = image[:,:,:3]
+        if image.shape[0] != self.image_size:
+            image = cv2.resize(image, (self.image_size, self.image_size))
 
         h, w, _ = image.shape
         if self.iscrop:
@@ -175,7 +177,10 @@ class TrainSubjectData(Dataset):
         # tform = estimate_transform('similarity', src_pts, DST_PTS)
         
         image = image/255.
-        kpts_gt = kpts_gt/(self.image_size)
+        kpts_gt = kpts_gt/255.
+        seg_mask[seg_mask>100] = 255
+        seg_mask[seg_mask<=100] = 0
+        seg_mask = seg_mask/255.
 
         # dst_image = warp(image, tform.inverse, output_shape=(self.resolution_inp, self.resolution_inp))
         dst_image = image.transpose(2,0,1)

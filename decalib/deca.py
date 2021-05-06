@@ -216,6 +216,8 @@ class DECA(object):
             'inputs': images, 
             'landmarks2d': util.tensor_vis_landmarks(images, landmarks2d, isScale=False),
             'landmarks3d': util.tensor_vis_landmarks(images, landmarks3d, isScale=False),
+            'trans_verts': util.tensor_vis_landmarks(images, trans_verts, isScale=False),
+            'trans_verts': util.tensor_vis_landmarks(images, trans_verts),
             'shape_images': shape_images,
             'shape_detail_images': shape_detail_images
         }
@@ -228,36 +230,45 @@ class DECA(object):
         if size is None:
             size = self.image_size
         for key in visdict:
-            grids[key] = torchvision.utils.make_grid(F.interpolate(visdict[key], [size, size])).detach().cpu()
-        grid = torch.cat(list(grids.values()), 2)
-        grid_image = (grid.numpy().transpose(1,2,0).copy()*255)[:,:,[2,1,0]]
+            # grids[key] = torchvision.utils.make_grid(F.interpolate(visdict[key], [size, size])).detach().cpu()
+            grids[key] = visdict[key].detach().cpu()
+        grid = torch.cat(list(grids.values()), 3)
+        grid_image = (grid.numpy().transpose(0,2,3,1).copy()*255)[:,:,:,[2,1,0]]
         grid_image = np.minimum(np.maximum(grid_image, 0), 255).astype(np.uint8)
         return grid_image
     
-    def save_obj(self, filename, opdict):
+    def save_obj(self, savefolder, filenames, opdict):
         '''
         vertices: [nv, 3], tensor
         texture: [3, h, w], tensor
         '''
         i = 0
-        vertices = opdict['vertices'][i].cpu().numpy()
-        faces = self.render.faces[0].cpu().numpy()
-        texture = util.tensor2image(opdict['uv_texture_gt'][i])
-        uvcoords = self.render.raw_uvcoords[0].cpu().numpy()
-        uvfaces = self.render.uvfaces[0].cpu().numpy()
-        # save coarse mesh, with texture and normal map
-        normal_map = util.tensor2image(opdict['uv_detail_normals'][i]*0.5 + 0.5)
-        util.write_obj(filename, vertices, faces, 
+        for i in range(opdict['vertices'].shape[0]):
+            vertices = opdict['vertices'][i].cpu().numpy()
+            faces = self.render.faces[0].cpu().numpy()
+            texture = util.tensor2image(opdict['uv_texture_gt'][i])
+            uvcoords = self.render.raw_uvcoords[0].cpu().numpy()
+            uvfaces = self.render.uvfaces[0].cpu().numpy()
+            # save coarse mesh, with texture and normal map
+            normal_map = util.tensor2image(opdict['uv_detail_normals'][i]*0.5 + 0.5)
+            filename = os.path.join(savefolder, filenames[i], filenames[i]+'.obj')
+            util.write_obj(filename, vertices, faces, 
                         texture=texture, 
                         uvcoords=uvcoords, 
                         uvfaces=uvfaces, 
                         normal_map=normal_map)
-        # upsample mesh, save detailed mesh
-        texture = texture[:,:,[2,1,0]]
-        normals = opdict['normals'][i].cpu().numpy()
-        displacement_map = opdict['displacement_map'][i].cpu().numpy().squeeze()
-        dense_vertices, dense_colors, dense_faces = util.upsample_mesh(vertices, normals, faces, displacement_map, texture, self.dense_template)
-        util.write_obj(filename.replace('.obj', '_detail.obj'), 
+            texture = util.tensor2image(opdict['albedo'][i])
+            util.write_obj(filename.replace('.obj', '_albedo.obj'), vertices, faces, 
+                        texture=texture, 
+                        uvcoords=uvcoords, 
+                        uvfaces=uvfaces)
+
+            # upsample mesh, save detailed mesh
+            texture = texture[:,:,[2,1,0]]
+            normals = opdict['normals'][i].cpu().numpy()
+            displacement_map = opdict['displacement_map'][i].cpu().numpy().squeeze()
+            dense_vertices, dense_colors, dense_faces = util.upsample_mesh(vertices, normals, faces, displacement_map, texture, self.dense_template)
+            util.write_obj(filename.replace('.obj', '_detail.obj'), 
                         dense_vertices, 
                         dense_faces,
                         colors = dense_colors,

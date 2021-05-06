@@ -41,27 +41,32 @@ def main(args):
     deca = DECA(config = deca_cfg, device=device)
     # for i in range(len(testdata)):
     for i in tqdm(range(len(testdata))):
-        name = testdata[i]['imagename']
+        names = testdata[i]['imagename']
         images = testdata[i]['image'].to(device)[None,...]
         codedict = deca.encode(images)
         opdict, visdict = deca.decode(codedict) #tensor
         if args.saveDepth or args.saveKpt or args.saveObj or args.saveMat or args.saveImages:
-            os.makedirs(os.path.join(savefolder, name), exist_ok=True)
+            for name in names:
+                os.makedirs(os.path.join(savefolder, name), exist_ok=True)
         # -- save results
         if args.saveDepth:
-            depth_image = deca.render.render_depth(opdict['transformed_vertices']).repeat(1,3,1,1)
-            visdict['depth_images'] = depth_image
-            cv2.imwrite(os.path.join(savefolder, name, name + '_depth.jpg'), util.tensor2image(depth_image[0]))
+            depth_images = deca.render.render_depth(opdict['transformed_vertices']).repeat(1,3,1,1)
+            visdict['depth_images'] = depth_images
+            for j in range(len(names)):
+                cv2.imwrite(os.path.join(savefolder, names[j], names[j] + '_depth.jpg'), util.tensor2image(depth_image[j]))
         if args.saveKpt:
-            np.savetxt(os.path.join(savefolder, name, name + '_kpt2d.txt'), opdict['landmarks2d'][0].cpu().numpy())
-            np.savetxt(os.path.join(savefolder, name, name + '_kpt3d.txt'), opdict['landmarks3d'][0].cpu().numpy())
+            for j in range(len(names)):
+                np.savetxt(os.path.join(savefolder, names[j], names[j] + '_kpt2d.txt'), opdict['landmarks2d'][j].cpu().numpy())
+                np.savetxt(os.path.join(savefolder, names[j], names[j] + '_kpt3d.txt'), opdict['landmarks3d'][j].cpu().numpy())
         if args.saveObj:
-            deca.save_obj(os.path.join(savefolder, name, name + '.obj'), opdict)
+            deca.save_obj(savefolder, names, opdict)
         if args.saveMat:
             opdict = util.dict_tensor2npy(opdict)
             savemat(os.path.join(savefolder, name, name + '.mat'), opdict)
         if args.saveVis:
-            cv2.imwrite(os.path.join(savefolder, name + '_vis.jpg'), deca.visualize(visdict))
+            vis_imgs = deca.visualize(visdict)
+            for j in range(len(names)):
+                cv2.imwrite(os.path.join(savefolder, names[j] + '_vis.jpg'), vis_imgs[j])
         if args.saveImages:
             for vis_name in ['inputs', 'rendered_images', 'albedo_images', 'shape_images', 'shape_detail_images']:
                 if vis_name not in visdict.keys():
