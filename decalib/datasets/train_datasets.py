@@ -105,6 +105,8 @@ class TrainData(Dataset):
         image = np.array(imread(imagepath))
         if image.shape[0] != self.image_size:
             image = cv2.resize(image, (self.image_size, self.image_size))
+        if seg_mask.shape[0] != self.image_size:
+            seg_mask = cv2.resize(seg_mask, (self.image_size, self.image_size))
         if len(image.shape) == 2:
             image = image[:,:,None].repeat(1,1,3)
         if len(image.shape) == 3 and image.shape[2] > 3:
@@ -153,11 +155,11 @@ class TrainData(Dataset):
 
         # dst_image = warp(image, tform.inverse, output_shape=(self.resolution_inp, self.resolution_inp))
         dst_image = image.transpose(2,0,1)
-
+        seg_mask = seg_mask.transpose(2,0,1)
 
         # sample['image'] = torch.FloatTensor(sample['image'])
         return {'image': torch.tensor(dst_image).float(),
-                'imagename': imagename,
+                'imagename': imagepath,
                 'kpts_gt': torch.tensor(kpts_gt).float(),
                 'seg_mask': torch.tensor(seg_mask).float(),
                 # 'tform': tform,

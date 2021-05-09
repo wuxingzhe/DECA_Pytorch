@@ -140,6 +140,8 @@ class TrainSubjectData(Dataset):
             image = image[:,:,:3]
         if image.shape[0] != self.image_size:
             image = cv2.resize(image, (self.image_size, self.image_size))
+        if seg_mask.shape[0] != self.image_size:
+            seg_mask = cv2.resize(seg_mask, (self.image_size, self.image_size))
 
         h, w, _ = image.shape
         if self.iscrop:
@@ -184,8 +186,9 @@ class TrainSubjectData(Dataset):
 
         # dst_image = warp(image, tform.inverse, output_shape=(self.resolution_inp, self.resolution_inp))
         dst_image = image.transpose(2,0,1)
+        seg_mask = seg_mask.transpose(2,0,1)
         return {'image': torch.tensor(dst_image).float(),
-                'imagename': imagename,
+                'imagename': imagepath,
                 'kpts_gt': torch.tensor(kpts_gt).float(),
                 'seg_mask': torch.tensor(seg_mask).float(),
                 # 'tform': tform,

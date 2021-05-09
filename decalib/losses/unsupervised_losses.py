@@ -17,8 +17,7 @@ class UnsupervisedLosses(object):
         # identity recog network
         self.recog_network = SEResNet_IR_ori_224(50, feature_dim=self.config.recog_params.feature_dim, \
             mode='ir', drop_ratio=self.config.recog_params.drop_ratio)
-        util.copy_state_dict(self.recog_network.state_dict(), \
-                    torch.load(self.config.pretrained_model.recog_network))
+        self.recog_network.load_state_dict(torch.load(self.config.pretrained_model.recog_network))
         print('load recog model: ' + \
                     self.config.pretrained_model.recog_network)
         if len(self.config.gpus.split(',')) > 1:
@@ -61,7 +60,8 @@ class UnsupervisedLosses(object):
             return torch.mean(torch.abs(sub_gt - sub_pred))
 
     def photometric_loss(self, imgs_input, lights, output, skin_seg_res, norm_type = 'mse'):
-        imgs_render = self.render(output['verts'], output['trans_verts'], output['albedo'], lights)
+        ops = self.render(output['verts'], output['trans_verts'], output['albedo'], lights)
+        imgs_render = ops['images']
         imgs_render /= 255.0
         if norm_type == 'mse':
             loss_photometric = torch.mean(skin_seg_res * (imgs_input - imgs_render) ** 2)
@@ -88,4 +88,4 @@ class UnsupervisedLosses(object):
             elif norm_type == 'l1':
                 losses_regular.append(torch.mean(torch.abs(param)))
 
-        return torch.mean(torch.tensor(losses_regular).float().to(device))
+        return torch.sum(torch.tensor(losses_regular).float().to(device))

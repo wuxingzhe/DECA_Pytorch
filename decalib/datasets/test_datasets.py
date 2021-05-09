@@ -64,10 +64,10 @@ class QualitativeTestData(Dataset):
 
         print('total {} images'.format(len(self.imagepath_list)))
         self.imagepath_list = sorted(self.imagepath_list)
-        self.crop_size = self.config.train_params.crop_size
-        self.scale = self.config.train_params.scale
-        self.iscrop = self.config.train_params.iscrop
-        self.resolution_inp = self.config.train_params.crop_size
+        self.crop_size = self.config.test_params.crop_size
+        self.scale = self.config.test_params.scale
+        self.iscrop = self.config.test_params.iscrop
+        self.resolution_inp = self.config.test_params.crop_size
 
         if self.iscrop:
             if face_detector == 'fan':

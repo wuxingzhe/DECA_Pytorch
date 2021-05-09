@@ -12,7 +12,8 @@ def parse_args():
     new_parser = argparse.ArgumentParser(
         description='PyTorch DECA solver.')
     new_parser.add_argument('--config', default='configs/config.yaml')
-    new_parser.add_argument('--save_path', default='snapshot/')
+    new_parser.add_argument('--save_dict_path', default='snapshot/')
+    new_parser.add_argument('--save_mesh_path', default='results/')
     new_parser.add_argument('--resume', type=str, default=None)
     new_parser.add_argument('--visualize', action='store_true')
     new_parser.add_argument('--image_path', type=str, default=None)
@@ -23,6 +24,7 @@ def parse_args():
     group = new_parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--train_coarse', action='store_true')
     group.add_argument('--train_detail', action='store_true')
+    
     group.add_argument('--evaluate', action='store_true')
     group.add_argument('--test', action='store_true')
     group.add_argument('--count_op', action='store_true')

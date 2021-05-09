@@ -44,6 +44,9 @@ class deca_solver(object):
         self.image_size = self.config.dataset.image_size
         self.uv_size = self.config.model.uv_size
 
+        if self.mode == 'train_coarse':
+            self.epoch_phase = self.config.train_params.epoch_phase
+
         # torch.backends.cudnn.benchmark = True
         self.multi_gpus = False
         if len(self.config.gpus.split(',')) > 1:
@@ -71,19 +74,23 @@ class deca_solver(object):
         parameters = self.E_flame(images)
         codedict = decompose_code(parameters, self.param_dict)
 
-        if self.mode == 'train_detail'
+        if self.mode == 'train_detail':
             detailcode = self.E_detail(images)
             codedict['detail'] = detailcode
         codedict['images'] = images
 
         # shape consistency
-        if epoch>2 and 'coarse' in self.mode:
+        if epoch>self.epoch_phase and 'coarse' in self.mode:
             idx = np.arange(self.config.train_params.size_per_person_in_batch)
             random.shuffle(idx)
             idx_all = []
             for i in range(self.config.train_params.person_num_in_batch):
                 idx_all.extend(idx+i*(self.config.train_params.size_per_person_in_batch))
             codedict['shape_shuffle'] = codedict['shape'][np.array(idx_all), :]
+
+        if epoch>self.epoch_phase and self.config.eval_train:
+            print(str(codedict['shape']))
+            print(str(codedict['shape_shuffle']))
 
         return codedict
 
@@ -110,13 +117,15 @@ class deca_solver(object):
         landmarks3d /= (self.image_size - 1)
         trans_verts = util.batch_orth_proj(verts, codedict['cam'])
         trans_verts[:,:,1:] = -trans_verts[:,:,1:]
+        trans_verts = trans_verts*self.image_size/2 + self.image_size/2
+        trans_verts /= (self.image_size - 1)
         normals = util.vertex_normals(verts, self.faces.expand(batch_size, -1, -1))
 
         output = {'albedo': albedo, 'verts': verts, 'trans_verts': trans_verts, \
                     'landmarks2d': landmarks2d, 'landmarks3d': landmarks3d, 'normals': normals}
 
         # shape consistency
-        if 'coarse' in self.mode and epoch>2:
+        if 'coarse' in self.mode and epoch>self.epoch_phase:
             verts, landmarks2d, landmarks3d = self.flame(shape_params=codedict['shape_shuffle'], \
                 expression_params=codedict['exp'], pose_params=codedict['pose'])
 
@@ -131,6 +140,8 @@ class deca_solver(object):
             landmarks3d /= (self.image_size - 1)
             trans_verts = util.batch_orth_proj(verts, codedict['cam'])
             trans_verts[:,:,1:] = -trans_verts[:,:,1:]
+            trans_verts = trans_verts*self.image_size/2 + self.image_size/2
+            trans_verts /= (self.image_size - 1)
             normals = util.vertex_normals(verts, self.faces.expand(batch_size, -1, -1))
 
             output['landmarks2d_shuffle'] = landmarks2d
@@ -163,28 +174,37 @@ class deca_solver(object):
             if i == self.half_iters:
                 self._save_model_dict(epoch, half_epoch=True)
                 self.validate(epoch, half_epoch = True)
+            if epoch>self.epoch_phase and self.config.eval_train:
+                print(str(sample['imagename']))
             parameters = self.encode(sample['images'].to(self.device), epoch)
             output = self.decode(parameters, epoch)
 
             if self.mode == 'train_coarse':
                 loss_ldmk = self.unsupervised_losses_conductor.landmarks_2d_loss( \
-                    sample['kpts_gt'].to(self.device), output['landmarks2d'])
+                        sample['kpts_gt'].to(self.device), output['landmarks2d'], norm_type = self.config.train_params.norm_type_ldmk)
                 loss_eye_closure = self.unsupervised_losses_conductor.landmarks_eye_closure_loss( \
-                    sample['kpts_gt'].to(self.device), output['landmarks2d'])
+                        sample['kpts_gt'].to(self.device), output['landmarks2d'], norm_type = self.config.train_params.norm_type_eye_closure)
                 loss_regular = self.unsupervised_losses_conductor.regular_loss( \
-                    [parameters['shape'], parameters['exp'], parameters['tex']])
-                loss_total = self.config.train_params.ldmk_loss_factor * loss_ldmk + self.config.train_params.regular_loss_factor * loss_regular
-                    + self.config.train_params.eye_closure_loss_factor * loss_eye_closure
+                        [parameters['shape'], parameters['exp'], parameters['tex']], norm_type = self.config.train_params.norm_type_reg)
 
-                if epoch > 2:
+                if epoch <= self.epoch_phase:
+                    loss_total = self.config.train_params.ldmk_loss_factors[0] * loss_ldmk + self.config.train_params.regular_loss_factors[0] * loss_regular
+                        + self.config.train_params.eye_closure_loss_factors[0] * loss_eye_closure
+                    print('Epoch: %d, Step: %d, Lr: %f, TL: %f, LdmkL: %f, EyeL: %f, RegL: %f' % (epoch, i, self.lr, \
+                        loss_total.item(), loss_ldmk.item(), loss_eye_closure.item(), loss_regular.item()))
+                        
+                else:
                     loss_photometric = self.unsupervised_losses_conductor.photometric_loss( \
-                        output['images'], output, parameters['light'], sample['seg_mask'].to(device))
+                        output['images'], output, parameters['light'], sample['seg_mask'].to(device), norm_type = self.config.train_params.norm_type_photometric)
+                    loss_total = loss_photometric * self.config.train_params.photometric_loss_factor + \
+                        self.config.train_params.ldmk_loss_factors[1] * loss_ldmk + self.config.train_params.regular_loss_factors[1] * loss_regular
+                            + self.config.train_params.eye_closure_loss_factors[1] * loss_eye_closure
 
                     # shape consistency
                     loss_ldmk_consistency = self.unsupervised_losses_conductor.landmarks_2d_loss( \
-                        sample['kpts_gt'].to(self.device), output['landmarks2d_shuffle'])
+                        sample['kpts_gt'].to(self.device), output['landmarks2d_shuffle'], norm_type = self.config.train_params.norm_type_ldmk)
                     loss_eye_closure_consistency = self.unsupervised_losses_conductor.landmarks_eye_closure_loss( \
-                        sample['kpts_gt'].to(self.device), output['landmarks2d_shuffle'])
+                        sample['kpts_gt'].to(self.device), output['landmarks2d_shuffle'], norm_type = self.config.train_params.norm_type_eye_closure)
                     
                     output['verts'] = output['verts_shuffle']
                     output['trans_verts'] = output['trans_verts_shuffle']
@@ -192,18 +212,14 @@ class deca_solver(object):
                         output['images'], output, parameters['light'], sample['seg_mask'].to(device))
                     loss_consistency =  ( \
                         loss_photometric_consistency * self.config.train_params.photometric_loss_factor + \
-                        loss_ldmk_consistency * self.config.train_params.ldmk_loss_factor + \
-                        loss_eye_closure_consistency * self.config.train_params.eye_closure_loss_factor)
+                        loss_ldmk_consistency * self.config.train_params.ldmk_loss_factors[1] + \
+                        loss_eye_closure_consistency * self.config.train_params.eye_closure_loss_factors[1])
                     loss_total += self.config.train_params.shape_consistency_loss_factor * loss_consistency
 
                     print('Epoch: %d, Step: %d, Lr: %f, TL: %f, LdmkL: %f, EyeL: %f, RegL: %f, PhoL: %f, ConL: %f, LdConL: %f, EyeConL: %f, PhoConL: %f' \
                         % (epoch, i, self.lr, loss_total.item(), loss_ldmk.item(), loss_eye_closure.item(), loss_regular.item(), \
                         loss_photometric.item(), loss_consistency.item(), loss_ldmk_consistency.item(), \
                         loss_eye_closure_consistency.item(), loss_photometric_consistency.item()))
-
-                else:
-                    print('Epoch: %d, Step: %d, Lr: %f, TL: %f, LdmkL: %f, EyeL: %f, RegL: %f' % (epoch, i, self.lr, \
-                        loss_total.item(), loss_ldmk.item(), loss_eye_closure.item(), loss_regular.item()))
 
             self.lr_scheduler.optimizer.zero_grad()
             loss_total.backward()
@@ -220,10 +236,10 @@ class deca_solver(object):
         config = self.config
         print('Training ..... ')
 
-        for epoch in range(self.start_epoch, config.train_param.scheduler.epochs + 1):
+        for epoch in range(self.start_epoch, config.train_params.scheduler.epochs + 1):
             self.lr_scheduler.step()
             self.lr = self.lr_scheduler.get_lr()[0]
-            if epoch > 2:
+            if epoch > self.epoch_phase:
                 self._build_train_loader(epoch)
             self.train(epoch)
             self._save_model_dict(epoch)
@@ -266,13 +282,15 @@ class deca_solver(object):
     def _save_model_dict(self, epoch, half_epoch = False):
         print('save network in: '+self.save_path)
         if self.multi_gpus:
-            E_flame_state_dict = self.E_flame.module.state_dict()
-            if 'detail' in self.mode:
+            if 'coarse' in self.mode:
+                E_flame_state_dict = self.E_flame.module.state_dict()
+            elif 'detail' in self.mode:
                 E_detail_state_dict = self.E_detail.module.state_dict()
                 D_detail_state_dict = self.D_detail.modele.state_dict()
         else:
-            E_flame_state_dict = self.E_flame.state_dict()
-            if 'detail' in self.mode:
+            if 'coarse' in self.mode:
+                E_flame_state_dict = self.E_flame.state_dict()
+            elif 'detail' in self.mode:
                 E_detail_state_dict = self.E_detail.state_dict()
                 D_detail_state_dict = self.D_detail.state_dict()
 
@@ -280,11 +298,12 @@ class deca_solver(object):
             path_prefix = 'Epoch_half'
         else:
             path_prefix = 'Epoch'
-        torch.save({
-            'iters': epoch,
-            'net_state_dict': E_flame_state_dict},
-            os.path.join(self.save_path, path_prefix+'_%06d_E_flame.ckpt' % epoch))
-        if 'detail' in self.mode:
+        if 'coarse' in self.mode:
+            torch.save({
+                'iters': epoch,
+                'net_state_dict': E_flame_state_dict},
+                os.path.join(self.save_path, path_prefix+'_%06d_E_flame.ckpt' % epoch))
+        elif 'detail' in self.mode:
             torch.save({
                 'iters': epoch,
                 'net_state_dict': E_detail_state_dict},
@@ -368,7 +387,7 @@ class deca_solver(object):
             self.D_detail.eval()
 
 	def _build_optimizer(self):		
-		config = self.config.train_param.optimizer
+		config = self.config.train_params.optimizer
 		# model = self.model
 		try:
 			optim = getattr(torch.optim, config.type)
@@ -388,7 +407,7 @@ class deca_solver(object):
 		# 	self.optimizer_discriminator = optim(self.discriminator.parameters(), **config.kwargs)
 
 	def _build_scheduler(self):
-		config = self.config.train_param
+		config = self.config.train_params
 		self.lr_scheduler = MultiStepLR(self.optimizer,
 										milestones = config.scheduler.milestones,
 										gamma = config.scheduler.gamma,
@@ -401,16 +420,17 @@ class deca_solver(object):
         if self.mode == 'train_coarse':
             if epoch < 3:
                 self.train_dataset = TrainData(self.config)
-                self.train_loader = DataLoader(self.train_dataset, batch_size=self.config.train_params.batch_size,
+                self.train_loader = DataLoader(self.train_dataset, batch_size=self.config.train_params.batch_sizes[0],
 									num_workers=self.config.train_params.workers,
 									shuffle=True, pin_memory=True, drop_last=True)
+                self.half_iters = len(self.train_dataset)/(self.config.train_params.batch_sizes[0])//2
             else:
                 self.train_dataset = TrainSubjectData(self.config)
-                self.train_loader = DataLoader(self.train_dataset, batch_size=self.config.train_params.batch_size,
+                self.train_loader = DataLoader(self.train_dataset, batch_size=self.config.train_params.batch_sizes[1],
 									num_workers=self.config.train_params.workers,
 									shuffle=False, pin_memory=True, drop_last=True)
-
-        self.half_iters = len(self.train_dataset)/(self.config.train_params.batch_size)//2
+                self.half_iters = len(self.train_dataset)/(self.config.train_params.batch_sizes[1])//2
+            print('train half iters: '+str(self.half_iters))
 
     
     def _build_val_loader(self):
