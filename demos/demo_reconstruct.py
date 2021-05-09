@@ -24,6 +24,7 @@ from tqdm import tqdm
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from decalib.deca import DECA
 from decalib.datasets import datasets 
+from torch.utils.data import DataLoader
 from decalib.utils import util
 from decalib.utils.config import cfg as deca_cfg
 
@@ -35,14 +36,17 @@ def main(args):
 
     # load test images 
     testdata = datasets.TestData(args.inputpath, iscrop=args.iscrop, face_detector=args.detector)
+    test_data_loader = DataLoader(testdata, batch_size=3,
+                                    num_workers=4,
+                                    shuffle=True, pin_memory=True, drop_last=True)
 
     # run DECA
     deca_cfg.model.use_tex = args.useTex
     deca = DECA(config = deca_cfg, device=device)
     # for i in range(len(testdata)):
-    for i in tqdm(range(len(testdata))):
-        names = testdata[i]['imagename']
-        images = testdata[i]['image'].to(device)[None,...]
+    for i, sample in enumerate(test_data_loader):
+        names = sample['imagename']
+        images = sample['image'].to(device)
         codedict = deca.encode(images)
         opdict, visdict = deca.decode(codedict) #tensor
         if args.saveDepth or args.saveKpt or args.saveObj or args.saveMat or args.saveImages:

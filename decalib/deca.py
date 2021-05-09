@@ -217,7 +217,7 @@ class DECA(object):
             'landmarks2d': util.tensor_vis_landmarks(images, landmarks2d, isScale=False),
             'landmarks3d': util.tensor_vis_landmarks(images, landmarks3d, isScale=False),
             'trans_verts': util.tensor_vis_landmarks(images, trans_verts, isScale=False),
-            'trans_verts': util.tensor_vis_landmarks(images, trans_verts),
+            'trans_verts_scale': util.tensor_vis_landmarks(images, trans_verts),
             'shape_images': shape_images,
             'shape_detail_images': shape_detail_images
         }

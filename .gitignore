@@ -45,3 +45,4 @@ TestSamples/examples/results/
 
 # models #
 deca_model.tar
+srun.sh
