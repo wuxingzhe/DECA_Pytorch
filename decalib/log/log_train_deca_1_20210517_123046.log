@@ -1,0 +1,325 @@
+{'common': {'eval_train': False},
+ 'config': 'configs/exp1.yaml',
+ 'convert': False,
+ 'convert_nart': False,
+ 'count_op': False,
+ 'dataset': {'image_size': 224, 'uv_size': 256},
+ 'eval_train': False,
+ 'evaluate': False,
+ 'gpus': '0,1',
+ 'image_path': None,
+ 'model': {'dense_template_path': '../data/texture_data_256.npy',
+           'face_eye_mask_path': '../data/uv_face_eye_mask.png',
+           'face_mask_path': '../data/uv_face_mask.png',
+           'fixed_displacement_path': '../data/fixed_displacement_256.npy',
+           'flame_lmk_embedding_path': '../data/landmark_embedding.npy',
+           'flame_model_path': '../data/generic_model.pkl',
+           'jaw_type': 'aa',
+           'max_z': 0.01,
+           'mean_tex_path': '../data/mean_texture.jpg',
+           'n_cam': 3,
+           'n_detail': 128,
+           'n_exp': 50,
+           'n_light': 27,
+           'n_pose': 6,
+           'n_shape': 100,
+           'n_tex': 50,
+           'param_list': ['shape', 'tex', 'exp', 'pose', 'cam', 'light'],
+           'tex_path': '../data/FLAME_albedo_from_BFM.npz',
+           'tex_type': 'BFM',
+           'topology_path': '../data/head_template.obj',
+           'useTex': True,
+           'use_tex': True,
+           'uv_size': 256},
+ 'output_path': None,
+ 'pretrained_model': {'recog_network': 'net-data/Iter_007000_net.ckpt'},
+ 'recog_params': {'feature_dim': 512},
+ 'save_dict_path': 'snapshot/',
+ 'save_mesh_path': 'results/',
+ 'test': False,
+ 'test_params': {'batch_size': 3,
+                 'crop_size': 224,
+                 'iscrop': False,
+                 'qualitative_test_list': 'utils/qualitative_test_images.txt',
+                 'scale': 1.0,
+                 'works': 1},
+ 'train_coarse': True,
+ 'train_detail': False,
+ 'train_params': {'batch_sizes': [64, 32],
+                  'crop_size': 224,
+                  'epoch_phase': 2,
+                  'eye_closure_ldmk_idx_file': '../data/ldmk_eye_closure_idx.npy',
+                  'eye_closure_loss_factors': [1.0, 1.0],
+                  'iscrop': False,
+                  'kpts_gt_dir': 'ldmk_gt',
+                  'ldmk_loss_factors': [0.0001, 1.0],
+                  'ldmk_weights_file': '../data/ldmk_weights.npy',
+                  'norm_type_eye_closure': 'mse',
+                  'norm_type_ldmk': 'mse',
+                  'norm_type_photometric': 'mse',
+                  'norm_type_reg': 'mse',
+                  'optimizer': {'kwargs': {'lr': 0.0001,
+                                           'weight_decay': 0.0005},
+                                'type': 'Adam'},
+                  'person_num_in_batch': 8,
+                  'person_size': 250000,
+                  'photometric_loss_factor': 2.0,
+                  'regular_loss_factors': [0.0001, 0.0001],
+                  'scale': 1.0,
+                  'scheduler': {'epochs': 4,
+                                'gamma': 0.5,
+                                'milestones': [5, 10]},
+                  'seg_masks_dir': 'face_seg_mask',
+                  'shape_consistency_loss_factor': 1.0,
+                  'size_per_person': 8,
+                  'size_per_person_in_batch': 4,
+                  'train_list': 'utils/train_images.txt',
+                  'train_subject_list': 'utils/train_subject_images.txt',
+                  'workers': 4},
+ 'visualize': False}
+make save path: snapshot/configs/exp1.yaml_20210517_123113
+make result path: results/configs/exp1.yaml_20210517_123113
+fc.weight  not available in reconstructed resnet
+fc.bias  not available in reconstructed resnet
+creating the FLAME Decoder
+total 9 images
+load recog model: net-data/Iter_007000_net.ckpt
+total 2000000 images
+train half iters: 15625.0
+Build the code well for train_coarse
+make save path: snapshot/configs/exp1.yaml_20210517_123139
+make result path: results/configs/exp1.yaml_20210517_123139
+fc.weight  not available in reconstructed resnet
+fc.bias  not available in reconstructed resnet
+creating the FLAME Decoder
+total 9 images
+load recog model: net-data/Iter_007000_net.ckpt
+total 2000000 images
+train half iters: 15625.0
+Build the code well for train_coarse
+Training ..... 
+main.py:39: YAMLLoadWarning: calling yaml.load() without Loader=... is deprecated, as the default Loader is unsafe. Please read https://msg.pyyaml.org/load for full details.
+  config = yaml.load(f)
+/mnt/lustre/wuxingzhe/anaconda3.5.1/envs/deca/lib/python3.8/site-packages/pytorch3d/io/obj_io.py:70: UserWarning: Faces have invalid indices
+  warnings.warn("Faces have invalid indices")
+/mnt/lustre/wuxingzhe/anaconda3.5.1/envs/deca/lib/python3.8/site-packages/pytorch3d/io/obj_io.py:484: UserWarning: Mtl file does not exist: ../data/template.mtl
+  warnings.warn(f"Mtl file does not exist: {f_mtl}")
+/mnt/lustre/wuxingzhe/anaconda3.5.1/envs/deca/lib/python3.8/site-packages/torch/optim/lr_scheduler.py:117: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  warnings.warn("Detected call of `lr_scheduler.step()` before `optimizer.step()`. "
+Epoch: 1, Step: 0, Lr: 0.000100, TL: 0.044564, LdmkL: 0.053776, EyeL: 0.044552, RegL: 0.062274
+Epoch: 1, Step: 1, Lr: 0.000100, TL: 0.041807, LdmkL: 0.049003, EyeL: 0.041796, RegL: 0.061853
+Epoch: 1, Step: 2, Lr: 0.000100, TL: 0.045431, LdmkL: 0.055198, EyeL: 0.045420, RegL: 0.062635
+Epoch: 1, Step: 3, Lr: 0.000100, TL: 0.039093, LdmkL: 0.043072, EyeL: 0.039082, RegL: 0.061391
+Epoch: 1, Step: 4, Lr: 0.000100, TL: 0.040151, LdmkL: 0.043976, EyeL: 0.040140, RegL: 0.061269
+Epoch: 1, Step: 5, Lr: 0.000100, TL: 0.040624, LdmkL: 0.044078, EyeL: 0.040614, RegL: 0.058302
+Epoch: 1, Step: 6, Lr: 0.000100, TL: 0.039276, LdmkL: 0.043816, EyeL: 0.039266, RegL: 0.056451
+Epoch: 1, Step: 7, Lr: 0.000100, TL: 0.039545, LdmkL: 0.046098, EyeL: 0.039535, RegL: 0.054371
+Epoch: 1, Step: 8, Lr: 0.000100, TL: 0.040974, LdmkL: 0.046464, EyeL: 0.040964, RegL: 0.052683
+Epoch: 1, Step: 9, Lr: 0.000100, TL: 0.039734, LdmkL: 0.046290, EyeL: 0.039724, RegL: 0.051676
+Epoch: 1, Step: 10, Lr: 0.000100, TL: 0.039942, LdmkL: 0.045584, EyeL: 0.039933, RegL: 0.051255
+Epoch: 1, Step: 11, Lr: 0.000100, TL: 0.039626, LdmkL: 0.044508, EyeL: 0.039616, RegL: 0.050744
+Epoch: 1, Step: 12, Lr: 0.000100, TL: 0.038132, LdmkL: 0.043007, EyeL: 0.038123, RegL: 0.049548
+Epoch: 1, Step: 13, Lr: 0.000100, TL: 0.037828, LdmkL: 0.042042, EyeL: 0.037819, RegL: 0.050498
+Epoch: 1, Step: 14, Lr: 0.000100, TL: 0.036417, LdmkL: 0.042063, EyeL: 0.036408, RegL: 0.052668
+Epoch: 1, Step: 15, Lr: 0.000100, TL: 0.036816, LdmkL: 0.040282, EyeL: 0.036807, RegL: 0.053496
+Epoch: 1, Step: 16, Lr: 0.000100, TL: 0.034927, LdmkL: 0.041689, EyeL: 0.034917, RegL: 0.056009
+Epoch: 1, Step: 17, Lr: 0.000100, TL: 0.038835, LdmkL: 0.045038, EyeL: 0.038825, RegL: 0.058408
+Epoch: 1, Step: 18, Lr: 0.000100, TL: 0.036719, LdmkL: 0.038972, EyeL: 0.036709, RegL: 0.060573
+Epoch: 1, Step: 19, Lr: 0.000100, TL: 0.031831, LdmkL: 0.045149, EyeL: 0.031820, RegL: 0.061035
+Epoch: 1, Step: 20, Lr: 0.000100, TL: 0.057425, LdmkL: 0.057591, EyeL: 0.057413, RegL: 0.064069
+Epoch: 1, Step: 21, Lr: 0.000100, TL: 0.030617, LdmkL: 0.040569, EyeL: 0.030607, RegL: 0.063127
+Epoch: 1, Step: 22, Lr: 0.000100, TL: 0.045967, LdmkL: 0.064668, EyeL: 0.045954, RegL: 0.064022
+Epoch: 1, Step: 23, Lr: 0.000100, TL: 0.041318, LdmkL: 0.067844, EyeL: 0.041305, RegL: 0.062729
+Epoch: 1, Step: 24, Lr: 0.000100, TL: 0.036440, LdmkL: 0.061884, EyeL: 0.036427, RegL: 0.062280
+Epoch: 1, Step: 25, Lr: 0.000100, TL: 0.039698, LdmkL: 0.055135, EyeL: 0.039686, RegL: 0.061207
+Epoch: 1, Step: 26, Lr: 0.000100, TL: 0.033887, LdmkL: 0.038848, EyeL: 0.033878, RegL: 0.060506
+Epoch: 1, Step: 27, Lr: 0.000100, TL: 0.037261, LdmkL: 0.044054, EyeL: 0.037251, RegL: 0.060583
+Epoch: 1, Step: 28, Lr: 0.000100, TL: 0.045959, LdmkL: 0.061337, EyeL: 0.045947, RegL: 0.060452
+Epoch: 1, Step: 29, Lr: 0.000100, TL: 0.052755, LdmkL: 0.069239, EyeL: 0.052742, RegL: 0.061296
+Epoch: 1, Step: 30, Lr: 0.000100, TL: 0.047028, LdmkL: 0.050816, EyeL: 0.047017, RegL: 0.059178
+Epoch: 1, Step: 31, Lr: 0.000100, TL: 0.037769, LdmkL: 0.043250, EyeL: 0.037759, RegL: 0.058416
+Epoch: 1, Step: 32, Lr: 0.000100, TL: 0.039011, LdmkL: 0.041261, EyeL: 0.039001, RegL: 0.058094
+Epoch: 1, Step: 33, Lr: 0.000100, TL: 0.037971, LdmkL: 0.045335, EyeL: 0.037960, RegL: 0.057847
+Epoch: 1, Step: 34, Lr: 0.000100, TL: 0.038017, LdmkL: 0.048607, EyeL: 0.038006, RegL: 0.058696
+Epoch: 1, Step: 35, Lr: 0.000100, TL: 0.044415, LdmkL: 0.053319, EyeL: 0.044404, RegL: 0.058144
+Epoch: 1, Step: 36, Lr: 0.000100, TL: 0.041314, LdmkL: 0.051643, EyeL: 0.041304, RegL: 0.058031
+Epoch: 1, Step: 37, Lr: 0.000100, TL: 0.036060, LdmkL: 0.049337, EyeL: 0.036049, RegL: 0.056688
+Epoch: 1, Step: 38, Lr: 0.000100, TL: 0.038635, LdmkL: 0.047123, EyeL: 0.038625, RegL: 0.056155
+Epoch: 1, Step: 39, Lr: 0.000100, TL: 0.039941, LdmkL: 0.046509, EyeL: 0.039930, RegL: 0.056617
+Epoch: 1, Step: 40, Lr: 0.000100, TL: 0.040293, LdmkL: 0.044843, EyeL: 0.040283, RegL: 0.055893
+Epoch: 1, Step: 41, Lr: 0.000100, TL: 0.039188, LdmkL: 0.044639, EyeL: 0.039178, RegL: 0.056770
+Epoch: 1, Step: 42, Lr: 0.000100, TL: 0.039095, LdmkL: 0.043925, EyeL: 0.039085, RegL: 0.055440
+Epoch: 1, Step: 43, Lr: 0.000100, TL: 0.036888, LdmkL: 0.044306, EyeL: 0.036878, RegL: 0.056005
+Epoch: 1, Step: 44, Lr: 0.000100, TL: 0.039127, LdmkL: 0.043865, EyeL: 0.039117, RegL: 0.056003
+Epoch: 1, Step: 45, Lr: 0.000100, TL: 0.038580, LdmkL: 0.043575, EyeL: 0.038570, RegL: 0.056530
+Epoch: 1, Step: 46, Lr: 0.000100, TL: 0.039025, LdmkL: 0.043434, EyeL: 0.039015, RegL: 0.056609
+Epoch: 1, Step: 47, Lr: 0.000100, TL: 0.038403, LdmkL: 0.043832, EyeL: 0.038393, RegL: 0.057659
+Epoch: 1, Step: 48, Lr: 0.000100, TL: 0.039152, LdmkL: 0.043448, EyeL: 0.039142, RegL: 0.055974
+Epoch: 1, Step: 49, Lr: 0.000100, TL: 0.038071, LdmkL: 0.044143, EyeL: 0.038061, RegL: 0.057292
+Epoch: 1, Step: 50, Lr: 0.000100, TL: 0.037248, LdmkL: 0.043091, EyeL: 0.037238, RegL: 0.056513
+Epoch: 1, Step: 51, Lr: 0.000100, TL: 0.038651, LdmkL: 0.042919, EyeL: 0.038641, RegL: 0.056418
+Epoch: 1, Step: 52, Lr: 0.000100, TL: 0.037226, LdmkL: 0.043124, EyeL: 0.037216, RegL: 0.056062
+Epoch: 1, Step: 53, Lr: 0.000100, TL: 0.036885, LdmkL: 0.042619, EyeL: 0.036875, RegL: 0.056778
+Epoch: 1, Step: 54, Lr: 0.000100, TL: 0.038478, LdmkL: 0.042582, EyeL: 0.038468, RegL: 0.057212
+Epoch: 1, Step: 55, Lr: 0.000100, TL: 0.038240, LdmkL: 0.042274, EyeL: 0.038230, RegL: 0.058506
+Epoch: 1, Step: 56, Lr: 0.000100, TL: 0.038581, LdmkL: 0.041830, EyeL: 0.038571, RegL: 0.057914
+Epoch: 1, Step: 57, Lr: 0.000100, TL: 0.042717, LdmkL: 0.042187, EyeL: 0.042707, RegL: 0.058017
+Epoch: 1, Step: 58, Lr: 0.000100, TL: 0.038277, LdmkL: 0.041896, EyeL: 0.038267, RegL: 0.057610
+Epoch: 1, Step: 59, Lr: 0.000100, TL: 0.037555, LdmkL: 0.042185, EyeL: 0.037545, RegL: 0.057375
+Epoch: 1, Step: 60, Lr: 0.000100, TL: 0.037361, LdmkL: 0.042109, EyeL: 0.037351, RegL: 0.056381
+Epoch: 1, Step: 61, Lr: 0.000100, TL: 0.036394, LdmkL: 0.041900, EyeL: 0.036384, RegL: 0.056052
+Epoch: 1, Step: 62, Lr: 0.000100, TL: 0.036523, LdmkL: 0.041958, EyeL: 0.036513, RegL: 0.056975
+Epoch: 1, Step: 63, Lr: 0.000100, TL: 0.036145, LdmkL: 0.041841, EyeL: 0.036135, RegL: 0.058205
+Epoch: 1, Step: 64, Lr: 0.000100, TL: 0.037532, LdmkL: 0.041746, EyeL: 0.037521, RegL: 0.059328
+Epoch: 1, Step: 65, Lr: 0.000100, TL: 0.036419, LdmkL: 0.041473, EyeL: 0.036409, RegL: 0.059683
+Epoch: 1, Step: 66, Lr: 0.000100, TL: 0.036521, LdmkL: 0.041624, EyeL: 0.036511, RegL: 0.061680
+Epoch: 1, Step: 67, Lr: 0.000100, TL: 0.034902, LdmkL: 0.040851, EyeL: 0.034892, RegL: 0.062004
+Epoch: 1, Step: 68, Lr: 0.000100, TL: 0.033907, LdmkL: 0.040318, EyeL: 0.033896, RegL: 0.063911
+Epoch: 1, Step: 69, Lr: 0.000100, TL: 0.034550, LdmkL: 0.040066, EyeL: 0.034540, RegL: 0.066868
+Epoch: 1, Step: 70, Lr: 0.000100, TL: 0.035878, LdmkL: 0.039407, EyeL: 0.035867, RegL: 0.069319
+Epoch: 1, Step: 71, Lr: 0.000100, TL: 0.033917, LdmkL: 0.038692, EyeL: 0.033906, RegL: 0.071033
+Epoch: 1, Step: 72, Lr: 0.000100, TL: 0.034706, LdmkL: 0.037940, EyeL: 0.034695, RegL: 0.073030
+Epoch: 1, Step: 73, Lr: 0.000100, TL: 0.034354, LdmkL: 0.036756, EyeL: 0.034343, RegL: 0.076245
+Epoch: 1, Step: 74, Lr: 0.000100, TL: 0.032524, LdmkL: 0.036635, EyeL: 0.032512, RegL: 0.079338
+Epoch: 1, Step: 75, Lr: 0.000100, TL: 0.033015, LdmkL: 0.037913, EyeL: 0.033003, RegL: 0.083550
+Epoch: 1, Step: 76, Lr: 0.000100, TL: 0.032505, LdmkL: 0.037050, EyeL: 0.032493, RegL: 0.085702
+Epoch: 1, Step: 77, Lr: 0.000100, TL: 0.030101, LdmkL: 0.034959, EyeL: 0.030089, RegL: 0.088775
+Epoch: 1, Step: 78, Lr: 0.000100, TL: 0.030491, LdmkL: 0.034986, EyeL: 0.030478, RegL: 0.092104
+Epoch: 1, Step: 79, Lr: 0.000100, TL: 0.031459, LdmkL: 0.037241, EyeL: 0.031446, RegL: 0.096053
+Epoch: 1, Step: 80, Lr: 0.000100, TL: 0.031834, LdmkL: 0.038506, EyeL: 0.031820, RegL: 0.101660
+Epoch: 1, Step: 81, Lr: 0.000100, TL: 0.033034, LdmkL: 0.038577, EyeL: 0.033019, RegL: 0.108720
+Epoch: 1, Step: 82, Lr: 0.000100, TL: 0.028374, LdmkL: 0.032519, EyeL: 0.028360, RegL: 0.111333
+Epoch: 1, Step: 83, Lr: 0.000100, TL: 0.029324, LdmkL: 0.033895, EyeL: 0.029309, RegL: 0.116865
+Epoch: 1, Step: 84, Lr: 0.000100, TL: 0.035940, LdmkL: 0.038924, EyeL: 0.035924, RegL: 0.122633
+Epoch: 1, Step: 85, Lr: 0.000100, TL: 0.028787, LdmkL: 0.034818, EyeL: 0.028770, RegL: 0.126921
+Epoch: 1, Step: 86, Lr: 0.000100, TL: 0.028297, LdmkL: 0.036636, EyeL: 0.028280, RegL: 0.132830
+Epoch: 1, Step: 87, Lr: 0.000100, TL: 0.032891, LdmkL: 0.045700, EyeL: 0.032873, RegL: 0.137499
+Epoch: 1, Step: 88, Lr: 0.000100, TL: 0.033114, LdmkL: 0.044078, EyeL: 0.033095, RegL: 0.144361
+Epoch: 1, Step: 89, Lr: 0.000100, TL: 0.030412, LdmkL: 0.037513, EyeL: 0.030393, RegL: 0.148438
+Epoch: 1, Step: 90, Lr: 0.000100, TL: 0.029217, LdmkL: 0.031936, EyeL: 0.029198, RegL: 0.156085
+Epoch: 1, Step: 91, Lr: 0.000100, TL: 0.027181, LdmkL: 0.032155, EyeL: 0.027162, RegL: 0.165989
+Epoch: 1, Step: 92, Lr: 0.000100, TL: 0.032100, LdmkL: 0.031834, EyeL: 0.032080, RegL: 0.168982
+Epoch: 1, Step: 93, Lr: 0.000100, TL: 0.027409, LdmkL: 0.034497, EyeL: 0.027388, RegL: 0.173683
+Epoch: 1, Step: 94, Lr: 0.000100, TL: 0.027741, LdmkL: 0.039283, EyeL: 0.027718, RegL: 0.182889
+Epoch: 1, Step: 95, Lr: 0.000100, TL: 0.027562, LdmkL: 0.053911, EyeL: 0.027538, RegL: 0.192663
+Epoch: 1, Step: 96, Lr: 0.000100, TL: 0.056776, LdmkL: 0.061501, EyeL: 0.056750, RegL: 0.196631
+Epoch: 1, Step: 97, Lr: 0.000100, TL: 0.033229, LdmkL: 0.038886, EyeL: 0.033204, RegL: 0.209220
+Epoch: 1, Step: 98, Lr: 0.000100, TL: 0.036628, LdmkL: 0.039666, EyeL: 0.036603, RegL: 0.212130
+Epoch: 1, Step: 99, Lr: 0.000100, TL: 0.039573, LdmkL: 0.051801, EyeL: 0.039546, RegL: 0.219013
+Epoch: 1, Step: 100, Lr: 0.000100, TL: 0.054102, LdmkL: 0.048503, EyeL: 0.054076, RegL: 0.217400
+Epoch: 1, Step: 101, Lr: 0.000100, TL: 0.032073, LdmkL: 0.031112, EyeL: 0.032048, RegL: 0.219144
+Epoch: 1, Step: 102, Lr: 0.000100, TL: 0.032377, LdmkL: 0.039993, EyeL: 0.032352, RegL: 0.212690
+Epoch: 1, Step: 103, Lr: 0.000100, TL: 0.043800, LdmkL: 0.055885, EyeL: 0.043773, RegL: 0.210547
+Epoch: 1, Step: 104, Lr: 0.000100, TL: 0.046690, LdmkL: 0.060602, EyeL: 0.046663, RegL: 0.203626
+Epoch: 1, Step: 105, Lr: 0.000100, TL: 0.052451, LdmkL: 0.053927, EyeL: 0.052426, RegL: 0.201286
+Epoch: 1, Step: 106, Lr: 0.000100, TL: 0.034861, LdmkL: 0.039901, EyeL: 0.034838, RegL: 0.187159
+Epoch: 1, Step: 107, Lr: 0.000100, TL: 0.032464, LdmkL: 0.035337, EyeL: 0.032443, RegL: 0.176642
+Epoch: 1, Step: 108, Lr: 0.000100, TL: 0.031977, LdmkL: 0.035312, EyeL: 0.031957, RegL: 0.167888
+Epoch: 1, Step: 109, Lr: 0.000100, TL: 0.032905, LdmkL: 0.036972, EyeL: 0.032885, RegL: 0.165230
+Epoch: 1, Step: 110, Lr: 0.000100, TL: 0.034330, LdmkL: 0.038857, EyeL: 0.034311, RegL: 0.160744
+Epoch: 1, Step: 111, Lr: 0.000100, TL: 0.032176, LdmkL: 0.038770, EyeL: 0.032158, RegL: 0.145067
+Epoch: 1, Step: 112, Lr: 0.000100, TL: 0.036796, LdmkL: 0.039851, EyeL: 0.036776, RegL: 0.151220
+Epoch: 1, Step: 113, Lr: 0.000100, TL: 0.033384, LdmkL: 0.039461, EyeL: 0.033366, RegL: 0.136637
+Epoch: 1, Step: 114, Lr: 0.000100, TL: 0.037955, LdmkL: 0.039056, EyeL: 0.037937, RegL: 0.140406
+Epoch: 1, Step: 115, Lr: 0.000100, TL: 0.033027, LdmkL: 0.037522, EyeL: 0.033011, RegL: 0.129263
+Epoch: 1, Step: 116, Lr: 0.000100, TL: 0.033084, LdmkL: 0.037408, EyeL: 0.033067, RegL: 0.135303
+Epoch: 1, Step: 117, Lr: 0.000100, TL: 0.033604, LdmkL: 0.036866, EyeL: 0.033588, RegL: 0.130503
+Epoch: 1, Step: 118, Lr: 0.000100, TL: 0.033574, LdmkL: 0.037099, EyeL: 0.033558, RegL: 0.122789
+Epoch: 1, Step: 119, Lr: 0.000100, TL: 0.032771, LdmkL: 0.036755, EyeL: 0.032754, RegL: 0.130779
+Epoch: 1, Step: 120, Lr: 0.000100, TL: 0.033364, LdmkL: 0.036283, EyeL: 0.033346, RegL: 0.143425
+Epoch: 1, Step: 121, Lr: 0.000100, TL: 0.032878, LdmkL: 0.036560, EyeL: 0.032860, RegL: 0.136854
+Epoch: 1, Step: 122, Lr: 0.000100, TL: 0.032311, LdmkL: 0.037194, EyeL: 0.032293, RegL: 0.135514
+Epoch: 1, Step: 123, Lr: 0.000100, TL: 0.032661, LdmkL: 0.037746, EyeL: 0.032643, RegL: 0.135763
+Epoch: 1, Step: 124, Lr: 0.000100, TL: 0.032410, LdmkL: 0.037911, EyeL: 0.032393, RegL: 0.140110
+Epoch: 1, Step: 125, Lr: 0.000100, TL: 0.032605, LdmkL: 0.037450, EyeL: 0.032587, RegL: 0.146302
+Epoch: 1, Step: 126, Lr: 0.000100, TL: 0.032578, LdmkL: 0.037787, EyeL: 0.032560, RegL: 0.141779
+Epoch: 1, Step: 127, Lr: 0.000100, TL: 0.032335, LdmkL: 0.037280, EyeL: 0.032315, RegL: 0.158139
+Epoch: 1, Step: 128, Lr: 0.000100, TL: 0.031904, LdmkL: 0.037026, EyeL: 0.031885, RegL: 0.152155
+Epoch: 1, Step: 129, Lr: 0.000100, TL: 0.030587, LdmkL: 0.036333, EyeL: 0.030566, RegL: 0.168395
+Epoch: 1, Step: 130, Lr: 0.000100, TL: 0.030620, LdmkL: 0.035354, EyeL: 0.030600, RegL: 0.169119
+Epoch: 1, Step: 131, Lr: 0.000100, TL: 0.030479, LdmkL: 0.034528, EyeL: 0.030457, RegL: 0.187151
+Epoch: 1, Step: 132, Lr: 0.000100, TL: 0.031098, LdmkL: 0.033881, EyeL: 0.031075, RegL: 0.191089
+Epoch: 1, Step: 133, Lr: 0.000100, TL: 0.029384, LdmkL: 0.033272, EyeL: 0.029360, RegL: 0.204784
+Epoch: 1, Step: 134, Lr: 0.000100, TL: 0.029953, LdmkL: 0.032629, EyeL: 0.029928, RegL: 0.218141
+Epoch: 1, Step: 135, Lr: 0.000100, TL: 0.029719, LdmkL: 0.032232, EyeL: 0.029694, RegL: 0.211388
+Epoch: 1, Step: 136, Lr: 0.000100, TL: 0.028905, LdmkL: 0.032017, EyeL: 0.028880, RegL: 0.218739
+Epoch: 1, Step: 137, Lr: 0.000100, TL: 0.028119, LdmkL: 0.030941, EyeL: 0.028092, RegL: 0.238835
+Epoch: 1, Step: 138, Lr: 0.000100, TL: 0.028787, LdmkL: 0.030864, EyeL: 0.028760, RegL: 0.238232
+Epoch: 1, Step: 139, Lr: 0.000100, TL: 0.027926, LdmkL: 0.030255, EyeL: 0.027898, RegL: 0.248989
+Epoch: 1, Step: 140, Lr: 0.000100, TL: 0.026144, LdmkL: 0.029518, EyeL: 0.026114, RegL: 0.269134
+Epoch: 1, Step: 141, Lr: 0.000100, TL: 0.026548, LdmkL: 0.028726, EyeL: 0.026516, RegL: 0.293832
+Epoch: 1, Step: 142, Lr: 0.000100, TL: 0.026008, LdmkL: 0.028605, EyeL: 0.025975, RegL: 0.300581
+Epoch: 1, Step: 143, Lr: 0.000100, TL: 0.025560, LdmkL: 0.028227, EyeL: 0.025525, RegL: 0.324634
+Epoch: 1, Step: 144, Lr: 0.000100, TL: 0.024959, LdmkL: 0.028277, EyeL: 0.024924, RegL: 0.325494
+Epoch: 1, Step: 145, Lr: 0.000100, TL: 0.024680, LdmkL: 0.027794, EyeL: 0.024643, RegL: 0.341551
+Epoch: 1, Step: 146, Lr: 0.000100, TL: 0.024403, LdmkL: 0.026638, EyeL: 0.024362, RegL: 0.381109
+Epoch: 1, Step: 147, Lr: 0.000100, TL: 0.023238, LdmkL: 0.026145, EyeL: 0.023194, RegL: 0.412333
+Epoch: 1, Step: 148, Lr: 0.000100, TL: 0.023573, LdmkL: 0.025589, EyeL: 0.023529, RegL: 0.414059
+Epoch: 1, Step: 149, Lr: 0.000100, TL: 0.020909, LdmkL: 0.024323, EyeL: 0.020860, RegL: 0.460360
+Epoch: 1, Step: 150, Lr: 0.000100, TL: 0.020566, LdmkL: 0.024069, EyeL: 0.020516, RegL: 0.477073
+Epoch: 1, Step: 151, Lr: 0.000100, TL: 0.022546, LdmkL: 0.024161, EyeL: 0.022491, RegL: 0.519792
+Epoch: 1, Step: 152, Lr: 0.000100, TL: 0.020909, LdmkL: 0.023127, EyeL: 0.020852, RegL: 0.547422
+Epoch: 1, Step: 153, Lr: 0.000100, TL: 0.021409, LdmkL: 0.022736, EyeL: 0.021349, RegL: 0.578079
+Epoch: 1, Step: 154, Lr: 0.000100, TL: 0.018679, LdmkL: 0.022519, EyeL: 0.018614, RegL: 0.623576
+Epoch: 1, Step: 155, Lr: 0.000100, TL: 0.020158, LdmkL: 0.021730, EyeL: 0.020088, RegL: 0.677786
+Epoch: 1, Step: 156, Lr: 0.000100, TL: 0.020093, LdmkL: 0.021432, EyeL: 0.020020, RegL: 0.718079
+Epoch: 1, Step: 157, Lr: 0.000100, TL: 0.019567, LdmkL: 0.021106, EyeL: 0.019489, RegL: 0.757917
+Epoch: 1, Step: 158, Lr: 0.000100, TL: 0.017788, LdmkL: 0.020405, EyeL: 0.017706, RegL: 0.802117
+Epoch: 1, Step: 159, Lr: 0.000100, TL: 0.018177, LdmkL: 0.020918, EyeL: 0.018088, RegL: 0.869204
+Epoch: 1, Step: 160, Lr: 0.000100, TL: 0.016458, LdmkL: 0.018842, EyeL: 0.016366, RegL: 0.903383
+Epoch: 1, Step: 161, Lr: 0.000100, TL: 0.017647, LdmkL: 0.018800, EyeL: 0.017547, RegL: 0.973216
+Epoch: 1, Step: 162, Lr: 0.000100, TL: 0.015463, LdmkL: 0.019210, EyeL: 0.015359, RegL: 1.023903
+Epoch: 1, Step: 163, Lr: 0.000100, TL: 0.020756, LdmkL: 0.024169, EyeL: 0.020645, RegL: 1.083093
+Epoch: 1, Step: 164, Lr: 0.000100, TL: 0.013943, LdmkL: 0.019439, EyeL: 0.013825, RegL: 1.157178
+Epoch: 1, Step: 165, Lr: 0.000100, TL: 0.025135, LdmkL: 0.026378, EyeL: 0.025014, RegL: 1.190285
+Epoch: 1, Step: 166, Lr: 0.000100, TL: 0.013316, LdmkL: 0.017305, EyeL: 0.013192, RegL: 1.220293
+Epoch: 1, Step: 167, Lr: 0.000100, TL: 0.018845, LdmkL: 0.019312, EyeL: 0.018716, RegL: 1.267972
+Epoch: 1, Step: 168, Lr: 0.000100, TL: 0.017706, LdmkL: 0.020614, EyeL: 0.017573, RegL: 1.306998
+Epoch: 1, Step: 169, Lr: 0.000100, TL: 0.019739, LdmkL: 0.019311, EyeL: 0.019603, RegL: 1.347513
+Epoch: 1, Step: 170, Lr: 0.000100, TL: 0.017173, LdmkL: 0.022079, EyeL: 0.017032, RegL: 1.385855
+Epoch: 1, Step: 171, Lr: 0.000100, TL: 0.018188, LdmkL: 0.025859, EyeL: 0.018041, RegL: 1.436976
+Epoch: 1, Step: 172, Lr: 0.000100, TL: 0.013445, LdmkL: 0.017706, EyeL: 0.013292, RegL: 1.505439
+Epoch: 1, Step: 173, Lr: 0.000100, TL: 0.015261, LdmkL: 0.023676, EyeL: 0.015105, RegL: 1.536632
+Epoch: 1, Step: 174, Lr: 0.000100, TL: 0.014247, LdmkL: 0.021022, EyeL: 0.014087, RegL: 1.581134
+Epoch: 1, Step: 175, Lr: 0.000100, TL: 0.016413, LdmkL: 0.018639, EyeL: 0.016247, RegL: 1.646310
+Epoch: 1, Step: 176, Lr: 0.000100, TL: 0.026874, LdmkL: 0.033610, EyeL: 0.026701, RegL: 1.696007
+Epoch: 1, Step: 177, Lr: 0.000100, TL: 0.025689, LdmkL: 0.023585, EyeL: 0.025513, RegL: 1.729901
+Epoch: 1, Step: 178, Lr: 0.000100, TL: 0.023536, LdmkL: 0.035260, EyeL: 0.023356, RegL: 1.761770
+Epoch: 1, Step: 179, Lr: 0.000100, TL: 0.037608, LdmkL: 0.052470, EyeL: 0.037423, RegL: 1.798676
+Epoch: 1, Step: 180, Lr: 0.000100, TL: 0.015971, LdmkL: 0.020400, EyeL: 0.015789, RegL: 1.797665
+Epoch: 1, Step: 181, Lr: 0.000100, TL: 0.024569, LdmkL: 0.030159, EyeL: 0.024383, RegL: 1.834350
+Epoch: 1, Step: 182, Lr: 0.000100, TL: 0.035395, LdmkL: 0.033213, EyeL: 0.035210, RegL: 1.811295
+Epoch: 1, Step: 183, Lr: 0.000100, TL: 0.024419, LdmkL: 0.024659, EyeL: 0.024232, RegL: 1.836783
+Epoch: 1, Step: 184, Lr: 0.000100, TL: 0.021560, LdmkL: 0.027612, EyeL: 0.021378, RegL: 1.785438
+Epoch: 1, Step: 185, Lr: 0.000100, TL: 0.018678, LdmkL: 0.025165, EyeL: 0.018496, RegL: 1.797689
+Epoch: 1, Step: 186, Lr: 0.000100, TL: 0.022906, LdmkL: 0.020619, EyeL: 0.022725, RegL: 1.793907
+Epoch: 1, Step: 187, Lr: 0.000100, TL: 0.015650, LdmkL: 0.018064, EyeL: 0.015470, RegL: 1.785324
+Epoch: 1, Step: 188, Lr: 0.000100, TL: 0.022235, LdmkL: 0.027322, EyeL: 0.022050, RegL: 1.815274
+Epoch: 1, Step: 189, Lr: 0.000100, TL: 0.030973, LdmkL: 0.031110, EyeL: 0.030791, RegL: 1.789780
+Epoch: 1, Step: 190, Lr: 0.000100, TL: 0.014983, LdmkL: 0.017230, EyeL: 0.014801, RegL: 1.794184
+Epoch: 1, Step: 191, Lr: 0.000100, TL: 0.016434, LdmkL: 0.021803, EyeL: 0.016249, RegL: 1.820736
+Epoch: 1, Step: 192, Lr: 0.000100, TL: 0.028834, LdmkL: 0.037316, EyeL: 0.028643, RegL: 1.874644
+Epoch: 1, Step: 193, Lr: 0.000100, TL: 0.024516, LdmkL: 0.029567, EyeL: 0.024326, RegL: 1.866447
+Epoch: 1, Step: 194, Lr: 0.000100, TL: 0.015923, LdmkL: 0.017805, EyeL: 0.015738, RegL: 1.832177
+Epoch: 1, Step: 195, Lr: 0.000100, TL: 0.018783, LdmkL: 0.020715, EyeL: 0.018594, RegL: 1.870420
+Epoch: 1, Step: 196, Lr: 0.000100, TL: 0.019426, LdmkL: 0.026802, EyeL: 0.019228, RegL: 1.951539
+Epoch: 1, Step: 197, Lr: 0.000100, TL: 0.023452, LdmkL: 0.024561, EyeL: 0.023258, RegL: 1.914255
+Epoch: 1, Step: 198, Lr: 0.000100, TL: 0.015164, LdmkL: 0.017698, EyeL: 0.014971, RegL: 1.910223
+Epoch: 1, Step: 199, Lr: 0.000100, TL: 0.016836, LdmkL: 0.018341, EyeL: 0.016637, RegL: 1.974339
+Traceback (most recent call last):
+  File "main.py", line 60, in <module>
+    main()
+  File "main.py", line 49, in main
+    agent.trainval()
+  File "/mnt/lustre/wuxingzhe/DECA_Pytorch/decalib/deca_solver.py", line 249, in trainval
+    self.train(epoch)
+  File "/mnt/lustre/wuxingzhe/DECA_Pytorch/decalib/deca_solver.py", line 178, in train
+    self.validate(epoch, half_epoch=True)
+  File "/mnt/lustre/wuxingzhe/anaconda3.5.1/envs/deca/lib/python3.8/site-packages/torch/autograd/grad_mode.py", line 49, in decorate_no_grad
+    return func(*args, **kwargs)
+  File "/mnt/lustre/wuxingzhe/DECA_Pytorch/decalib/deca_solver.py", line 269, in validate
+    texture_j = util.tensor2image(output['albedo'][j,:,:,:].cpu().numpy())
+  File "/mnt/lustre/wuxingzhe/DECA_Pytorch/decalib/utils/util.py", line 483, in tensor2image
+    image = tensor.detach().cpu().numpy()
+AttributeError: 'numpy.ndarray' object has no attribute 'detach'
+srun: error: SH-IDC1-10-5-37-52: task 0: Exited with exit code 1

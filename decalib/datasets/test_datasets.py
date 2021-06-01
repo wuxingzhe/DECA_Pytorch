@@ -102,7 +102,7 @@ class QualitativeTestData(Dataset):
         # kpts_gt = np.load(os.path.join(root_path, self.kpts_gt_dir, imagename[:-3]+'npy'))
         # seg_mask = np.load(os.path.join(root_path, self.seg_masks_dir, imagename[:-3]+'npy'))
 
-        image = np.array(imread(imagepath))
+        image = cv2.imread(imagepath)
         if len(image.shape) == 2:
             image = image[:,:,None].repeat(1,1,3)
         if len(image.shape) == 3 and image.shape[2] > 3:
@@ -156,7 +156,7 @@ class QualitativeTestData(Dataset):
         return {'image': torch.tensor(dst_image).float(),
                 'imagename': imagepath,
                 # 'kpts_gt': torch.tensor(kpts_gt).float(),
-                E 'seg_mask': torch.tensor(seg_mask).float(),
+                # 'seg_mask': torch.tensor(seg_mask).float(),
                 # 'tform': tform,
                 # 'original_image': torch.tensor(image.transpose(2,0,1)).float(),
                 }

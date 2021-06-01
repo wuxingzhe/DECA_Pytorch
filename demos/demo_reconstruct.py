@@ -42,7 +42,10 @@ def main(args):
 
     # run DECA
     deca_cfg.model.use_tex = args.useTex
-    deca = DECA(config = deca_cfg, device=device)
+    if args.model_path != '':
+        deca_cfg.pretrained_modelpath = args.model_path
+    
+    deca = DECA(config = deca_cfg, device=device, eval_detail = False)
     # for i in range(len(testdata)):
     for i, sample in enumerate(test_data_loader):
         names = sample['imagename']
@@ -86,6 +89,8 @@ if __name__ == '__main__':
                         help='path to the test data, can be image folder, image path, image list, video')
     parser.add_argument('-s', '--savefolder', default='TestSamples/examples/results', type=str,
                         help='path to the output directory, where results(obj, txt files) will be stored.')
+    parser.add_argument('-m', '--model_path', default='', type=str,
+                        help='path to the trained model')
     parser.add_argument('--device', default='cuda', type=str,
                         help='set device, cpu for using cpu' )
     # process test images

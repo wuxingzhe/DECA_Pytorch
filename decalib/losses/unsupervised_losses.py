@@ -1,9 +1,14 @@
 import os, sys
 import torch
+import torch.nn.functional as F
+import numpy as np
+from skimage.io import imread
+import pickle 
+import cv2
 
-from .models.arcfacenet_ori import SEResNet_IR_ori_224
-from .utils.renderer import SRenderY
-from .utils import util
+from models.arcfacenet_ori import SEResNet_IR_ori_224
+from utils.renderer import SRenderY
+from utils import util
 
 class UnsupervisedLosses(object):
     def  __init__(self, config, device):
@@ -11,19 +16,19 @@ class UnsupervisedLosses(object):
         self.device = device
         self.image_size = self.config.dataset.image_size
         # ldmk supervision config
-        self.ldmk_weights = np.load(self.config.train_params.ldmk_weights_file)
+        self.ldmk_weights = torch.from_numpy(np.load(self.config.train_params.ldmk_weights_file))[None,:,:].to(self.device)
         self.eye_closure_ldmk_idx = np.load(self.config.train_params.eye_closure_ldmk_idx_file)
 
         # identity recog network
-        self.recog_network = SEResNet_IR_ori_224(50, feature_dim=self.config.recog_params.feature_dim, \
-            mode='ir', drop_ratio=self.config.recog_params.drop_ratio)
-        self.recog_network.load_state_dict(torch.load(self.config.pretrained_model.recog_network))
+        self.recog_network = SEResNet_IR_ori_224(50, feature_dim=self.config.recog_params.feature_dim, mode='ir')
+        self.recog_network.load_state_dict(torch.load(self.config.pretrained_model.recog_network)['net_state_dict'])
         print('load recog model: ' + \
                     self.config.pretrained_model.recog_network)
         if len(self.config.gpus.split(',')) > 1:
-            self.recog_network = DataParallel(self.recog_network).to(self.device)
+            self.recog_network = torch.nn.DataParallel(self.recog_network).to(self.device)
         else:
             self.recog_network = self.recog_network.to(self.device)
+        self.recog_network.eval()
 
         # render 
         self._setup_renderer(self.config.model)
@@ -51,28 +56,29 @@ class UnsupervisedLosses(object):
             return torch.mean(self.ldmk_weights * torch.abs(ldmks_pred-ldmks_gt))
 
     def landmarks_eye_closure_loss(self, ldmks_gt, ldmks_pred, norm_type = 'mse'):
-        sub_gt = ldmks_gt[self.eye_closure_ldmk_idx[0,:],:] - ldmks_gt[self.eye_closure_ldmk_idx[1,:],:]
-        sub_pred = ldmks_pred[self.eye_closure_ldmk_idx[0,:],:] - ldmks_gt[self.eye_closure_ldmk_idx[1,:],:]
+        sub_gt = ldmks_gt[:,self.eye_closure_ldmk_idx[0,:],:] - ldmks_gt[:,self.eye_closure_ldmk_idx[1,:],:]
+        sub_pred = ldmks_pred[:,self.eye_closure_ldmk_idx[0,:],:] - ldmks_pred[:,self.eye_closure_ldmk_idx[1,:],:]
 
         if norm_type == 'mse':
             return torch.mean((sub_gt - sub_pred) ** 2)
         elif norm_type == 'l1':
             return torch.mean(torch.abs(sub_gt - sub_pred))
 
-    def photometric_loss(self, imgs_input, lights, output, skin_seg_res, norm_type = 'mse'):
+    def photometric_loss(self, imgs_input, output, lights, skin_seg_res, norm_type = 'mse'):
         ops = self.render(output['verts'], output['trans_verts'], output['albedo'], lights)
         imgs_render = ops['images']
-        imgs_render /= 255.0
+        imgs_render = imgs_render[:,[2,1,0],:,:]
+        # imgs_render /= 255.0
         if norm_type == 'mse':
             loss_photometric = torch.mean(skin_seg_res * (imgs_input - imgs_render) ** 2)
         elif norm_type == 'l1':
             loss_photometric = torch.mean(skin_seg_res * torch.abs(imgs_input - imgs_render))
 
-        return loss_photometric
+        return loss_photometric, imgs_render
 
     def identity_loss(self, imgs_input, imgs_render):
-        embs_input = self.recog_network(imgs_input)
-        embs_render = self.recog_network(imgs_render)
+        embs_input, _  = self.recog_network(imgs_input)
+        embs_render, _ = self.recog_network(imgs_render)
 
         dot = torch.sum(embs_render * embs_input, 1)
         norm = torch.norm(embs_input, dim=1) * torch.norm(embs_render, dim=1)

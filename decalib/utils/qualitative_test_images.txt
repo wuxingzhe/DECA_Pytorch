@@ -1,0 +1,9 @@
+/mnt/lustre/wuxingzhe/DECA_Pytorch/TestSamples/examples/image03786.png
+/mnt/lustre/wuxingzhe/DECA_Pytorch/TestSamples/examples/image02673.png
+/mnt/lustre/wuxingzhe/DECA_Pytorch/TestSamples/examples/alfw1.png
+/mnt/lustre/wuxingzhe/DECA_Pytorch/TestSamples/examples/alfw2.png
+/mnt/lustre/wuxingzhe/DECA_Pytorch/TestSamples/examples/id08392-DGGTJx470Ag-005451_inputs_inputs.jpg
+/mnt/lustre/wuxingzhe/DECA_Pytorch/TestSamples/examples/id06692-Hlahj5abifM-002721_inputs_inputs.jpg
+/mnt/lustre/wuxingzhe/DECA_Pytorch/TestSamples/examples/id08456-SEvpX9LhEP4-000957_inputs_inputs.jpg
+/mnt/lustre/wuxingzhe/DECA_Pytorch/TestSamples/examples/IMG_0392_inputs.jpg
+/mnt/lustre/wuxingzhe/DECA_Pytorch/TestSamples/examples/id04657-PPHljWCZ53c-000565_inputs_inputs.jpg

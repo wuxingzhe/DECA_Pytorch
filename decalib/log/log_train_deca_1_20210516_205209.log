@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "main.py", line 5, in <module>
+    from deca_solver import deca_solver
+  File "/mnt/lustre/wuxingzhe/DECA_Pytorch/decalib/deca_solver.py", line 192
+    + self.config.train_params.eye_closure_loss_factors[0] * loss_eye_closure
+    ^
+IndentationError: unexpected indent
+srun: error: SH-IDC1-10-5-37-43: task 0: Exited with exit code 1

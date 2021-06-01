@@ -1,0 +1,622 @@
+{'common': {'eval_train': True},
+ 'config': 'configs/exp6.yaml',
+ 'convert': False,
+ 'convert_nart': False,
+ 'count_op': False,
+ 'dataset': {'image_size': 224, 'uv_size': 256},
+ 'eval_train': True,
+ 'evaluate': False,
+ 'gpus': '0,1',
+ 'image_path': None,
+ 'model': {'dense_template_path': '../data/texture_data_256.npy',
+           'face_eye_mask_path': '../data/uv_face_eye_mask.png',
+           'face_mask_path': '../data/uv_face_mask.png',
+           'fixed_displacement_path': '../data/fixed_displacement_256.npy',
+           'flame_lmk_embedding_path': '../data/landmark_embedding.npy',
+           'flame_model_path': '../data/generic_model.pkl',
+           'jaw_type': 'aa',
+           'max_z': 0.01,
+           'mean_tex_path': '../data/mean_texture.jpg',
+           'n_cam': 3,
+           'n_detail': 128,
+           'n_exp': 50,
+           'n_light': 27,
+           'n_pose': 6,
+           'n_shape': 100,
+           'n_tex': 50,
+           'param_list': ['shape', 'tex', 'exp', 'pose', 'cam', 'light'],
+           'tex_path': '../data/FLAME_albedo_from_BFM.npz',
+           'tex_type': 'BFM',
+           'topology_path': '../data/head_template.obj',
+           'useTex': True,
+           'use_tex': True,
+           'uv_size': 256},
+ 'output_path': None,
+ 'pretrained_model': {'fixed_model': '../data/deca_model.tar',
+                      'recog_network': 'net-data/Iter_007000_net.ckpt'},
+ 'recog_params': {'feature_dim': 512},
+ 'save_dict_path': 'snapshot/',
+ 'save_mesh_path': 'results/',
+ 'test': False,
+ 'test_params': {'batch_size': 3,
+                 'crop_size': 224,
+                 'iscrop': False,
+                 'qualitative_test_list': 'utils/qualitative_test_images.txt',
+                 'scale': 1.0,
+                 'works': 1},
+ 'train_coarse': True,
+ 'train_detail': False,
+ 'train_params': {'batch_sizes': [64, 32],
+                  'crop_size': 224,
+                  'epoch_phase': 0,
+                  'eye_closure_ldmk_idx_file': '../data/ldmk_eye_closure_idx.npy',
+                  'eye_closure_loss_factors': [1.0, 1.0],
+                  'identity_loss_factor': 0.2,
+                  'iscrop': False,
+                  'kpts_gt_dir': 'ldmk_gt',
+                  'ldmk_loss_factors': [0.0001, 1.0],
+                  'ldmk_weights_file': '../data/ldmk_weights.npy',
+                  'norm_type_eye_closure': 'mse',
+                  'norm_type_ldmk': 'mse',
+                  'norm_type_photometric': 'mse',
+                  'norm_type_reg': 'mse',
+                  'optimizer': {'kwargs': {'lr': 0.0001,
+                                           'weight_decay': 0.0005},
+                                'type': 'Adam'},
+                  'person_num_in_batch': 8,
+                  'person_size': 250000,
+                  'photometric_loss_factor': 2.0,
+                  'regular_loss_factors': [0.0001, 0.0001],
+                  'scale': 1.0,
+                  'scheduler': {'epochs': 4,
+                                'gamma': 0.5,
+                                'milestones': [5, 10]},
+                  'seg_masks_dir': 'face_seg_mask',
+                  'shape_consistency_loss_factor': 1.0,
+                  'size_per_person': 8,
+                  'size_per_person_in_batch': 4,
+                  'train_list': 'utils/train_images.txt',
+                  'train_subject_list': 'utils/train_subject_images.txt',
+                  'workers': 4},
+ 'visualize': False}
+make save path: snapshot/configs/exp6.yaml_20210519_002306
+make result path: results/configs/exp6.yaml_20210519_002306
+fc.weight  not available in reconstructed resnet
+fc.bias  not available in reconstructed resnet
+creating the FLAME Decoder
+total 9 images
+load recog model: net-data/Iter_007000_net.ckpt
+total 2000000 images
+total 250000 persons
+train half iters: 31250.0
+Build the code well for train_coarse
+make save path: snapshot/configs/exp6.yaml_20210519_002338
+make result path: results/configs/exp6.yaml_20210519_002338
+fc.weight  not available in reconstructed resnet
+fc.bias  not available in reconstructed resnet
+creating the FLAME Decoder
+total 9 images
+load recog model: net-data/Iter_007000_net.ckpt
+total 2000000 images
+total 250000 persons
+train half iters: 31250.0
+Build the code well for train_coarse
+Training ..... 
+total 2000000 images
+total 250000 persons
+train half iters: 31250.0
+main.py:39: YAMLLoadWarning: calling yaml.load() without Loader=... is deprecated, as the default Loader is unsafe. Please read https://msg.pyyaml.org/load for full details.
+  config = yaml.load(f)
+/mnt/lustre/wuxingzhe/anaconda3.5.1/envs/deca/lib/python3.8/site-packages/pytorch3d/io/obj_io.py:70: UserWarning: Faces have invalid indices
+  warnings.warn("Faces have invalid indices")
+/mnt/lustre/wuxingzhe/anaconda3.5.1/envs/deca/lib/python3.8/site-packages/pytorch3d/io/obj_io.py:484: UserWarning: Mtl file does not exist: ../data/template.mtl
+  warnings.warn(f"Mtl file does not exist: {f_mtl}")
+/mnt/lustre/wuxingzhe/anaconda3.5.1/envs/deca/lib/python3.8/site-packages/torch/optim/lr_scheduler.py:117: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  warnings.warn("Detected call of `lr_scheduler.step()` before `optimizer.step()`. "
+Epoch: 1, Step: 0, Lr: 0.000100, TL: 0.404645, LdmkL: 0.002404, EyeL: 0.000069, RegL: 0.220467, PhoL: 0.010918, idL: 0.884121, ConL: 0.203489, LdConL: 0.002415, EyeConL: 0.000070, PhoConL: 0.011077, idConL: 0.894245
+Epoch: 1, Step: 1, Lr: 0.000100, TL: 0.392154, LdmkL: 0.002539, EyeL: 0.000053, RegL: 0.214901, PhoL: 0.010948, idL: 0.854079, ConL: 0.196829, LdConL: 0.002556, EyeConL: 0.000052, PhoConL: 0.011057, idConL: 0.860540
+Epoch: 1, Step: 2, Lr: 0.000100, TL: 0.384354, LdmkL: 0.002886, EyeL: 0.000096, RegL: 0.247740, PhoL: 0.012464, idL: 0.807248, ConL: 0.194970, LdConL: 0.002948, EyeConL: 0.000096, PhoConL: 0.012819, idConL: 0.831432
+Epoch: 1, Step: 3, Lr: 0.000100, TL: 0.392985, LdmkL: 0.003170, EyeL: 0.000111, RegL: 0.265285, PhoL: 0.011370, idL: 0.838845, ConL: 0.199169, LdConL: 0.003218, EyeConL: 0.000115, PhoConL: 0.011648, idConL: 0.862706
+Epoch: 1, Step: 4, Lr: 0.000100, TL: 0.339071, LdmkL: 0.001642, EyeL: 0.000074, RegL: 0.278817, PhoL: 0.010303, idL: 0.727035, ConL: 0.171315, LdConL: 0.001655, EyeConL: 0.000076, PhoConL: 0.010511, idConL: 0.742805
+Epoch: 1, Step: 5, Lr: 0.000100, TL: 0.353538, LdmkL: 0.001769, EyeL: 0.000095, RegL: 0.281405, PhoL: 0.011151, idL: 0.753515, ConL: 0.178641, LdConL: 0.001799, EyeConL: 0.000099, PhoConL: 0.011238, idConL: 0.771337
+Epoch: 1, Step: 6, Lr: 0.000100, TL: 0.407931, LdmkL: 0.001149, EyeL: 0.000092, RegL: 0.276758, PhoL: 0.014003, idL: 0.870810, ConL: 0.204494, LdConL: 0.001161, EyeConL: 0.000092, PhoConL: 0.014118, idConL: 0.875021
+Epoch: 1, Step: 7, Lr: 0.000100, TL: 0.401642, LdmkL: 0.001317, EyeL: 0.000086, RegL: 0.274041, PhoL: 0.012337, idL: 0.866214, ConL: 0.202294, LdConL: 0.001319, EyeConL: 0.000088, PhoConL: 0.012533, idConL: 0.879106
+Epoch: 1, Step: 8, Lr: 0.000100, TL: 0.382368, LdmkL: 0.001599, EyeL: 0.000090, RegL: 0.255167, PhoL: 0.009559, idL: 0.838334, ConL: 0.193868, LdConL: 0.001640, EyeConL: 0.000091, PhoConL: 0.009730, idConL: 0.863378
+Epoch: 1, Step: 9, Lr: 0.000100, TL: 0.404844, LdmkL: 0.002053, EyeL: 0.000068, RegL: 0.260506, PhoL: 0.010446, idL: 0.890475, ConL: 0.203710, LdConL: 0.002082, EyeConL: 0.000068, PhoConL: 0.010576, idConL: 0.902037
+Epoch: 1, Step: 10, Lr: 0.000100, TL: 0.366810, LdmkL: 0.002143, EyeL: 0.000067, RegL: 0.259557, PhoL: 0.008263, idL: 0.821360, ConL: 0.183777, LdConL: 0.002145, EyeConL: 0.000066, PhoConL: 0.008326, idConL: 0.824565
+Epoch: 1, Step: 11, Lr: 0.000100, TL: 0.372336, LdmkL: 0.001999, EyeL: 0.000052, RegL: 0.230072, PhoL: 0.008778, idL: 0.823566, ConL: 0.187994, LdConL: 0.002031, EyeConL: 0.000054, PhoConL: 0.008983, idConL: 0.839712
+Epoch: 1, Step: 12, Lr: 0.000100, TL: 0.376959, LdmkL: 0.001923, EyeL: 0.000096, RegL: 0.265927, PhoL: 0.009849, idL: 0.826789, ConL: 0.189857, LdConL: 0.001938, EyeConL: 0.000097, PhoConL: 0.009919, idConL: 0.839926
+Epoch: 1, Step: 13, Lr: 0.000100, TL: 0.375557, LdmkL: 0.001579, EyeL: 0.000095, RegL: 0.267927, PhoL: 0.009554, idL: 0.828587, ConL: 0.189030, LdConL: 0.001600, EyeConL: 0.000096, PhoConL: 0.009689, idConL: 0.839778
+Epoch: 1, Step: 14, Lr: 0.000100, TL: 0.402850, LdmkL: 0.002656, EyeL: 0.000098, RegL: 0.283365, PhoL: 0.011990, idL: 0.867457, ConL: 0.202598, LdConL: 0.002641, EyeConL: 0.000098, PhoConL: 0.012040, idConL: 0.878900
+Epoch: 1, Step: 15, Lr: 0.000100, TL: 0.405431, LdmkL: 0.002531, EyeL: 0.000088, RegL: 0.261035, PhoL: 0.010641, idL: 0.888616, ConL: 0.203780, LdConL: 0.002569, EyeConL: 0.000089, PhoConL: 0.010770, idConL: 0.897909
+Epoch: 1, Step: 16, Lr: 0.000100, TL: 0.367784, LdmkL: 0.001321, EyeL: 0.000084, RegL: 0.262135, PhoL: 0.008609, idL: 0.818808, ConL: 0.185373, LdConL: 0.001334, EyeConL: 0.000084, PhoConL: 0.008695, idConL: 0.832821
+Epoch: 1, Step: 17, Lr: 0.000100, TL: 0.356297, LdmkL: 0.000989, EyeL: 0.000068, RegL: 0.298007, PhoL: 0.007729, idL: 0.800903, ConL: 0.179571, LdConL: 0.001006, EyeConL: 0.000069, PhoConL: 0.007787, idConL: 0.814609
+Epoch: 1, Step: 18, Lr: 0.000100, TL: 0.374671, LdmkL: 0.001718, EyeL: 0.000074, RegL: 0.269506, PhoL: 0.009396, idL: 0.825349, ConL: 0.188990, LdConL: 0.001705, EyeConL: 0.000076, PhoConL: 0.009540, idConL: 0.840648
+Epoch: 1, Step: 19, Lr: 0.000100, TL: 0.380346, LdmkL: 0.001468, EyeL: 0.000067, RegL: 0.275470, PhoL: 0.009959, idL: 0.829621, ConL: 0.192941, LdConL: 0.001527, EyeConL: 0.000067, PhoConL: 0.010396, idConL: 0.852770
+Epoch: 1, Step: 20, Lr: 0.000100, TL: 0.371868, LdmkL: 0.001516, EyeL: 0.000082, RegL: 0.274404, PhoL: 0.007735, idL: 0.834289, ConL: 0.187915, LdConL: 0.001532, EyeConL: 0.000085, PhoConL: 0.008011, idConL: 0.851385
+Epoch: 1, Step: 21, Lr: 0.000100, TL: 0.376581, LdmkL: 0.001726, EyeL: 0.000076, RegL: 0.262093, PhoL: 0.007080, idL: 0.851914, ConL: 0.190211, LdConL: 0.001769, EyeConL: 0.000078, PhoConL: 0.007328, idConL: 0.868541
+Epoch: 1, Step: 22, Lr: 0.000100, TL: 0.345946, LdmkL: 0.001359, EyeL: 0.000097, RegL: 0.253540, PhoL: 0.009651, idL: 0.757884, ConL: 0.173586, LdConL: 0.001359, EyeConL: 0.000097, PhoConL: 0.009679, idConL: 0.763858
+Epoch: 1, Step: 23, Lr: 0.000100, TL: 0.353231, LdmkL: 0.001595, EyeL: 0.000085, RegL: 0.266139, PhoL: 0.010594, idL: 0.764656, ConL: 0.177405, LdConL: 0.001626, EyeConL: 0.000086, PhoConL: 0.010675, idConL: 0.771717
+Epoch: 1, Step: 24, Lr: 0.000100, TL: 0.386021, LdmkL: 0.002267, EyeL: 0.000078, RegL: 0.229609, PhoL: 0.010171, idL: 0.840967, ConL: 0.195119, LdConL: 0.002306, EyeConL: 0.000078, PhoConL: 0.010354, idConL: 0.860137
+Epoch: 1, Step: 25, Lr: 0.000100, TL: 0.380101, LdmkL: 0.001891, EyeL: 0.000059, RegL: 0.230335, PhoL: 0.010517, idL: 0.825514, ConL: 0.191991, LdConL: 0.001884, EyeConL: 0.000059, PhoConL: 0.010718, idConL: 0.843057
+Epoch: 1, Step: 26, Lr: 0.000100, TL: 0.390592, LdmkL: 0.001901, EyeL: 0.000077, RegL: 0.221393, PhoL: 0.011198, idL: 0.844779, ConL: 0.197240, LdConL: 0.001908, EyeConL: 0.000077, PhoConL: 0.011394, idConL: 0.862338
+Epoch: 1, Step: 27, Lr: 0.000100, TL: 0.374743, LdmkL: 0.001992, EyeL: 0.000078, RegL: 0.264754, PhoL: 0.010689, idL: 0.813748, ConL: 0.188520, LdConL: 0.002008, EyeConL: 0.000078, PhoConL: 0.010718, idConL: 0.824994
+Epoch: 1, Step: 28, Lr: 0.000100, TL: 0.371090, LdmkL: 0.002109, EyeL: 0.000082, RegL: 0.237373, PhoL: 0.009297, idL: 0.814327, ConL: 0.187416, LdConL: 0.002108, EyeConL: 0.000082, PhoConL: 0.009377, idConL: 0.832362
+Epoch: 1, Step: 29, Lr: 0.000100, TL: 0.372920, LdmkL: 0.002182, EyeL: 0.000085, RegL: 0.252811, PhoL: 0.008780, idL: 0.833104, ConL: 0.186447, LdConL: 0.002182, EyeConL: 0.000085, PhoConL: 0.008780, idConL: 0.833104
+Epoch: 1, Step: 30, Lr: 0.000100, TL: 0.339989, LdmkL: 0.002837, EyeL: 0.000097, RegL: 0.261017, PhoL: 0.008220, idL: 0.742269, ConL: 0.172136, LdConL: 0.002876, EyeConL: 0.000100, PhoConL: 0.008310, idConL: 0.762701
+Epoch: 1, Step: 31, Lr: 0.000100, TL: 0.335632, LdmkL: 0.002339, EyeL: 0.000079, RegL: 0.289290, PhoL: 0.009008, idL: 0.724525, ConL: 0.170264, LdConL: 0.002335, EyeConL: 0.000080, PhoConL: 0.009184, idConL: 0.747409
+Epoch: 1, Step: 32, Lr: 0.000100, TL: 0.382145, LdmkL: 0.001729, EyeL: 0.000084, RegL: 0.256412, PhoL: 0.008821, idL: 0.849756, ConL: 0.192713, LdConL: 0.001753, EyeConL: 0.000086, PhoConL: 0.009004, idConL: 0.864333
+Epoch: 1, Step: 33, Lr: 0.000100, TL: 0.374262, LdmkL: 0.001246, EyeL: 0.000086, RegL: 0.270355, PhoL: 0.008455, idL: 0.838518, ConL: 0.188288, LdConL: 0.001263, EyeConL: 0.000087, PhoConL: 0.008591, idConL: 0.848778
+Epoch: 1, Step: 34, Lr: 0.000100, TL: 0.366038, LdmkL: 0.001500, EyeL: 0.000069, RegL: 0.345463, PhoL: 0.009344, idL: 0.807693, ConL: 0.184208, LdConL: 0.001521, EyeConL: 0.000071, PhoConL: 0.009555, idConL: 0.817526
+Epoch: 1, Step: 35, Lr: 0.000100, TL: 0.382316, LdmkL: 0.001787, EyeL: 0.000050, RegL: 0.315116, PhoL: 0.011237, idL: 0.819478, ConL: 0.194078, LdConL: 0.001770, EyeConL: 0.000050, PhoConL: 0.011670, idConL: 0.844594
+Epoch: 1, Step: 36, Lr: 0.000100, TL: 0.367423, LdmkL: 0.001249, EyeL: 0.000073, RegL: 0.306679, PhoL: 0.009032, idL: 0.809265, ConL: 0.186152, LdConL: 0.001256, EyeConL: 0.000074, PhoConL: 0.009074, idConL: 0.833373
+Epoch: 1, Step: 37, Lr: 0.000100, TL: 0.376790, LdmkL: 0.001028, EyeL: 0.000073, RegL: 0.289568, PhoL: 0.008543, idL: 0.836244, ConL: 0.191324, LdConL: 0.001047, EyeConL: 0.000074, PhoConL: 0.008813, idConL: 0.862885
+Epoch: 1, Step: 38, Lr: 0.000100, TL: 0.361098, LdmkL: 0.001435, EyeL: 0.000066, RegL: 0.314903, PhoL: 0.009134, idL: 0.788943, ConL: 0.183511, LdConL: 0.001430, EyeConL: 0.000066, PhoConL: 0.009487, idConL: 0.815204
+Epoch: 1, Step: 39, Lr: 0.000100, TL: 0.369854, LdmkL: 0.001582, EyeL: 0.000070, RegL: 0.312097, PhoL: 0.009945, idL: 0.800950, ConL: 0.188090, LdConL: 0.001609, EyeConL: 0.000072, PhoConL: 0.010109, idConL: 0.830954
+Epoch: 1, Step: 40, Lr: 0.000100, TL: 0.345301, LdmkL: 0.002465, EyeL: 0.000073, RegL: 0.280814, PhoL: 0.007721, idL: 0.758828, ConL: 0.175528, LdConL: 0.002498, EyeConL: 0.000073, PhoConL: 0.007976, idConL: 0.785022
+Epoch: 1, Step: 41, Lr: 0.000100, TL: 0.337155, LdmkL: 0.002474, EyeL: 0.000086, RegL: 0.270143, PhoL: 0.007397, idL: 0.746738, ConL: 0.170426, LdConL: 0.002485, EyeConL: 0.000087, PhoConL: 0.007472, idConL: 0.764545
+Epoch: 1, Step: 42, Lr: 0.000100, TL: 0.339539, LdmkL: 0.001437, EyeL: 0.000099, RegL: 0.332744, PhoL: 0.008782, idL: 0.751121, ConL: 0.170182, LdConL: 0.001458, EyeConL: 0.000100, PhoConL: 0.008802, idConL: 0.755099
+Epoch: 1, Step: 43, Lr: 0.000100, TL: 0.353872, LdmkL: 0.001430, EyeL: 0.000077, RegL: 0.341727, PhoL: 0.007515, idL: 0.787042, ConL: 0.179892, LdConL: 0.001472, EyeConL: 0.000077, PhoConL: 0.007530, idConL: 0.816417
+Epoch: 1, Step: 44, Lr: 0.000100, TL: 0.330467, LdmkL: 0.001891, EyeL: 0.000126, RegL: 0.317873, PhoL: 0.008642, idL: 0.720172, ConL: 0.167100, LdConL: 0.001900, EyeConL: 0.000127, PhoConL: 0.008653, idConL: 0.738834
+Epoch: 1, Step: 45, Lr: 0.000100, TL: 0.327919, LdmkL: 0.001223, EyeL: 0.000113, RegL: 0.334141, PhoL: 0.008759, idL: 0.716074, ConL: 0.165816, LdConL: 0.001221, EyeConL: 0.000114, PhoConL: 0.008921, idConL: 0.733201
+Epoch: 1, Step: 46, Lr: 0.000100, TL: 0.356447, LdmkL: 0.001829, EyeL: 0.000067, RegL: 0.405816, PhoL: 0.009551, idL: 0.775494, ConL: 0.180310, LdConL: 0.001850, EyeConL: 0.000070, PhoConL: 0.009752, idConL: 0.794430
+Epoch: 1, Step: 47, Lr: 0.000100, TL: 0.353600, LdmkL: 0.001867, EyeL: 0.000089, RegL: 0.378170, PhoL: 0.008681, idL: 0.778143, ConL: 0.178615, LdConL: 0.001866, EyeConL: 0.000089, PhoConL: 0.008660, idConL: 0.796697
+Epoch: 1, Step: 48, Lr: 0.000100, TL: 0.346084, LdmkL: 0.002007, EyeL: 0.000058, RegL: 0.339501, PhoL: 0.007406, idL: 0.774634, ConL: 0.174245, LdConL: 0.001985, EyeConL: 0.000058, PhoConL: 0.007558, idConL: 0.785433
+Epoch: 1, Step: 49, Lr: 0.000100, TL: 0.350926, LdmkL: 0.002084, EyeL: 0.000053, RegL: 0.379056, PhoL: 0.008454, idL: 0.767497, ConL: 0.178344, LdConL: 0.002127, EyeConL: 0.000055, PhoConL: 0.008574, idConL: 0.795073
+Epoch: 1, Step: 50, Lr: 0.000100, TL: 0.338467, LdmkL: 0.002664, EyeL: 0.000097, RegL: 0.396542, PhoL: 0.009685, idL: 0.724676, ConL: 0.171361, LdConL: 0.002656, EyeConL: 0.000098, PhoConL: 0.009806, idConL: 0.744971
+Epoch: 1, Step: 51, Lr: 0.000100, TL: 0.339100, LdmkL: 0.002332, EyeL: 0.000078, RegL: 0.366207, PhoL: 0.009594, idL: 0.734966, ConL: 0.170474, LdConL: 0.002328, EyeConL: 0.000078, PhoConL: 0.009657, idConL: 0.743767
+Epoch: 1, Step: 52, Lr: 0.000100, TL: 0.365767, LdmkL: 0.003545, EyeL: 0.000103, RegL: 0.394202, PhoL: 0.010620, idL: 0.784510, ConL: 0.183938, LdConL: 0.003573, EyeConL: 0.000103, PhoConL: 0.010820, idConL: 0.793112
+Epoch: 1, Step: 53, Lr: 0.000100, TL: 0.354196, LdmkL: 0.002667, EyeL: 0.000120, RegL: 0.378825, PhoL: 0.009875, idL: 0.766170, ConL: 0.178386, LdConL: 0.002668, EyeConL: 0.000120, PhoConL: 0.010012, idConL: 0.777874
+Epoch: 1, Step: 54, Lr: 0.000100, TL: 0.380190, LdmkL: 0.003430, EyeL: 0.000066, RegL: 0.307673, PhoL: 0.010402, idL: 0.826146, ConL: 0.190631, LdConL: 0.003429, EyeConL: 0.000066, PhoConL: 0.010570, idConL: 0.829984
+Epoch: 1, Step: 55, Lr: 0.000100, TL: 0.374862, LdmkL: 0.003161, EyeL: 0.000061, RegL: 0.352102, PhoL: 0.010833, idL: 0.797827, ConL: 0.190373, LdConL: 0.003178, EyeConL: 0.000061, PhoConL: 0.010881, idConL: 0.826861
+Epoch: 1, Step: 56, Lr: 0.000100, TL: 0.352927, LdmkL: 0.002653, EyeL: 0.000074, RegL: 0.370484, PhoL: 0.009030, idL: 0.770172, ConL: 0.178069, LdConL: 0.002671, EyeConL: 0.000073, PhoConL: 0.009191, idConL: 0.784717
+Epoch: 1, Step: 57, Lr: 0.000100, TL: 0.357564, LdmkL: 0.002510, EyeL: 0.000071, RegL: 0.341011, PhoL: 0.009711, idL: 0.780131, ConL: 0.179500, LdConL: 0.002502, EyeConL: 0.000071, PhoConL: 0.009943, idConL: 0.785210
+Epoch: 1, Step: 58, Lr: 0.000100, TL: 0.337887, LdmkL: 0.002264, EyeL: 0.000076, RegL: 0.340620, PhoL: 0.009626, idL: 0.729650, ConL: 0.170331, LdConL: 0.002292, EyeConL: 0.000076, PhoConL: 0.009846, idConL: 0.741361
+Epoch: 1, Step: 59, Lr: 0.000100, TL: 0.329687, LdmkL: 0.001857, EyeL: 0.000097, RegL: 0.341411, PhoL: 0.008986, idL: 0.718018, ConL: 0.166121, LdConL: 0.001863, EyeConL: 0.000099, PhoConL: 0.009080, idConL: 0.729991
+Epoch: 1, Step: 60, Lr: 0.000100, TL: 0.345854, LdmkL: 0.002302, EyeL: 0.000113, RegL: 0.327398, PhoL: 0.007574, idL: 0.763684, ConL: 0.175523, LdConL: 0.002316, EyeConL: 0.000112, PhoConL: 0.007891, idConL: 0.786560
+Epoch: 1, Step: 61, Lr: 0.000100, TL: 0.346775, LdmkL: 0.002310, EyeL: 0.000104, RegL: 0.326720, PhoL: 0.008105, idL: 0.758159, ConL: 0.176487, LdConL: 0.002279, EyeConL: 0.000105, PhoConL: 0.008267, idConL: 0.787846
+Epoch: 1, Step: 62, Lr: 0.000100, TL: 0.348916, LdmkL: 0.001992, EyeL: 0.000117, RegL: 0.347710, PhoL: 0.008338, idL: 0.764345, ConL: 0.177228, LdConL: 0.002002, EyeConL: 0.000118, PhoConL: 0.008533, idConL: 0.790208
+Epoch: 1, Step: 63, Lr: 0.000100, TL: 0.347089, LdmkL: 0.002316, EyeL: 0.000074, RegL: 0.353889, PhoL: 0.007761, idL: 0.778075, ConL: 0.173527, LdConL: 0.002316, EyeConL: 0.000074, PhoConL: 0.007761, idConL: 0.778075
+Epoch: 1, Step: 64, Lr: 0.000100, TL: 0.338218, LdmkL: 0.002485, EyeL: 0.000098, RegL: 0.358214, PhoL: 0.008809, idL: 0.741284, ConL: 0.169726, LdConL: 0.002497, EyeConL: 0.000102, PhoConL: 0.008947, idConL: 0.746161
+Epoch: 1, Step: 65, Lr: 0.000100, TL: 0.319658, LdmkL: 0.001424, EyeL: 0.000063, RegL: 0.417029, PhoL: 0.009514, idL: 0.688952, ConL: 0.161311, LdConL: 0.001423, EyeConL: 0.000063, PhoConL: 0.009629, idConL: 0.702834
+Epoch: 1, Step: 66, Lr: 0.000100, TL: 0.345566, LdmkL: 0.001101, EyeL: 0.000075, RegL: 0.387900, PhoL: 0.008833, idL: 0.756813, ConL: 0.175324, LdConL: 0.001104, EyeConL: 0.000077, PhoConL: 0.009035, idConL: 0.780366
+Epoch: 1, Step: 67, Lr: 0.000100, TL: 0.329841, LdmkL: 0.001233, EyeL: 0.000070, RegL: 0.357643, PhoL: 0.008892, idL: 0.718089, ConL: 0.167101, LdConL: 0.001281, EyeConL: 0.000072, PhoConL: 0.009216, idConL: 0.736587
+Epoch: 1, Step: 68, Lr: 0.000100, TL: 0.359367, LdmkL: 0.001412, EyeL: 0.000062, RegL: 0.347603, PhoL: 0.008536, idL: 0.802586, ConL: 0.180270, LdConL: 0.001413, EyeConL: 0.000061, PhoConL: 0.008526, idConL: 0.808726
+Epoch: 1, Step: 69, Lr: 0.000100, TL: 0.345992, LdmkL: 0.001415, EyeL: 0.000052, RegL: 0.338955, PhoL: 0.008561, idL: 0.760360, ConL: 0.175297, LdConL: 0.001476, EyeConL: 0.000055, PhoConL: 0.008784, idConL: 0.780986
+Epoch: 1, Step: 70, Lr: 0.000100, TL: 0.343391, LdmkL: 0.001440, EyeL: 0.000066, RegL: 0.355353, PhoL: 0.007255, idL: 0.758919, ConL: 0.175556, LdConL: 0.001439, EyeConL: 0.000066, PhoConL: 0.007505, idConL: 0.795201
+Epoch: 1, Step: 71, Lr: 0.000100, TL: 0.331177, LdmkL: 0.001441, EyeL: 0.000081, RegL: 0.384309, PhoL: 0.007875, idL: 0.726333, ConL: 0.168601, LdConL: 0.001482, EyeConL: 0.000080, PhoConL: 0.008200, idConL: 0.753194
+Epoch: 1, Step: 72, Lr: 0.000100, TL: 0.350028, LdmkL: 0.001010, EyeL: 0.000096, RegL: 0.359179, PhoL: 0.010620, idL: 0.754547, ConL: 0.176736, LdConL: 0.001001, EyeConL: 0.000101, PhoConL: 0.010663, idConL: 0.771539
+Epoch: 1, Step: 73, Lr: 0.000100, TL: 0.361281, LdmkL: 0.001294, EyeL: 0.000097, RegL: 0.340943, PhoL: 0.008264, idL: 0.803826, ConL: 0.182561, LdConL: 0.001343, EyeConL: 0.000098, PhoConL: 0.008703, idConL: 0.818572
+Epoch: 1, Step: 74, Lr: 0.000100, TL: 0.330137, LdmkL: 0.001159, EyeL: 0.000064, RegL: 0.370957, PhoL: 0.007448, idL: 0.738126, ConL: 0.166356, LdConL: 0.001177, EyeConL: 0.000064, PhoConL: 0.007722, idConL: 0.748352
+Epoch: 1, Step: 75, Lr: 0.000100, TL: 0.334570, LdmkL: 0.001437, EyeL: 0.000084, RegL: 0.374256, PhoL: 0.008300, idL: 0.729828, ConL: 0.170446, LdConL: 0.001418, EyeConL: 0.000085, PhoConL: 0.008426, idConL: 0.760452
+Epoch: 1, Step: 76, Lr: 0.000100, TL: 0.356826, LdmkL: 0.001654, EyeL: 0.000083, RegL: 0.413510, PhoL: 0.008184, idL: 0.791920, ConL: 0.180295, LdConL: 0.001704, EyeConL: 0.000083, PhoConL: 0.008364, idConL: 0.808908
+Epoch: 1, Step: 77, Lr: 0.000100, TL: 0.357470, LdmkL: 0.001719, EyeL: 0.000073, RegL: 0.409707, PhoL: 0.007359, idL: 0.798514, ConL: 0.181218, LdConL: 0.001709, EyeConL: 0.000075, PhoConL: 0.007636, idConL: 0.820807
+Epoch: 1, Step: 78, Lr: 0.000100, TL: 0.361868, LdmkL: 0.001817, EyeL: 0.000075, RegL: 0.369944, PhoL: 0.008936, idL: 0.788393, ConL: 0.184388, LdConL: 0.001889, EyeConL: 0.000076, PhoConL: 0.009233, idConL: 0.819787
+Epoch: 1, Step: 79, Lr: 0.000100, TL: 0.359745, LdmkL: 0.001433, EyeL: 0.000072, RegL: 0.397547, PhoL: 0.009735, idL: 0.777110, ConL: 0.183308, LdConL: 0.001461, EyeConL: 0.000073, PhoConL: 0.010193, idConL: 0.806947
+Epoch: 1, Step: 80, Lr: 0.000100, TL: 0.319083, LdmkL: 0.002718, EyeL: 0.000076, RegL: 0.395186, PhoL: 0.008797, idL: 0.691378, ConL: 0.160380, LdConL: 0.002729, EyeConL: 0.000077, PhoConL: 0.008845, idConL: 0.699417
+Epoch: 1, Step: 81, Lr: 0.000100, TL: 0.325916, LdmkL: 0.002549, EyeL: 0.000070, RegL: 0.433632, PhoL: 0.008081, idL: 0.709240, ConL: 0.165243, LdConL: 0.002549, EyeConL: 0.000074, PhoConL: 0.008232, idConL: 0.730786
+Epoch: 1, Step: 82, Lr: 0.000100, TL: 0.343023, LdmkL: 0.002158, EyeL: 0.000049, RegL: 0.380799, PhoL: 0.008530, idL: 0.761127, ConL: 0.171492, LdConL: 0.002158, EyeConL: 0.000049, PhoConL: 0.008530, idConL: 0.761127
+Epoch: 1, Step: 83, Lr: 0.000100, TL: 0.352641, LdmkL: 0.002504, EyeL: 0.000080, RegL: 0.392631, PhoL: 0.007629, idL: 0.785920, ConL: 0.177575, LdConL: 0.002474, EyeConL: 0.000081, PhoConL: 0.007916, idConL: 0.795938
+Epoch: 1, Step: 84, Lr: 0.000100, TL: 0.309186, LdmkL: 0.001489, EyeL: 0.000100, RegL: 0.336797, PhoL: 0.007466, idL: 0.682841, ConL: 0.156064, LdConL: 0.001485, EyeConL: 0.000100, PhoConL: 0.007497, idConL: 0.697420
+Epoch: 1, Step: 85, Lr: 0.000100, TL: 0.311991, LdmkL: 0.001164, EyeL: 0.000093, RegL: 0.381071, PhoL: 0.007193, idL: 0.702486, ConL: 0.155813, LdConL: 0.001184, EyeConL: 0.000097, PhoConL: 0.007523, idConL: 0.697428
+Epoch: 1, Step: 86, Lr: 0.000100, TL: 0.316661, LdmkL: 0.001359, EyeL: 0.000073, RegL: 0.370751, PhoL: 0.007474, idL: 0.705433, ConL: 0.159158, LdConL: 0.001381, EyeConL: 0.000074, PhoConL: 0.007715, idConL: 0.711373
+Epoch: 1, Step: 87, Lr: 0.000100, TL: 0.324512, LdmkL: 0.001254, EyeL: 0.000069, RegL: 0.358347, PhoL: 0.007543, idL: 0.722111, ConL: 0.163646, LdConL: 0.001317, EyeConL: 0.000070, PhoConL: 0.008016, idConL: 0.731133
+Epoch: 1, Step: 88, Lr: 0.000100, TL: 0.341335, LdmkL: 0.001528, EyeL: 0.000091, RegL: 0.422863, PhoL: 0.010267, idL: 0.742470, ConL: 0.170647, LdConL: 0.001528, EyeConL: 0.000091, PhoConL: 0.010267, idConL: 0.742470
+Epoch: 1, Step: 89, Lr: 0.000100, TL: 0.344117, LdmkL: 0.001468, EyeL: 0.000075, RegL: 0.410443, PhoL: 0.009598, idL: 0.750506, ConL: 0.173235, LdConL: 0.001495, EyeConL: 0.000076, PhoConL: 0.010003, idConL: 0.758294
+Epoch: 1, Step: 90, Lr: 0.000100, TL: 0.346691, LdmkL: 0.001260, EyeL: 0.000076, RegL: 0.412576, PhoL: 0.008169, idL: 0.766525, ConL: 0.175670, LdConL: 0.001279, EyeConL: 0.000077, PhoConL: 0.008194, idConL: 0.789634
+Epoch: 1, Step: 91, Lr: 0.000100, TL: 0.340661, LdmkL: 0.001297, EyeL: 0.000077, RegL: 0.413057, PhoL: 0.008652, idL: 0.749561, ConL: 0.172030, LdConL: 0.001302, EyeConL: 0.000079, PhoConL: 0.008934, idConL: 0.763898
+Epoch: 1, Step: 92, Lr: 0.000100, TL: 0.308718, LdmkL: 0.001537, EyeL: 0.000064, RegL: 0.388961, PhoL: 0.008826, idL: 0.663513, ConL: 0.156723, LdConL: 0.001564, EyeConL: 0.000064, PhoConL: 0.009093, idConL: 0.684543
+Epoch: 1, Step: 93, Lr: 0.000100, TL: 0.316770, LdmkL: 0.001679, EyeL: 0.000074, RegL: 0.425538, PhoL: 0.009592, idL: 0.684841, ConL: 0.158821, LdConL: 0.001698, EyeConL: 0.000073, PhoConL: 0.009547, idConL: 0.689781
+Epoch: 1, Step: 94, Lr: 0.000100, TL: 0.329261, LdmkL: 0.001089, EyeL: 0.000101, RegL: 0.418479, PhoL: 0.010383, idL: 0.696452, ConL: 0.167973, LdConL: 0.001120, EyeConL: 0.000103, PhoConL: 0.010496, idConL: 0.728783
+Epoch: 1, Step: 95, Lr: 0.000100, TL: 0.346085, LdmkL: 0.000993, EyeL: 0.000096, RegL: 0.486174, PhoL: 0.011478, idL: 0.734876, ConL: 0.175016, LdConL: 0.001026, EyeConL: 0.000101, PhoConL: 0.011813, idConL: 0.751315
+Epoch: 1, Step: 96, Lr: 0.000100, TL: 0.320893, LdmkL: 0.001309, EyeL: 0.000100, RegL: 0.478722, PhoL: 0.008865, idL: 0.698316, ConL: 0.162043, LdConL: 0.001336, EyeConL: 0.000100, PhoConL: 0.009010, idConL: 0.712928
+Epoch: 1, Step: 97, Lr: 0.000100, TL: 0.323472, LdmkL: 0.001288, EyeL: 0.000094, RegL: 0.487110, PhoL: 0.009291, idL: 0.694781, ConL: 0.164503, LdConL: 0.001293, EyeConL: 0.000096, PhoConL: 0.009438, idConL: 0.721189
+Epoch: 1, Step: 98, Lr: 0.000100, TL: 0.363738, LdmkL: 0.001713, EyeL: 0.000068, RegL: 0.453291, PhoL: 0.010508, idL: 0.782067, ConL: 0.184482, LdConL: 0.001744, EyeConL: 0.000069, PhoConL: 0.010667, idConL: 0.806675
+Epoch: 1, Step: 99, Lr: 0.000100, TL: 0.352671, LdmkL: 0.001217, EyeL: 0.000064, RegL: 0.515079, PhoL: 0.009445, idL: 0.762207, ConL: 0.180006, LdConL: 0.001260, EyeConL: 0.000063, PhoConL: 0.009896, idConL: 0.794454
+Epoch: 1, Step: 100, Lr: 0.000100, TL: 0.316953, LdmkL: 0.001249, EyeL: 0.000077, RegL: 0.456219, PhoL: 0.007323, idL: 0.694602, ConL: 0.162017, LdConL: 0.001283, EyeConL: 0.000082, PhoConL: 0.007610, idConL: 0.727164
+Epoch: 1, Step: 101, Lr: 0.000100, TL: 0.335542, LdmkL: 0.001165, EyeL: 0.000073, RegL: 0.468429, PhoL: 0.007014, idL: 0.749450, ConL: 0.170340, LdConL: 0.001192, EyeConL: 0.000072, PhoConL: 0.007201, idConL: 0.773374
+Epoch: 1, Step: 102, Lr: 0.000100, TL: 0.365327, LdmkL: 0.001511, EyeL: 0.000067, RegL: 0.460082, PhoL: 0.008981, idL: 0.800804, ConL: 0.185580, LdConL: 0.001539, EyeConL: 0.000069, PhoConL: 0.009398, idConL: 0.825881
+Epoch: 1, Step: 103, Lr: 0.000100, TL: 0.354046, LdmkL: 0.001298, EyeL: 0.000089, RegL: 0.457143, PhoL: 0.008513, idL: 0.777094, ConL: 0.180168, LdConL: 0.001320, EyeConL: 0.000090, PhoConL: 0.009127, idConL: 0.802520
+Epoch: 1, Step: 104, Lr: 0.000100, TL: 0.345167, LdmkL: 0.001393, EyeL: 0.000072, RegL: 0.504152, PhoL: 0.007593, idL: 0.761240, ConL: 0.176217, LdConL: 0.001469, EyeConL: 0.000070, PhoConL: 0.007979, idConL: 0.793602
+Epoch: 1, Step: 105, Lr: 0.000100, TL: 0.327830, LdmkL: 0.001453, EyeL: 0.000060, RegL: 0.530116, PhoL: 0.007537, idL: 0.732626, ConL: 0.164664, LdConL: 0.001494, EyeConL: 0.000061, PhoConL: 0.007608, idConL: 0.739463
+Epoch: 1, Step: 106, Lr: 0.000100, TL: 0.340057, LdmkL: 0.001309, EyeL: 0.000085, RegL: 0.468436, PhoL: 0.009601, idL: 0.726040, ConL: 0.174207, LdConL: 0.001388, EyeConL: 0.000086, PhoConL: 0.010092, idConL: 0.762742
+Epoch: 1, Step: 107, Lr: 0.000100, TL: 0.329008, LdmkL: 0.001298, EyeL: 0.000084, RegL: 0.469568, PhoL: 0.009726, idL: 0.713864, ConL: 0.165356, LdConL: 0.001348, EyeConL: 0.000084, PhoConL: 0.010015, idConL: 0.719468
+Epoch: 1, Step: 108, Lr: 0.000100, TL: 0.325969, LdmkL: 0.001556, EyeL: 0.000079, RegL: 0.502024, PhoL: 0.008139, idL: 0.713215, ConL: 0.165361, LdConL: 0.001567, EyeConL: 0.000080, PhoConL: 0.008253, idConL: 0.736039
+Epoch: 1, Step: 109, Lr: 0.000100, TL: 0.320260, LdmkL: 0.001346, EyeL: 0.000087, RegL: 0.575785, PhoL: 0.010681, idL: 0.675500, ConL: 0.162308, LdConL: 0.001403, EyeConL: 0.000087, PhoConL: 0.011054, idConL: 0.693547
+Epoch: 1, Step: 110, Lr: 0.000100, TL: 0.328814, LdmkL: 0.001562, EyeL: 0.000081, RegL: 0.559473, PhoL: 0.009368, idL: 0.706824, ConL: 0.167014, LdConL: 0.001611, EyeConL: 0.000084, PhoConL: 0.009656, idConL: 0.730033
+Epoch: 1, Step: 111, Lr: 0.000100, TL: 0.309539, LdmkL: 0.001436, EyeL: 0.000083, RegL: 0.568828, PhoL: 0.008867, idL: 0.662807, ConL: 0.157667, LdConL: 0.001463, EyeConL: 0.000084, PhoConL: 0.009180, idConL: 0.688800
+Epoch: 1, Step: 112, Lr: 0.000100, TL: 0.315716, LdmkL: 0.001687, EyeL: 0.000074, RegL: 0.548456, PhoL: 0.009237, idL: 0.681512, ConL: 0.159125, LdConL: 0.001706, EyeConL: 0.000075, PhoConL: 0.009530, idConL: 0.691421
+Epoch: 1, Step: 113, Lr: 0.000100, TL: 0.330344, LdmkL: 0.001807, EyeL: 0.000074, RegL: 0.540435, PhoL: 0.009094, idL: 0.725206, ConL: 0.165180, LdConL: 0.001812, EyeConL: 0.000073, PhoConL: 0.009149, idConL: 0.724982
+Epoch: 1, Step: 114, Lr: 0.000100, TL: 0.332283, LdmkL: 0.001501, EyeL: 0.000090, RegL: 0.480846, PhoL: 0.009351, idL: 0.723915, ConL: 0.167158, LdConL: 0.001497, EyeConL: 0.000092, PhoConL: 0.009548, idConL: 0.732363
+Epoch: 1, Step: 115, Lr: 0.000100, TL: 0.334184, LdmkL: 0.001190, EyeL: 0.000079, RegL: 0.468271, PhoL: 0.008250, idL: 0.733702, ConL: 0.169627, LdConL: 0.001228, EyeConL: 0.000083, PhoConL: 0.008459, idConL: 0.756993
+Epoch: 1, Step: 116, Lr: 0.000100, TL: 0.339633, LdmkL: 0.001485, EyeL: 0.000077, RegL: 0.563930, PhoL: 0.009566, idL: 0.745468, ConL: 0.169788, LdConL: 0.001485, EyeConL: 0.000077, PhoConL: 0.009566, idConL: 0.745468
+Epoch: 1, Step: 117, Lr: 0.000100, TL: 0.367846, LdmkL: 0.001346, EyeL: 0.000083, RegL: 0.509855, PhoL: 0.008370, idL: 0.814255, ConL: 0.186776, LdConL: 0.001431, EyeConL: 0.000084, PhoConL: 0.008844, idConL: 0.837865
+Epoch: 1, Step: 118, Lr: 0.000100, TL: 0.318457, LdmkL: 0.001028, EyeL: 0.000121, RegL: 0.542221, PhoL: 0.008799, idL: 0.687664, ConL: 0.162124, LdConL: 0.001069, EyeConL: 0.000124, PhoConL: 0.009333, idConL: 0.711325
+Epoch: 1, Step: 119, Lr: 0.000100, TL: 0.306866, LdmkL: 0.001145, EyeL: 0.000132, RegL: 0.557459, PhoL: 0.007892, idL: 0.672463, ConL: 0.155257, LdConL: 0.001190, EyeConL: 0.000135, PhoConL: 0.008160, idConL: 0.688060
+Epoch: 1, Step: 120, Lr: 0.000100, TL: 0.332843, LdmkL: 0.001318, EyeL: 0.000076, RegL: 0.482674, PhoL: 0.007798, idL: 0.734612, ConL: 0.168882, LdConL: 0.001350, EyeConL: 0.000081, PhoConL: 0.007892, idConL: 0.758333
+Epoch: 1, Step: 121, Lr: 0.000100, TL: 0.330766, LdmkL: 0.001186, EyeL: 0.000100, RegL: 0.520276, PhoL: 0.008374, idL: 0.727723, ConL: 0.167136, LdConL: 0.001214, EyeConL: 0.000102, PhoConL: 0.008501, idConL: 0.744094
+Epoch: 1, Step: 122, Lr: 0.000100, TL: 0.313054, LdmkL: 0.001383, EyeL: 0.000073, RegL: 0.423250, PhoL: 0.006757, idL: 0.699776, ConL: 0.158088, LdConL: 0.001383, EyeConL: 0.000075, PhoConL: 0.006752, idConL: 0.715625
+Epoch: 1, Step: 123, Lr: 0.000100, TL: 0.301845, LdmkL: 0.001197, EyeL: 0.000051, RegL: 0.445153, PhoL: 0.006796, idL: 0.672253, ConL: 0.152509, LdConL: 0.001195, EyeConL: 0.000053, PhoConL: 0.006988, idConL: 0.686431
+Epoch: 1, Step: 124, Lr: 0.000100, TL: 0.333408, LdmkL: 0.001449, EyeL: 0.000091, RegL: 0.521102, PhoL: 0.007418, idL: 0.741929, ConL: 0.168593, LdConL: 0.001467, EyeConL: 0.000091, PhoConL: 0.007624, idConL: 0.758931
+Epoch: 1, Step: 125, Lr: 0.000100, TL: 0.322224, LdmkL: 0.001782, EyeL: 0.000072, RegL: 0.495168, PhoL: 0.007553, idL: 0.720634, ConL: 0.161087, LdConL: 0.001782, EyeConL: 0.000072, PhoConL: 0.007553, idConL: 0.720634
+Epoch: 1, Step: 126, Lr: 0.000100, TL: 0.305883, LdmkL: 0.001537, EyeL: 0.000096, RegL: 0.559132, PhoL: 0.008934, idL: 0.661920, ConL: 0.153941, LdConL: 0.001549, EyeConL: 0.000095, PhoConL: 0.008952, idConL: 0.671961
+Epoch: 1, Step: 127, Lr: 0.000100, TL: 0.328325, LdmkL: 0.002017, EyeL: 0.000088, RegL: 0.561860, PhoL: 0.010885, idL: 0.687857, ConL: 0.166823, LdConL: 0.002083, EyeConL: 0.000090, PhoConL: 0.011007, idConL: 0.713179
+Epoch: 1, Step: 128, Lr: 0.000100, TL: 0.334053, LdmkL: 0.001452, EyeL: 0.000076, RegL: 0.544426, PhoL: 0.009536, idL: 0.727430, ConL: 0.167912, LdConL: 0.001477, EyeConL: 0.000076, PhoConL: 0.009686, idConL: 0.734935
+Epoch: 1, Step: 129, Lr: 0.000100, TL: 0.341339, LdmkL: 0.001354, EyeL: 0.000079, RegL: 0.496002, PhoL: 0.010522, idL: 0.740309, ConL: 0.170751, LdConL: 0.001372, EyeConL: 0.000078, PhoConL: 0.010513, idConL: 0.741364
+Epoch: 1, Step: 130, Lr: 0.000100, TL: 0.324085, LdmkL: 0.001429, EyeL: 0.000098, RegL: 0.489280, PhoL: 0.009987, idL: 0.684428, ConL: 0.165649, LdConL: 0.001482, EyeConL: 0.000101, PhoConL: 0.009998, idConL: 0.720347
+Epoch: 1, Step: 131, Lr: 0.000100, TL: 0.307123, LdmkL: 0.001735, EyeL: 0.000099, RegL: 0.531296, PhoL: 0.010250, idL: 0.648934, ConL: 0.154949, LdConL: 0.001767, EyeConL: 0.000101, PhoConL: 0.010450, idConL: 0.660906
+Epoch: 1, Step: 132, Lr: 0.000100, TL: 0.331348, LdmkL: 0.001980, EyeL: 0.000088, RegL: 0.533283, PhoL: 0.008719, idL: 0.721011, ConL: 0.167587, LdConL: 0.002022, EyeConL: 0.000095, PhoConL: 0.008789, idConL: 0.739462
+Epoch: 1, Step: 133, Lr: 0.000100, TL: 0.328475, LdmkL: 0.001991, EyeL: 0.000077, RegL: 0.621309, PhoL: 0.010274, idL: 0.697134, ConL: 0.166371, LdConL: 0.002037, EyeConL: 0.000077, PhoConL: 0.010525, idConL: 0.716031
+Epoch: 1, Step: 134, Lr: 0.000100, TL: 0.300002, LdmkL: 0.002117, EyeL: 0.000058, RegL: 0.549307, PhoL: 0.008600, idL: 0.646211, ConL: 0.151329, LdConL: 0.002144, EyeConL: 0.000058, PhoConL: 0.008668, idConL: 0.658955
+Epoch: 1, Step: 135, Lr: 0.000100, TL: 0.299681, LdmkL: 0.001889, EyeL: 0.000069, RegL: 0.592382, PhoL: 0.007403, idL: 0.647452, ConL: 0.153367, LdConL: 0.001923, EyeConL: 0.000074, PhoConL: 0.007747, idConL: 0.679380
+Epoch: 1, Step: 136, Lr: 0.000100, TL: 0.303091, LdmkL: 0.001631, EyeL: 0.000068, RegL: 0.632813, PhoL: 0.008068, idL: 0.655928, ConL: 0.154007, LdConL: 0.001683, EyeConL: 0.000074, PhoConL: 0.008151, idConL: 0.679744
+Epoch: 1, Step: 137, Lr: 0.000100, TL: 0.302180, LdmkL: 0.001538, EyeL: 0.000079, RegL: 0.618892, PhoL: 0.007482, idL: 0.662099, ConL: 0.153116, LdConL: 0.001612, EyeConL: 0.000080, PhoConL: 0.007675, idConL: 0.680369
+Epoch: 1, Step: 138, Lr: 0.000100, TL: 0.339355, LdmkL: 0.001488, EyeL: 0.000109, RegL: 0.549720, PhoL: 0.007235, idL: 0.755440, ConL: 0.172147, LdConL: 0.001533, EyeConL: 0.000110, PhoConL: 0.007491, idConL: 0.777613
+Epoch: 1, Step: 139, Lr: 0.000100, TL: 0.337817, LdmkL: 0.001079, EyeL: 0.000116, RegL: 0.608622, PhoL: 0.007054, idL: 0.760013, ConL: 0.170450, LdConL: 0.001133, EyeConL: 0.000121, PhoConL: 0.007246, idConL: 0.773518
+Epoch: 1, Step: 140, Lr: 0.000100, TL: 0.309987, LdmkL: 0.001672, EyeL: 0.000086, RegL: 0.494616, PhoL: 0.005357, idL: 0.702000, ConL: 0.157066, LdConL: 0.001721, EyeConL: 0.000087, PhoConL: 0.005598, idConL: 0.720312
+Epoch: 1, Step: 141, Lr: 0.000100, TL: 0.306468, LdmkL: 0.001405, EyeL: 0.000083, RegL: 0.472911, PhoL: 0.006789, idL: 0.670303, ConL: 0.157294, LdConL: 0.001446, EyeConL: 0.000087, PhoConL: 0.006907, idConL: 0.709741
+Epoch: 1, Step: 142, Lr: 0.000100, TL: 0.324791, LdmkL: 0.001196, EyeL: 0.000078, RegL: 0.593767, PhoL: 0.008618, idL: 0.691814, ConL: 0.167859, LdConL: 0.001285, EyeConL: 0.000079, PhoConL: 0.009360, idConL: 0.738874
+Epoch: 1, Step: 143, Lr: 0.000100, TL: 0.326525, LdmkL: 0.001571, EyeL: 0.000075, RegL: 0.543603, PhoL: 0.008856, idL: 0.695966, ConL: 0.167919, LdConL: 0.001632, EyeConL: 0.000076, PhoConL: 0.009328, idConL: 0.737776
+Epoch: 1, Step: 144, Lr: 0.000100, TL: 0.352104, LdmkL: 0.001667, EyeL: 0.000083, RegL: 0.514193, PhoL: 0.007606, idL: 0.789454, ConL: 0.177200, LdConL: 0.001714, EyeConL: 0.000084, PhoConL: 0.007904, idConL: 0.797968
+Epoch: 1, Step: 145, Lr: 0.000100, TL: 0.348763, LdmkL: 0.001577, EyeL: 0.000082, RegL: 0.490276, PhoL: 0.008460, idL: 0.775129, ConL: 0.175109, LdConL: 0.001593, EyeConL: 0.000081, PhoConL: 0.008539, idConL: 0.781780
+Epoch: 1, Step: 146, Lr: 0.000100, TL: 0.342864, LdmkL: 0.002234, EyeL: 0.000105, RegL: 0.480613, PhoL: 0.010726, idL: 0.722588, ConL: 0.174508, LdConL: 0.002280, EyeConL: 0.000109, PhoConL: 0.010846, idConL: 0.752140
+Epoch: 1, Step: 147, Lr: 0.000100, TL: 0.328766, LdmkL: 0.001808, EyeL: 0.000091, RegL: 0.473517, PhoL: 0.009738, idL: 0.702007, ConL: 0.166941, LdConL: 0.001807, EyeConL: 0.000094, PhoConL: 0.009932, idConL: 0.725883
+Epoch: 1, Step: 148, Lr: 0.000100, TL: 0.304104, LdmkL: 0.001274, EyeL: 0.000066, RegL: 0.581380, PhoL: 0.009505, idL: 0.642495, ConL: 0.155197, LdConL: 0.001332, EyeConL: 0.000069, PhoConL: 0.009813, idConL: 0.670852
+Epoch: 1, Step: 149, Lr: 0.000100, TL: 0.313380, LdmkL: 0.002244, EyeL: 0.000075, RegL: 0.562772, PhoL: 0.008204, idL: 0.672936, ConL: 0.160009, LdConL: 0.002235, EyeConL: 0.000077, PhoConL: 0.008446, idConL: 0.704025
+Epoch: 1, Step: 150, Lr: 0.000100, TL: 0.312119, LdmkL: 0.001109, EyeL: 0.000098, RegL: 0.617930, PhoL: 0.007699, idL: 0.682031, ConL: 0.159046, LdConL: 0.001148, EyeConL: 0.000099, PhoConL: 0.007905, idConL: 0.709940
+Epoch: 1, Step: 151, Lr: 0.000100, TL: 0.319362, LdmkL: 0.001176, EyeL: 0.000107, RegL: 0.571841, PhoL: 0.007826, idL: 0.706448, ConL: 0.161082, LdConL: 0.001183, EyeConL: 0.000109, PhoConL: 0.007919, idConL: 0.719758
+Epoch: 1, Step: 152, Lr: 0.000100, TL: 0.323272, LdmkL: 0.001563, EyeL: 0.000109, RegL: 0.477480, PhoL: 0.005924, idL: 0.719912, ConL: 0.165722, LdConL: 0.001679, EyeConL: 0.000108, PhoConL: 0.006498, idConL: 0.754690
+Epoch: 1, Step: 153, Lr: 0.000100, TL: 0.306791, LdmkL: 0.001062, EyeL: 0.000088, RegL: 0.562624, PhoL: 0.008303, idL: 0.663191, ConL: 0.156340, LdConL: 0.001135, EyeConL: 0.000089, PhoConL: 0.008737, idConL: 0.688217
+Epoch: 1, Step: 154, Lr: 0.000100, TL: 0.326055, LdmkL: 0.001502, EyeL: 0.000097, RegL: 0.572488, PhoL: 0.009016, idL: 0.704279, ConL: 0.165511, LdConL: 0.001547, EyeConL: 0.000099, PhoConL: 0.009269, idConL: 0.726642
+Epoch: 1, Step: 155, Lr: 0.000100, TL: 0.324738, LdmkL: 0.001389, EyeL: 0.000078, RegL: 0.557483, PhoL: 0.009333, idL: 0.700133, ConL: 0.164522, LdConL: 0.001467, EyeConL: 0.000080, PhoConL: 0.009533, idConL: 0.719548
+Epoch: 1, Step: 156, Lr: 0.000100, TL: 0.312996, LdmkL: 0.001418, EyeL: 0.000090, RegL: 0.566355, PhoL: 0.007399, idL: 0.693805, ConL: 0.157872, LdConL: 0.001493, EyeConL: 0.000091, PhoConL: 0.007537, idConL: 0.706074
+Epoch: 1, Step: 157, Lr: 0.000100, TL: 0.315119, LdmkL: 0.001679, EyeL: 0.000091, RegL: 0.562061, PhoL: 0.008013, idL: 0.688820, ConL: 0.159502, LdConL: 0.001767, EyeConL: 0.000092, PhoConL: 0.008312, idConL: 0.705095
+Epoch: 1, Step: 158, Lr: 0.000100, TL: 0.291145, LdmkL: 0.001998, EyeL: 0.000102, RegL: 0.661960, PhoL: 0.009631, idL: 0.609740, ConL: 0.147770, LdConL: 0.002042, EyeConL: 0.000103, PhoConL: 0.009744, idConL: 0.630678
+Epoch: 1, Step: 159, Lr: 0.000100, TL: 0.295016, LdmkL: 0.002286, EyeL: 0.000085, RegL: 0.635677, PhoL: 0.009315, idL: 0.626477, ConL: 0.148655, LdConL: 0.002303, EyeConL: 0.000084, PhoConL: 0.009352, idConL: 0.637816
+Epoch: 1, Step: 160, Lr: 0.000100, TL: 0.328289, LdmkL: 0.001749, EyeL: 0.000078, RegL: 0.545807, PhoL: 0.008382, idL: 0.720976, ConL: 0.165449, LdConL: 0.001788, EyeConL: 0.000080, PhoConL: 0.008546, idConL: 0.732444
+Epoch: 1, Step: 161, Lr: 0.000100, TL: 0.321860, LdmkL: 0.001842, EyeL: 0.000073, RegL: 0.538922, PhoL: 0.008223, idL: 0.705376, ConL: 0.162369, LdConL: 0.001866, EyeConL: 0.000076, PhoConL: 0.008443, idConL: 0.717708
+Epoch: 1, Step: 162, Lr: 0.000100, TL: 0.324252, LdmkL: 0.001692, EyeL: 0.000084, RegL: 0.550824, PhoL: 0.008327, idL: 0.708783, ConL: 0.164009, LdConL: 0.001721, EyeConL: 0.000085, PhoConL: 0.008477, idConL: 0.726251
+Epoch: 1, Step: 163, Lr: 0.000100, TL: 0.339347, LdmkL: 0.001860, EyeL: 0.000070, RegL: 0.579597, PhoL: 0.007669, idL: 0.750668, ConL: 0.171888, LdConL: 0.001914, EyeConL: 0.000072, PhoConL: 0.007847, idConL: 0.771038
+Epoch: 1, Step: 164, Lr: 0.000100, TL: 0.306221, LdmkL: 0.001603, EyeL: 0.000097, RegL: 0.596235, PhoL: 0.007389, idL: 0.673298, ConL: 0.155024, LdConL: 0.001690, EyeConL: 0.000101, PhoConL: 0.007429, idConL: 0.691882
+Epoch: 1, Step: 165, Lr: 0.000100, TL: 0.297035, LdmkL: 0.001396, EyeL: 0.000096, RegL: 0.597749, PhoL: 0.006563, idL: 0.661753, ConL: 0.150007, LdConL: 0.001403, EyeConL: 0.000097, PhoConL: 0.006564, idConL: 0.676899
+Epoch: 1, Step: 166, Lr: 0.000100, TL: 0.291453, LdmkL: 0.001417, EyeL: 0.000076, RegL: 0.535527, PhoL: 0.008483, idL: 0.625983, ConL: 0.147744, LdConL: 0.001463, EyeConL: 0.000077, PhoConL: 0.008709, idConL: 0.643928
+Epoch: 1, Step: 167, Lr: 0.000100, TL: 0.296254, LdmkL: 0.001526, EyeL: 0.000068, RegL: 0.593493, PhoL: 0.007773, idL: 0.648397, ConL: 0.149376, LdConL: 0.001583, EyeConL: 0.000068, PhoConL: 0.008021, idConL: 0.658411
+Epoch: 1, Step: 168, Lr: 0.000100, TL: 0.323665, LdmkL: 0.001045, EyeL: 0.000076, RegL: 0.547911, PhoL: 0.008559, idL: 0.700093, ConL: 0.165353, LdConL: 0.001092, EyeConL: 0.000078, PhoConL: 0.008989, idConL: 0.731025
+Epoch: 1, Step: 169, Lr: 0.000100, TL: 0.313915, LdmkL: 0.001239, EyeL: 0.000072, RegL: 0.543545, PhoL: 0.009586, idL: 0.669002, ConL: 0.159575, LdConL: 0.001317, EyeConL: 0.000075, PhoConL: 0.009959, idConL: 0.691333
+Epoch: 1, Step: 170, Lr: 0.000100, TL: 0.293721, LdmkL: 0.001253, EyeL: 0.000082, RegL: 0.555274, PhoL: 0.007090, idL: 0.646787, ConL: 0.148792, LdConL: 0.001316, EyeConL: 0.000082, PhoConL: 0.007232, idConL: 0.664650
+Epoch: 1, Step: 171, Lr: 0.000100, TL: 0.294744, LdmkL: 0.001071, EyeL: 0.000087, RegL: 0.592972, PhoL: 0.007723, idL: 0.640993, ConL: 0.149884, LdConL: 0.001100, EyeConL: 0.000092, PhoConL: 0.007985, idConL: 0.663608
+Epoch: 1, Step: 172, Lr: 0.000100, TL: 0.328915, LdmkL: 0.001221, EyeL: 0.000100, RegL: 0.602882, PhoL: 0.009904, idL: 0.701530, ConL: 0.167419, LdConL: 0.001271, EyeConL: 0.000104, PhoConL: 0.010282, idConL: 0.727403
+Epoch: 1, Step: 173, Lr: 0.000100, TL: 0.319071, LdmkL: 0.001174, EyeL: 0.000093, RegL: 0.681156, PhoL: 0.008917, idL: 0.702000, ConL: 0.159502, LdConL: 0.001174, EyeConL: 0.000093, PhoConL: 0.008917, idConL: 0.702000
+Epoch: 1, Step: 174, Lr: 0.000100, TL: 0.324995, LdmkL: 0.001572, EyeL: 0.000055, RegL: 0.547180, PhoL: 0.007070, idL: 0.721736, ConL: 0.164826, LdConL: 0.001574, EyeConL: 0.000054, PhoConL: 0.007202, idConL: 0.743973
+Epoch: 1, Step: 175, Lr: 0.000100, TL: 0.327240, LdmkL: 0.001508, EyeL: 0.000053, RegL: 0.598051, PhoL: 0.006533, idL: 0.716693, ConL: 0.169214, LdConL: 0.001552, EyeConL: 0.000059, PhoConL: 0.007041, idConL: 0.767607
+Epoch: 1, Step: 176, Lr: 0.000100, TL: 0.319426, LdmkL: 0.001357, EyeL: 0.000094, RegL: 0.628258, PhoL: 0.008405, idL: 0.688451, ConL: 0.163411, LdConL: 0.001402, EyeConL: 0.000099, PhoConL: 0.008605, idConL: 0.723497
+Epoch: 1, Step: 177, Lr: 0.000100, TL: 0.316767, LdmkL: 0.001279, EyeL: 0.000094, RegL: 0.610919, PhoL: 0.009902, idL: 0.680920, ConL: 0.159345, LdConL: 0.001303, EyeConL: 0.000094, PhoConL: 0.009993, idConL: 0.689810
+Epoch: 1, Step: 178, Lr: 0.000100, TL: 0.324127, LdmkL: 0.001547, EyeL: 0.000092, RegL: 0.607006, PhoL: 0.008045, idL: 0.711055, ConL: 0.164127, LdConL: 0.001588, EyeConL: 0.000095, PhoConL: 0.008302, idConL: 0.729199
+Epoch: 1, Step: 179, Lr: 0.000100, TL: 0.320587, LdmkL: 0.002184, EyeL: 0.000113, RegL: 0.595180, PhoL: 0.007631, idL: 0.700779, ConL: 0.162813, LdConL: 0.002238, EyeConL: 0.000114, PhoConL: 0.007841, idConL: 0.723892
+Epoch: 1, Step: 180, Lr: 0.000100, TL: 0.286968, LdmkL: 0.001211, EyeL: 0.000104, RegL: 0.705458, PhoL: 0.008571, idL: 0.615026, ConL: 0.145435, LdConL: 0.001243, EyeConL: 0.000108, PhoConL: 0.008959, idConL: 0.630826
+Epoch: 1, Step: 181, Lr: 0.000100, TL: 0.279606, LdmkL: 0.001386, EyeL: 0.000089, RegL: 0.684444, PhoL: 0.007899, idL: 0.606290, ConL: 0.141007, LdConL: 0.001353, EyeConL: 0.000086, PhoConL: 0.007869, idConL: 0.619145
+Epoch: 1, Step: 182, Lr: 0.000100, TL: 0.307049, LdmkL: 0.001314, EyeL: 0.000072, RegL: 0.566189, PhoL: 0.007961, idL: 0.672445, ConL: 0.155196, LdConL: 0.001382, EyeConL: 0.000074, PhoConL: 0.008262, idConL: 0.686080
+Epoch: 1, Step: 183, Lr: 0.000100, TL: 0.298523, LdmkL: 0.001251, EyeL: 0.000081, RegL: 0.614301, PhoL: 0.007597, idL: 0.657642, ConL: 0.150408, LdConL: 0.001255, EyeConL: 0.000084, PhoConL: 0.007647, idConL: 0.668879
+Epoch: 1, Step: 184, Lr: 0.000100, TL: 0.290775, LdmkL: 0.001765, EyeL: 0.000093, RegL: 0.672861, PhoL: 0.007208, idL: 0.636591, ConL: 0.147115, LdConL: 0.001782, EyeConL: 0.000096, PhoConL: 0.007373, idConL: 0.652453
+Epoch: 1, Step: 185, Lr: 0.000100, TL: 0.283284, LdmkL: 0.001593, EyeL: 0.000080, RegL: 0.741721, PhoL: 0.007641, idL: 0.612521, ConL: 0.143751, LdConL: 0.001658, EyeConL: 0.000084, PhoConL: 0.007879, idConL: 0.631256
+Epoch: 1, Step: 186, Lr: 0.000100, TL: 0.305395, LdmkL: 0.001988, EyeL: 0.000110, RegL: 0.586983, PhoL: 0.010038, idL: 0.648362, ConL: 0.153491, LdConL: 0.002006, EyeConL: 0.000110, PhoConL: 0.010075, idConL: 0.656120
+Epoch: 1, Step: 187, Lr: 0.000100, TL: 0.284495, LdmkL: 0.002057, EyeL: 0.000082, RegL: 0.587579, PhoL: 0.009605, idL: 0.604344, ConL: 0.142218, LdConL: 0.002057, EyeConL: 0.000082, PhoConL: 0.009605, idConL: 0.604344
+Epoch: 1, Step: 188, Lr: 0.000100, TL: 0.339883, LdmkL: 0.002290, EyeL: 0.000107, RegL: 0.679294, PhoL: 0.008500, idL: 0.735269, ConL: 0.173364, LdConL: 0.002349, EyeConL: 0.000108, PhoConL: 0.008420, idConL: 0.770334
+Epoch: 1, Step: 189, Lr: 0.000100, TL: 0.336447, LdmkL: 0.002368, EyeL: 0.000113, RegL: 0.630612, PhoL: 0.008097, idL: 0.735766, ConL: 0.170555, LdConL: 0.002397, EyeConL: 0.000121, PhoConL: 0.008125, idConL: 0.758934
+Epoch: 1, Step: 190, Lr: 0.000100, TL: 0.331905, LdmkL: 0.002329, EyeL: 0.000077, RegL: 0.715184, PhoL: 0.010615, idL: 0.706068, ConL: 0.166982, LdConL: 0.002402, EyeConL: 0.000080, PhoConL: 0.010849, idConL: 0.714014
+Epoch: 1, Step: 191, Lr: 0.000100, TL: 0.343161, LdmkL: 0.002176, EyeL: 0.000065, RegL: 0.716481, PhoL: 0.011256, idL: 0.728383, ConL: 0.172659, LdConL: 0.002188, EyeConL: 0.000069, PhoConL: 0.011474, idConL: 0.737273
+Epoch: 1, Step: 192, Lr: 0.000100, TL: 0.301658, LdmkL: 0.001578, EyeL: 0.000092, RegL: 0.676786, PhoL: 0.009333, idL: 0.626282, ConL: 0.155998, LdConL: 0.001597, EyeConL: 0.000098, PhoConL: 0.009840, idConL: 0.673117
+Epoch: 1, Step: 193, Lr: 0.000100, TL: 0.300890, LdmkL: 0.001635, EyeL: 0.000100, RegL: 0.652355, PhoL: 0.009276, idL: 0.634297, ConL: 0.153678, LdConL: 0.001728, EyeConL: 0.000104, PhoConL: 0.009563, idConL: 0.663600
+Epoch: 1, Step: 194, Lr: 0.000100, TL: 0.329915, LdmkL: 0.001719, EyeL: 0.000093, RegL: 0.625301, PhoL: 0.007101, idL: 0.732125, ConL: 0.167415, LdConL: 0.001762, EyeConL: 0.000096, PhoConL: 0.007441, idConL: 0.753379
+Epoch: 1, Step: 195, Lr: 0.000100, TL: 0.324940, LdmkL: 0.001727, EyeL: 0.000102, RegL: 0.673379, PhoL: 0.007751, idL: 0.724609, ConL: 0.162619, LdConL: 0.001758, EyeConL: 0.000104, PhoConL: 0.007970, idConL: 0.724081
+Epoch: 1, Step: 196, Lr: 0.000100, TL: 0.339263, LdmkL: 0.001654, EyeL: 0.000091, RegL: 0.540577, PhoL: 0.008863, idL: 0.732426, ConL: 0.173252, LdConL: 0.001731, EyeConL: 0.000092, PhoConL: 0.009223, idConL: 0.764914
+Epoch: 1, Step: 197, Lr: 0.000100, TL: 0.335403, LdmkL: 0.002008, EyeL: 0.000091, RegL: 0.531877, PhoL: 0.009487, idL: 0.721748, ConL: 0.169926, LdConL: 0.002026, EyeConL: 0.000094, PhoConL: 0.009912, idConL: 0.739912
+Epoch: 1, Step: 198, Lr: 0.000100, TL: 0.288306, LdmkL: 0.001519, EyeL: 0.000082, RegL: 0.737618, PhoL: 0.008022, idL: 0.618293, ConL: 0.146929, LdConL: 0.001580, EyeConL: 0.000084, PhoConL: 0.008488, idConL: 0.641446
+Epoch: 1, Step: 199, Lr: 0.000100, TL: 0.299879, LdmkL: 0.001753, EyeL: 0.000067, RegL: 0.714059, PhoL: 0.008481, idL: 0.639005, ConL: 0.153224, LdConL: 0.001866, EyeConL: 0.000068, PhoConL: 0.008574, idConL: 0.670713
+Epoch: 1, Step: 200, Lr: 0.000100, TL: 0.303620, LdmkL: 0.001975, EyeL: 0.000107, RegL: 0.703639, PhoL: 0.008452, idL: 0.659012, ConL: 0.152760, LdConL: 0.001993, EyeConL: 0.000111, PhoConL: 0.008296, idConL: 0.670328
+Epoch: 1, Step: 201, Lr: 0.000100, TL: 0.294475, LdmkL: 0.002109, EyeL: 0.000103, RegL: 0.705697, PhoL: 0.008051, idL: 0.639144, ConL: 0.148262, LdConL: 0.002103, EyeConL: 0.000104, PhoConL: 0.008060, idConL: 0.649673
+Epoch: 1, Step: 202, Lr: 0.000100, TL: 0.315381, LdmkL: 0.002581, EyeL: 0.000110, RegL: 0.659276, PhoL: 0.008691, idL: 0.680169, ConL: 0.159208, LdConL: 0.002577, EyeConL: 0.000111, PhoConL: 0.008813, idConL: 0.694470
+Epoch: 1, Step: 203, Lr: 0.000100, TL: 0.310324, LdmkL: 0.002333, EyeL: 0.000095, RegL: 0.678561, PhoL: 0.009059, idL: 0.659665, ConL: 0.157777, LdConL: 0.002357, EyeConL: 0.000098, PhoConL: 0.009152, idConL: 0.685096
+Epoch: 1, Step: 204, Lr: 0.000100, TL: 0.351142, LdmkL: 0.002156, EyeL: 0.000086, RegL: 0.621047, PhoL: 0.011426, idL: 0.740447, ConL: 0.177897, LdConL: 0.002199, EyeConL: 0.000088, PhoConL: 0.011474, idConL: 0.763310
+Epoch: 1, Step: 205, Lr: 0.000100, TL: 0.360024, LdmkL: 0.002478, EyeL: 0.000087, RegL: 0.645443, PhoL: 0.009454, idL: 0.781911, ConL: 0.182104, LdConL: 0.002562, EyeConL: 0.000090, PhoConL: 0.009672, idConL: 0.800545
+Epoch: 1, Step: 206, Lr: 0.000100, TL: 0.323143, LdmkL: 0.001599, EyeL: 0.000091, RegL: 0.644422, PhoL: 0.010338, idL: 0.691496, ConL: 0.162413, LdConL: 0.001610, EyeConL: 0.000092, PhoConL: 0.010502, idConL: 0.698538
+Epoch: 1, Step: 207, Lr: 0.000100, TL: 0.327281, LdmkL: 0.001443, EyeL: 0.000097, RegL: 0.637051, PhoL: 0.008944, idL: 0.720389, ConL: 0.163712, LdConL: 0.001463, EyeConL: 0.000099, PhoConL: 0.008984, idConL: 0.720912
+Epoch: 1, Step: 208, Lr: 0.000100, TL: 0.340067, LdmkL: 0.002632, EyeL: 0.000088, RegL: 0.621817, PhoL: 0.008959, idL: 0.735145, ConL: 0.172338, LdConL: 0.002642, EyeConL: 0.000088, PhoConL: 0.009321, idConL: 0.754833
+Epoch: 1, Step: 209, Lr: 0.000100, TL: 0.330649, LdmkL: 0.002161, EyeL: 0.000106, RegL: 0.653731, PhoL: 0.008655, idL: 0.721067, ConL: 0.166794, LdConL: 0.002156, EyeConL: 0.000109, PhoConL: 0.008743, idConL: 0.735210
+Epoch: 1, Step: 210, Lr: 0.000100, TL: 0.307769, LdmkL: 0.001685, EyeL: 0.000097, RegL: 0.663984, PhoL: 0.007418, idL: 0.666222, ConL: 0.157840, LdConL: 0.001738, EyeConL: 0.000100, PhoConL: 0.007664, idConL: 0.703379
+Epoch: 1, Step: 211, Lr: 0.000100, TL: 0.303145, LdmkL: 0.002043, EyeL: 0.000106, RegL: 0.666284, PhoL: 0.008283, idL: 0.652170, ConL: 0.153929, LdConL: 0.002141, EyeConL: 0.000107, PhoConL: 0.008346, idConL: 0.674937
+Epoch: 1, Step: 212, Lr: 0.000100, TL: 0.329330, LdmkL: 0.002262, EyeL: 0.000069, RegL: 0.768214, PhoL: 0.009726, idL: 0.691251, ConL: 0.169220, LdConL: 0.002340, EyeConL: 0.000064, PhoConL: 0.009778, idConL: 0.736303
+Epoch: 1, Step: 213, Lr: 0.000100, TL: 0.330394, LdmkL: 0.002286, EyeL: 0.000086, RegL: 0.687217, PhoL: 0.009878, idL: 0.688524, ConL: 0.170494, LdConL: 0.002304, EyeConL: 0.000093, PhoConL: 0.010004, idConL: 0.740450
+Epoch: 1, Step: 214, Lr: 0.000100, TL: 0.326369, LdmkL: 0.002447, EyeL: 0.000082, RegL: 0.721221, PhoL: 0.011112, idL: 0.691979, ConL: 0.163148, LdConL: 0.002447, EyeConL: 0.000082, PhoConL: 0.011112, idConL: 0.691979
+Epoch: 1, Step: 215, Lr: 0.000100, TL: 0.314557, LdmkL: 0.002777, EyeL: 0.000094, RegL: 0.737464, PhoL: 0.009066, idL: 0.670835, ConL: 0.159313, LdConL: 0.002863, EyeConL: 0.000095, PhoConL: 0.008971, idConL: 0.692066
+Epoch: 1, Step: 216, Lr: 0.000100, TL: 0.314339, LdmkL: 0.002375, EyeL: 0.000094, RegL: 0.604974, PhoL: 0.008487, idL: 0.675502, ConL: 0.159736, LdConL: 0.002449, EyeConL: 0.000094, PhoConL: 0.008690, idConL: 0.699061
+Epoch: 1, Step: 217, Lr: 0.000100, TL: 0.324554, LdmkL: 0.002337, EyeL: 0.000108, RegL: 0.650782, PhoL: 0.009086, idL: 0.701572, ConL: 0.163558, LdConL: 0.002389, EyeConL: 0.000109, PhoConL: 0.009098, idConL: 0.714323
+Epoch: 1, Step: 218, Lr: 0.000100, TL: 0.305407, LdmkL: 0.001947, EyeL: 0.000088, RegL: 0.699383, PhoL: 0.009747, idL: 0.639814, ConL: 0.155844, LdConL: 0.001986, EyeConL: 0.000089, PhoConL: 0.009990, idConL: 0.668944
+Epoch: 1, Step: 219, Lr: 0.000100, TL: 0.310407, LdmkL: 0.002270, EyeL: 0.000090, RegL: 0.784871, PhoL: 0.010155, idL: 0.654048, ConL: 0.156850, LdConL: 0.002349, EyeConL: 0.000092, PhoConL: 0.010084, idConL: 0.671211
+Epoch: 1, Step: 220, Lr: 0.000100, TL: 0.347137, LdmkL: 0.002449, EyeL: 0.000093, RegL: 0.666914, PhoL: 0.007934, idL: 0.766277, ConL: 0.175403, LdConL: 0.002478, EyeConL: 0.000094, PhoConL: 0.008078, idConL: 0.783376
+Epoch: 1, Step: 221, Lr: 0.000100, TL: 0.350185, LdmkL: 0.002601, EyeL: 0.000091, RegL: 0.645374, PhoL: 0.009210, idL: 0.749773, ConL: 0.179054, LdConL: 0.002627, EyeConL: 0.000092, PhoConL: 0.009621, idConL: 0.785469
+Epoch: 1, Step: 222, Lr: 0.000100, TL: 0.302872, LdmkL: 0.004348, EyeL: 0.000087, RegL: 0.867534, PhoL: 0.010569, idL: 0.621189, ConL: 0.152975, LdConL: 0.004388, EyeConL: 0.000093, PhoConL: 0.010534, idConL: 0.637125
+Epoch: 1, Step: 223, Lr: 0.000100, TL: 0.307311, LdmkL: 0.005946, EyeL: 0.000097, RegL: 0.912985, PhoL: 0.012340, idL: 0.611791, ConL: 0.154139, LdConL: 0.005989, EyeConL: 0.000097, PhoConL: 0.012444, idConL: 0.615820
+Epoch: 1, Step: 224, Lr: 0.000100, TL: 0.316236, LdmkL: 0.004786, EyeL: 0.000120, RegL: 0.775315, PhoL: 0.010633, idL: 0.649316, ConL: 0.160123, LdConL: 0.004745, EyeConL: 0.000124, PhoConL: 0.010972, idConL: 0.666551
+Epoch: 1, Step: 225, Lr: 0.000100, TL: 0.317048, LdmkL: 0.005692, EyeL: 0.000133, RegL: 0.793189, PhoL: 0.011635, idL: 0.644854, ConL: 0.158903, LdConL: 0.005696, EyeConL: 0.000134, PhoConL: 0.011819, idConL: 0.647181
+Epoch: 1, Step: 226, Lr: 0.000100, TL: 0.327856, LdmkL: 0.005443, EyeL: 0.000097, RegL: 0.748960, PhoL: 0.008695, idL: 0.702583, ConL: 0.164334, LdConL: 0.005528, EyeConL: 0.000091, PhoConL: 0.008881, idConL: 0.704770
+Epoch: 1, Step: 227, Lr: 0.000100, TL: 0.345200, LdmkL: 0.005599, EyeL: 0.000095, RegL: 0.744505, PhoL: 0.010082, idL: 0.722333, ConL: 0.174801, LdConL: 0.005537, EyeConL: 0.000094, PhoConL: 0.010097, idConL: 0.744881
+Epoch: 1, Step: 228, Lr: 0.000100, TL: 0.313999, LdmkL: 0.005815, EyeL: 0.000130, RegL: 0.866138, PhoL: 0.013711, idL: 0.607957, ConL: 0.158955, LdConL: 0.006039, EyeConL: 0.000131, PhoConL: 0.013731, idConL: 0.626616
+Epoch: 1, Step: 229, Lr: 0.000100, TL: 0.297306, LdmkL: 0.003834, EyeL: 0.000111, RegL: 0.782869, PhoL: 0.010773, idL: 0.604763, ConL: 0.150783, LdConL: 0.003915, EyeConL: 0.000117, PhoConL: 0.011027, idConL: 0.623481
+Epoch: 1, Step: 230, Lr: 0.000100, TL: 0.352562, LdmkL: 0.004623, EyeL: 0.000157, RegL: 0.699887, PhoL: 0.012664, idL: 0.720092, ConL: 0.178366, LdConL: 0.004571, EyeConL: 0.000159, PhoConL: 0.012670, idConL: 0.741486
+Epoch: 1, Step: 231, Lr: 0.000100, TL: 0.347537, LdmkL: 0.004460, EyeL: 0.000160, RegL: 0.729769, PhoL: 0.013351, idL: 0.697254, ConL: 0.176692, LdConL: 0.004377, EyeConL: 0.000161, PhoConL: 0.013518, idConL: 0.725589
+Epoch: 1, Step: 232, Lr: 0.000100, TL: 0.343347, LdmkL: 0.004829, EyeL: 0.000124, RegL: 0.715132, PhoL: 0.011439, idL: 0.700598, ConL: 0.175325, LdConL: 0.004889, EyeConL: 0.000130, PhoConL: 0.011588, idConL: 0.735646
+Epoch: 1, Step: 233, Lr: 0.000100, TL: 0.352283, LdmkL: 0.004548, EyeL: 0.000129, RegL: 0.770817, PhoL: 0.011827, idL: 0.714110, ConL: 0.181053, LdConL: 0.004608, EyeConL: 0.000131, PhoConL: 0.011969, idConL: 0.761887
+Epoch: 1, Step: 234, Lr: 0.000100, TL: 0.338158, LdmkL: 0.005856, EyeL: 0.000106, RegL: 0.782878, PhoL: 0.009364, idL: 0.703524, ConL: 0.172684, LdConL: 0.005815, EyeConL: 0.000110, PhoConL: 0.009604, idConL: 0.737753
+Epoch: 1, Step: 235, Lr: 0.000100, TL: 0.343705, LdmkL: 0.004587, EyeL: 0.000132, RegL: 0.783605, PhoL: 0.010054, idL: 0.726553, ConL: 0.173489, LdConL: 0.004454, EyeConL: 0.000134, PhoConL: 0.010053, idConL: 0.743977
+Epoch: 1, Step: 236, Lr: 0.000100, TL: 0.320330, LdmkL: 0.003082, EyeL: 0.000145, RegL: 0.849316, PhoL: 0.009158, idL: 0.689256, ConL: 0.160850, LdConL: 0.003068, EyeConL: 0.000144, PhoConL: 0.009109, idConL: 0.697099
+Epoch: 1, Step: 237, Lr: 0.000100, TL: 0.327743, LdmkL: 0.004657, EyeL: 0.000139, RegL: 0.898473, PhoL: 0.011632, idL: 0.679659, ConL: 0.163661, LdConL: 0.004597, EyeConL: 0.000141, PhoConL: 0.011708, idConL: 0.677539
+Epoch: 1, Step: 238, Lr: 0.000100, TL: 0.308437, LdmkL: 0.004321, EyeL: 0.000095, RegL: 0.767309, PhoL: 0.010033, idL: 0.640882, ConL: 0.155702, LdConL: 0.004280, EyeConL: 0.000097, PhoConL: 0.010179, idConL: 0.654838
+Epoch: 1, Step: 239, Lr: 0.000100, TL: 0.322889, LdmkL: 0.006033, EyeL: 0.000079, RegL: 0.813929, PhoL: 0.010874, idL: 0.658628, ConL: 0.163223, LdConL: 0.006024, EyeConL: 0.000079, PhoConL: 0.011076, idConL: 0.674838
+Epoch: 1, Step: 240, Lr: 0.000100, TL: 0.310012, LdmkL: 0.004839, EyeL: 0.000101, RegL: 0.824992, PhoL: 0.010312, idL: 0.644006, ConL: 0.155565, LdConL: 0.004802, EyeConL: 0.000101, PhoConL: 0.010376, idConL: 0.649554
+Epoch: 1, Step: 241, Lr: 0.000100, TL: 0.326203, LdmkL: 0.005799, EyeL: 0.000104, RegL: 0.805847, PhoL: 0.011216, idL: 0.668400, ConL: 0.164107, LdConL: 0.005795, EyeConL: 0.000104, PhoConL: 0.011326, idConL: 0.677779
+Epoch: 1, Step: 242, Lr: 0.000100, TL: 0.372688, LdmkL: 0.007666, EyeL: 0.000111, RegL: 0.756907, PhoL: 0.011241, idL: 0.773535, ConL: 0.187647, LdConL: 0.007485, EyeConL: 0.000110, PhoConL: 0.011346, idConL: 0.786801
+Epoch: 1, Step: 243, Lr: 0.000100, TL: 0.362533, LdmkL: 0.007389, EyeL: 0.000093, RegL: 0.742966, PhoL: 0.011422, idL: 0.742066, ConL: 0.183718, LdConL: 0.007273, EyeConL: 0.000092, PhoConL: 0.011482, idConL: 0.766946
+Epoch: 1, Step: 244, Lr: 0.000100, TL: 0.344668, LdmkL: 0.009502, EyeL: 0.000096, RegL: 0.671314, PhoL: 0.009822, idL: 0.700878, ConL: 0.175184, LdConL: 0.009551, EyeConL: 0.000099, PhoConL: 0.010171, idConL: 0.725962
+Epoch: 1, Step: 245, Lr: 0.000100, TL: 0.343550, LdmkL: 0.010834, EyeL: 0.000102, RegL: 0.723128, PhoL: 0.010174, idL: 0.695545, ConL: 0.173085, LdConL: 0.010792, EyeConL: 0.000105, PhoConL: 0.010312, idConL: 0.707823
+Epoch: 1, Step: 246, Lr: 0.000100, TL: 0.330014, LdmkL: 0.007123, EyeL: 0.000127, RegL: 0.861103, PhoL: 0.013091, idL: 0.635154, ConL: 0.169464, LdConL: 0.007170, EyeConL: 0.000134, PhoConL: 0.013485, idConL: 0.675953
+Epoch: 1, Step: 247, Lr: 0.000100, TL: 0.337799, LdmkL: 0.008541, EyeL: 0.000138, RegL: 0.921066, PhoL: 0.013742, idL: 0.662616, ConL: 0.169022, LdConL: 0.008499, EyeConL: 0.000138, PhoConL: 0.014251, idConL: 0.659415
+Epoch: 1, Step: 248, Lr: 0.000100, TL: 0.337864, LdmkL: 0.009929, EyeL: 0.000157, RegL: 0.731672, PhoL: 0.011227, idL: 0.681372, ConL: 0.168976, LdConL: 0.009971, EyeConL: 0.000159, PhoConL: 0.011346, idConL: 0.680769
+Epoch: 1, Step: 249, Lr: 0.000100, TL: 0.338388, LdmkL: 0.008845, EyeL: 0.000140, RegL: 0.738460, PhoL: 0.010864, idL: 0.679869, ConL: 0.171628, LdConL: 0.008707, EyeConL: 0.000139, PhoConL: 0.010910, idConL: 0.704815
+Epoch: 1, Step: 250, Lr: 0.000100, TL: 0.310645, LdmkL: 0.005140, EyeL: 0.000122, RegL: 0.767211, PhoL: 0.010671, idL: 0.639304, ConL: 0.156104, LdConL: 0.005262, EyeConL: 0.000121, PhoConL: 0.010543, idConL: 0.648176
+Epoch: 1, Step: 251, Lr: 0.000100, TL: 0.307784, LdmkL: 0.006122, EyeL: 0.000103, RegL: 0.790476, PhoL: 0.009760, idL: 0.640537, ConL: 0.153853, LdConL: 0.006122, EyeConL: 0.000103, PhoConL: 0.009760, idConL: 0.640537
+Epoch: 1, Step: 252, Lr: 0.000100, TL: 0.324708, LdmkL: 0.008043, EyeL: 0.000130, RegL: 0.807418, PhoL: 0.012161, idL: 0.649097, ConL: 0.162314, LdConL: 0.008043, EyeConL: 0.000130, PhoConL: 0.012161, idConL: 0.649097
+Epoch: 1, Step: 253, Lr: 0.000100, TL: 0.320153, LdmkL: 0.006499, EyeL: 0.000148, RegL: 0.825467, PhoL: 0.011548, idL: 0.643952, ConL: 0.161537, LdConL: 0.006498, EyeConL: 0.000151, PhoConL: 0.011496, idConL: 0.659483
+Epoch: 1, Step: 254, Lr: 0.000100, TL: 0.318392, LdmkL: 0.008080, EyeL: 0.000123, RegL: 0.786390, PhoL: 0.011300, idL: 0.631166, ConL: 0.161276, LdConL: 0.008109, EyeConL: 0.000124, PhoConL: 0.011389, idConL: 0.651329
+Epoch: 1, Step: 255, Lr: 0.000100, TL: 0.320023, LdmkL: 0.007082, EyeL: 0.000126, RegL: 0.803021, PhoL: 0.011280, idL: 0.638917, ConL: 0.162391, LdConL: 0.007187, EyeConL: 0.000128, PhoConL: 0.011599, idConL: 0.659388
+Epoch: 1, Step: 256, Lr: 0.000100, TL: 0.340296, LdmkL: 0.005643, EyeL: 0.000122, RegL: 0.765760, PhoL: 0.010626, idL: 0.697588, ConL: 0.173685, LdConL: 0.005570, EyeConL: 0.000121, PhoConL: 0.010695, idConL: 0.733019
+Epoch: 1, Step: 257, Lr: 0.000100, TL: 0.348052, LdmkL: 0.006513, EyeL: 0.000111, RegL: 0.755340, PhoL: 0.012326, idL: 0.708436, ConL: 0.175015, LdConL: 0.006431, EyeConL: 0.000111, PhoConL: 0.012447, idConL: 0.717897
+Epoch: 1, Step: 258, Lr: 0.000100, TL: 0.317763, LdmkL: 0.003497, EyeL: 0.000132, RegL: 0.763062, PhoL: 0.009701, idL: 0.677079, ConL: 0.159240, LdConL: 0.003531, EyeConL: 0.000130, PhoConL: 0.009726, idConL: 0.680632
+Epoch: 1, Step: 259, Lr: 0.000100, TL: 0.339195, LdmkL: 0.004066, EyeL: 0.000124, RegL: 0.746558, PhoL: 0.010204, idL: 0.709721, ConL: 0.172578, LdConL: 0.004201, EyeConL: 0.000127, PhoConL: 0.010563, idConL: 0.735623
+Epoch: 1, Step: 260, Lr: 0.000100, TL: 0.367978, LdmkL: 0.004910, EyeL: 0.000153, RegL: 0.738677, PhoL: 0.011997, idL: 0.761955, ConL: 0.186456, LdConL: 0.004873, EyeConL: 0.000152, PhoConL: 0.012176, idConL: 0.785396
+Epoch: 1, Step: 261, Lr: 0.000100, TL: 0.373457, LdmkL: 0.004806, EyeL: 0.000148, RegL: 0.683936, PhoL: 0.011198, idL: 0.782401, ConL: 0.189558, LdConL: 0.004910, EyeConL: 0.000151, PhoConL: 0.011611, idConL: 0.806376
+Epoch: 1, Step: 262, Lr: 0.000100, TL: 0.327983, LdmkL: 0.006111, EyeL: 0.000143, RegL: 0.851195, PhoL: 0.011529, idL: 0.663079, ConL: 0.165971, LdConL: 0.006185, EyeConL: 0.000145, PhoConL: 0.011755, idConL: 0.680649
+Epoch: 1, Step: 263, Lr: 0.000100, TL: 0.324489, LdmkL: 0.006557, EyeL: 0.000138, RegL: 0.827782, PhoL: 0.011044, idL: 0.658751, ConL: 0.163872, LdConL: 0.006510, EyeConL: 0.000139, PhoConL: 0.011208, idConL: 0.674036
+Epoch: 1, Step: 264, Lr: 0.000100, TL: 0.341193, LdmkL: 0.005321, EyeL: 0.000105, RegL: 0.826548, PhoL: 0.012845, idL: 0.676480, ConL: 0.174697, LdConL: 0.005377, EyeConL: 0.000109, PhoConL: 0.012802, idConL: 0.718037
+Epoch: 1, Step: 265, Lr: 0.000100, TL: 0.317766, LdmkL: 0.004634, EyeL: 0.000114, RegL: 0.789834, PhoL: 0.010819, idL: 0.654667, ConL: 0.160368, LdConL: 0.004736, EyeConL: 0.000119, PhoConL: 0.011063, idConL: 0.666935
+Epoch: 1, Step: 266, Lr: 0.000100, TL: 0.342532, LdmkL: 0.004781, EyeL: 0.000131, RegL: 0.781146, PhoL: 0.012602, idL: 0.697214, ConL: 0.172895, LdConL: 0.004806, EyeConL: 0.000131, PhoConL: 0.012763, idConL: 0.712163
+Epoch: 1, Step: 267, Lr: 0.000100, TL: 0.339984, LdmkL: 0.004331, EyeL: 0.000164, RegL: 0.785415, PhoL: 0.011511, idL: 0.700584, ConL: 0.172272, LdConL: 0.004366, EyeConL: 0.000165, PhoConL: 0.011541, idConL: 0.723292
+Epoch: 1, Step: 268, Lr: 0.000100, TL: 0.327897, LdmkL: 0.004133, EyeL: 0.000102, RegL: 0.750310, PhoL: 0.009589, idL: 0.689369, ConL: 0.166536, LdConL: 0.004238, EyeConL: 0.000105, PhoConL: 0.009855, idConL: 0.712416
+Epoch: 1, Step: 269, Lr: 0.000100, TL: 0.338254, LdmkL: 0.004334, EyeL: 0.000110, RegL: 0.773011, PhoL: 0.010386, idL: 0.709660, ConL: 0.171029, LdConL: 0.004382, EyeConL: 0.000110, PhoConL: 0.010559, idConL: 0.727092
+Epoch: 1, Step: 270, Lr: 0.000100, TL: 0.306619, LdmkL: 0.004688, EyeL: 0.000166, RegL: 0.713516, PhoL: 0.009000, idL: 0.647487, ConL: 0.154196, LdConL: 0.004672, EyeConL: 0.000168, PhoConL: 0.009120, idConL: 0.655584
+Epoch: 1, Step: 271, Lr: 0.000100, TL: 0.316573, LdmkL: 0.004053, EyeL: 0.000140, RegL: 0.754721, PhoL: 0.008675, idL: 0.667094, ConL: 0.161535, LdConL: 0.004091, EyeConL: 0.000145, PhoConL: 0.008848, idConL: 0.698011
+Epoch: 1, Step: 272, Lr: 0.000100, TL: 0.330746, LdmkL: 0.004502, EyeL: 0.000111, RegL: 0.875026, PhoL: 0.011460, idL: 0.684196, ConL: 0.166286, LdConL: 0.004496, EyeConL: 0.000118, PhoConL: 0.011563, idConL: 0.692731
+Epoch: 1, Step: 273, Lr: 0.000100, TL: 0.332153, LdmkL: 0.003810, EyeL: 0.000119, RegL: 0.875505, PhoL: 0.010774, idL: 0.702778, ConL: 0.166033, LdConL: 0.003810, EyeConL: 0.000119, PhoConL: 0.010774, idConL: 0.702778
+Epoch: 1, Step: 274, Lr: 0.000100, TL: 0.315263, LdmkL: 0.004001, EyeL: 0.000127, RegL: 0.758007, PhoL: 0.011729, idL: 0.650040, ConL: 0.157594, LdConL: 0.004001, EyeConL: 0.000127, PhoConL: 0.011729, idConL: 0.650040
+Epoch: 1, Step: 275, Lr: 0.000100, TL: 0.335834, LdmkL: 0.003987, EyeL: 0.000131, RegL: 0.749154, PhoL: 0.010890, idL: 0.702829, ConL: 0.169295, LdConL: 0.004004, EyeConL: 0.000135, PhoConL: 0.011123, idConL: 0.714551
+Epoch: 1, Step: 276, Lr: 0.000100, TL: 0.342697, LdmkL: 0.003730, EyeL: 0.000100, RegL: 0.697014, PhoL: 0.009053, idL: 0.741693, ConL: 0.172352, LdConL: 0.003698, EyeConL: 0.000102, PhoConL: 0.009180, idConL: 0.750961
+Epoch: 1, Step: 277, Lr: 0.000100, TL: 0.338010, LdmkL: 0.003610, EyeL: 0.000091, RegL: 0.702409, PhoL: 0.008642, idL: 0.737039, ConL: 0.169546, LdConL: 0.003604, EyeConL: 0.000095, PhoConL: 0.008805, idConL: 0.741187
+Epoch: 1, Step: 278, Lr: 0.000100, TL: 0.312533, LdmkL: 0.005479, EyeL: 0.000165, RegL: 0.766421, PhoL: 0.009889, idL: 0.644242, ConL: 0.158187, LdConL: 0.005430, EyeConL: 0.000171, PhoConL: 0.010078, idConL: 0.662147
+Epoch: 1, Step: 279, Lr: 0.000100, TL: 0.314102, LdmkL: 0.003928, EyeL: 0.000164, RegL: 0.744322, PhoL: 0.011057, idL: 0.644274, ConL: 0.158967, LdConL: 0.003949, EyeConL: 0.000166, PhoConL: 0.011209, idConL: 0.662174
+Epoch: 1, Step: 280, Lr: 0.000100, TL: 0.310119, LdmkL: 0.003000, EyeL: 0.000113, RegL: 0.808249, PhoL: 0.009473, idL: 0.655179, ConL: 0.156943, LdConL: 0.002982, EyeConL: 0.000113, PhoConL: 0.009906, idConL: 0.670184
+Epoch: 1, Step: 281, Lr: 0.000100, TL: 0.299868, LdmkL: 0.003060, EyeL: 0.000141, RegL: 0.845030, PhoL: 0.010067, idL: 0.628475, ConL: 0.150754, LdConL: 0.003079, EyeConL: 0.000140, PhoConL: 0.010148, idConL: 0.636196
+Epoch: 1, Step: 282, Lr: 0.000100, TL: 0.304423, LdmkL: 0.002455, EyeL: 0.000092, RegL: 0.819781, PhoL: 0.008683, idL: 0.648286, ConL: 0.154770, LdConL: 0.002609, EyeConL: 0.000094, PhoConL: 0.008912, idConL: 0.671218
+Epoch: 1, Step: 283, Lr: 0.000100, TL: 0.306365, LdmkL: 0.002467, EyeL: 0.000097, RegL: 0.841005, PhoL: 0.009958, idL: 0.641106, ConL: 0.155579, LdConL: 0.002519, EyeConL: 0.000096, PhoConL: 0.010143, idConL: 0.663386
+Epoch: 1, Step: 284, Lr: 0.000100, TL: 0.305640, LdmkL: 0.002012, EyeL: 0.000112, RegL: 0.695821, PhoL: 0.006604, idL: 0.681961, ConL: 0.153846, LdConL: 0.002035, EyeConL: 0.000113, PhoConL: 0.006647, idConL: 0.692025
+Epoch: 1, Step: 285, Lr: 0.000100, TL: 0.324371, LdmkL: 0.002952, EyeL: 0.000116, RegL: 0.806970, PhoL: 0.007920, idL: 0.703554, ConL: 0.164672, LdConL: 0.003026, EyeConL: 0.000118, PhoConL: 0.008276, idConL: 0.724884
+Epoch: 1, Step: 286, Lr: 0.000100, TL: 0.340515, LdmkL: 0.003534, EyeL: 0.000132, RegL: 0.828057, PhoL: 0.010421, idL: 0.705899, ConL: 0.174745, LdConL: 0.003636, EyeConL: 0.000133, PhoConL: 0.010818, idConL: 0.746695
+Epoch: 1, Step: 287, Lr: 0.000100, TL: 0.341457, LdmkL: 0.004022, EyeL: 0.000117, RegL: 0.797490, PhoL: 0.011436, idL: 0.706041, ConL: 0.173158, LdConL: 0.004099, EyeConL: 0.000119, PhoConL: 0.011631, idConL: 0.728390
+Epoch: 1, Step: 288, Lr: 0.000100, TL: 0.302987, LdmkL: 0.004133, EyeL: 0.000151, RegL: 0.971323, PhoL: 0.009034, idL: 0.648286, ConL: 0.150882, LdConL: 0.004127, EyeConL: 0.000151, PhoConL: 0.009250, idConL: 0.640525
+Epoch: 1, Step: 289, Lr: 0.000100, TL: 0.299296, LdmkL: 0.003133, EyeL: 0.000158, RegL: 0.924326, PhoL: 0.009241, idL: 0.627582, ConL: 0.151914, LdConL: 0.003236, EyeConL: 0.000160, PhoConL: 0.009365, idConL: 0.648947
+Epoch: 1, Step: 290, Lr: 0.000100, TL: 0.292062, LdmkL: 0.002934, EyeL: 0.000140, RegL: 0.788600, PhoL: 0.008244, idL: 0.622710, ConL: 0.147878, LdConL: 0.002980, EyeConL: 0.000139, PhoConL: 0.008449, idConL: 0.639302
+Epoch: 1, Step: 291, Lr: 0.000100, TL: 0.282943, LdmkL: 0.002939, EyeL: 0.000115, RegL: 0.807522, PhoL: 0.008468, idL: 0.604138, ConL: 0.142044, LdConL: 0.002961, EyeConL: 0.000116, PhoConL: 0.008555, idConL: 0.609284
+Epoch: 1, Step: 292, Lr: 0.000100, TL: 0.318914, LdmkL: 0.003962, EyeL: 0.000129, RegL: 0.884393, PhoL: 0.008996, idL: 0.681808, ConL: 0.160381, LdConL: 0.003986, EyeConL: 0.000129, PhoConL: 0.009036, idConL: 0.690971
+Epoch: 1, Step: 293, Lr: 0.000100, TL: 0.311844, LdmkL: 0.004682, EyeL: 0.000146, RegL: 0.901544, PhoL: 0.011267, idL: 0.634652, ConL: 0.157462, LdConL: 0.004683, EyeConL: 0.000147, PhoConL: 0.011255, idConL: 0.650608
+Epoch: 1, Step: 294, Lr: 0.000100, TL: 0.343947, LdmkL: 0.003212, EyeL: 0.000109, RegL: 0.756232, PhoL: 0.010867, idL: 0.721856, ConL: 0.174446, LdConL: 0.003335, EyeConL: 0.000110, PhoConL: 0.010930, idConL: 0.745705
+Epoch: 1, Step: 295, Lr: 0.000100, TL: 0.334236, LdmkL: 0.003749, EyeL: 0.000120, RegL: 0.777742, PhoL: 0.009474, idL: 0.721310, ConL: 0.167079, LdConL: 0.003749, EyeConL: 0.000120, PhoConL: 0.009474, idConL: 0.721310
+Epoch: 1, Step: 296, Lr: 0.000100, TL: 0.328906, LdmkL: 0.004224, EyeL: 0.000141, RegL: 0.786038, PhoL: 0.011098, idL: 0.674630, ConL: 0.167341, LdConL: 0.004209, EyeConL: 0.000144, PhoConL: 0.011481, idConL: 0.700134
+Epoch: 1, Step: 297, Lr: 0.000100, TL: 0.324936, LdmkL: 0.003655, EyeL: 0.000138, RegL: 0.828053, PhoL: 0.011495, idL: 0.668560, ConL: 0.164359, LdConL: 0.003722, EyeConL: 0.000140, PhoConL: 0.011853, idConL: 0.683953
+Epoch: 1, Step: 298, Lr: 0.000100, TL: 0.336091, LdmkL: 0.004170, EyeL: 0.000103, RegL: 0.811863, PhoL: 0.010731, idL: 0.689777, ConL: 0.172319, LdConL: 0.004190, EyeConL: 0.000109, PhoConL: 0.010819, idConL: 0.731909
+Epoch: 1, Step: 299, Lr: 0.000100, TL: 0.328296, LdmkL: 0.004689, EyeL: 0.000105, RegL: 0.890640, PhoL: 0.010987, idL: 0.674006, ConL: 0.166638, LdConL: 0.004710, EyeConL: 0.000105, PhoConL: 0.011357, idConL: 0.695539
+Epoch: 1, Step: 300, Lr: 0.000100, TL: 0.315908, LdmkL: 0.003802, EyeL: 0.000139, RegL: 0.867773, PhoL: 0.010904, idL: 0.660809, ConL: 0.157911, LdConL: 0.003802, EyeConL: 0.000139, PhoConL: 0.010904, idConL: 0.660809
+Epoch: 1, Step: 301, Lr: 0.000100, TL: 0.318446, LdmkL: 0.003311, EyeL: 0.000152, RegL: 0.825656, PhoL: 0.010184, idL: 0.669778, ConL: 0.160577, LdConL: 0.003285, EyeConL: 0.000154, PhoConL: 0.010332, idConL: 0.682368
+Epoch: 1, Step: 302, Lr: 0.000100, TL: 0.306163, LdmkL: 0.003979, EyeL: 0.000152, RegL: 0.838547, PhoL: 0.009095, idL: 0.651355, ConL: 0.153487, LdConL: 0.003966, EyeConL: 0.000153, PhoConL: 0.009174, idConL: 0.655105
+Epoch: 1, Step: 303, Lr: 0.000100, TL: 0.308493, LdmkL: 0.004304, EyeL: 0.000139, RegL: 0.820718, PhoL: 0.010381, idL: 0.628415, ConL: 0.157524, LdConL: 0.004253, EyeConL: 0.000140, PhoConL: 0.010740, idConL: 0.658252
+Epoch: 1, Step: 304, Lr: 0.000100, TL: 0.297011, LdmkL: 0.003926, EyeL: 0.000108, RegL: 0.923642, PhoL: 0.009532, idL: 0.624704, ConL: 0.148880, LdConL: 0.003943, EyeConL: 0.000109, PhoConL: 0.009843, idConL: 0.625706
+Epoch: 1, Step: 305, Lr: 0.000100, TL: 0.297945, LdmkL: 0.005772, EyeL: 0.000109, RegL: 0.978390, PhoL: 0.009478, idL: 0.617367, ConL: 0.149537, LdConL: 0.005683, EyeConL: 0.000110, PhoConL: 0.009828, idConL: 0.620437
+Epoch: 1, Step: 306, Lr: 0.000100, TL: 0.299433, LdmkL: 0.004242, EyeL: 0.000102, RegL: 0.817002, PhoL: 0.010072, idL: 0.614480, ConL: 0.151968, LdConL: 0.004248, EyeConL: 0.000103, PhoConL: 0.010020, idConL: 0.637882
+Epoch: 1, Step: 307, Lr: 0.000100, TL: 0.295243, LdmkL: 0.004813, EyeL: 0.000129, RegL: 0.854740, PhoL: 0.010148, idL: 0.606454, ConL: 0.148628, LdConL: 0.004873, EyeConL: 0.000127, PhoConL: 0.010097, idConL: 0.617171
+Epoch: 1, Step: 308, Lr: 0.000100, TL: 0.342333, LdmkL: 0.004556, EyeL: 0.000180, RegL: 0.809241, PhoL: 0.009569, idL: 0.721911, ConL: 0.173996, LdConL: 0.004334, EyeConL: 0.000189, PhoConL: 0.009687, idConL: 0.750497
+Epoch: 1, Step: 309, Lr: 0.000100, TL: 0.336657, LdmkL: 0.005840, EyeL: 0.000151, RegL: 0.741863, PhoL: 0.009408, idL: 0.717424, ConL: 0.168291, LdConL: 0.005840, EyeConL: 0.000151, PhoConL: 0.009408, idConL: 0.717424
+Epoch: 1, Step: 310, Lr: 0.000100, TL: 0.333916, LdmkL: 0.004276, EyeL: 0.000116, RegL: 0.886198, PhoL: 0.010330, idL: 0.698810, ConL: 0.169014, LdConL: 0.004352, EyeConL: 0.000115, PhoConL: 0.010538, idConL: 0.717354
+Epoch: 1, Step: 311, Lr: 0.000100, TL: 0.357990, LdmkL: 0.006875, EyeL: 0.000109, RegL: 0.881875, PhoL: 0.011628, idL: 0.733298, ConL: 0.181002, LdConL: 0.006785, EyeConL: 0.000111, PhoConL: 0.011706, idConL: 0.753470
+Epoch: 1, Step: 312, Lr: 0.000100, TL: 0.305103, LdmkL: 0.005364, EyeL: 0.000115, RegL: 0.845522, PhoL: 0.010305, idL: 0.632877, ConL: 0.152355, LdConL: 0.005406, EyeConL: 0.000117, PhoConL: 0.010453, idConL: 0.629629
+Epoch: 1, Step: 313, Lr: 0.000100, TL: 0.316397, LdmkL: 0.005950, EyeL: 0.000103, RegL: 0.852512, PhoL: 0.009300, idL: 0.648381, ConL: 0.161983, LdConL: 0.006091, EyeConL: 0.000109, PhoConL: 0.009597, idConL: 0.682940
+Epoch: 1, Step: 314, Lr: 0.000100, TL: 0.305380, LdmkL: 0.004415, EyeL: 0.000145, RegL: 0.969627, PhoL: 0.009422, idL: 0.636920, ConL: 0.154495, LdConL: 0.004225, EyeConL: 0.000148, PhoConL: 0.009673, idConL: 0.653880
+Epoch: 1, Step: 315, Lr: 0.000100, TL: 0.312719, LdmkL: 0.003657, EyeL: 0.000136, RegL: 0.987435, PhoL: 0.009510, idL: 0.655996, ConL: 0.158609, LdConL: 0.003670, EyeConL: 0.000135, PhoConL: 0.009812, idConL: 0.675908
+Epoch: 1, Step: 316, Lr: 0.000100, TL: 0.325336, LdmkL: 0.004746, EyeL: 0.000137, RegL: 0.725872, PhoL: 0.011838, idL: 0.660189, ConL: 0.164667, LdConL: 0.004696, EyeConL: 0.000136, PhoConL: 0.011898, idConL: 0.680185
+Epoch: 1, Step: 317, Lr: 0.000100, TL: 0.325275, LdmkL: 0.005528, EyeL: 0.000127, RegL: 0.822847, PhoL: 0.011691, idL: 0.649128, ConL: 0.166330, LdConL: 0.005482, EyeConL: 0.000130, PhoConL: 0.011737, idConL: 0.686220
+Epoch: 1, Step: 318, Lr: 0.000100, TL: 0.325095, LdmkL: 0.005563, EyeL: 0.000160, RegL: 0.862578, PhoL: 0.012697, idL: 0.654263, ConL: 0.163038, LdConL: 0.005528, EyeConL: 0.000161, PhoConL: 0.012697, idConL: 0.659768
+Epoch: 1, Step: 319, Lr: 0.000100, TL: 0.327558, LdmkL: 0.006644, EyeL: 0.000158, RegL: 0.862844, PhoL: 0.011960, idL: 0.665072, ConL: 0.163736, LdConL: 0.006644, EyeConL: 0.000158, PhoConL: 0.011960, idConL: 0.665072
+Epoch: 1, Step: 320, Lr: 0.000100, TL: 0.340789, LdmkL: 0.007403, EyeL: 0.000133, RegL: 0.885207, PhoL: 0.011629, idL: 0.682093, ConL: 0.173486, LdConL: 0.007318, EyeConL: 0.000134, PhoConL: 0.011504, idConL: 0.715129
+Epoch: 1, Step: 321, Lr: 0.000100, TL: 0.341940, LdmkL: 0.006871, EyeL: 0.000143, RegL: 0.905461, PhoL: 0.012697, idL: 0.672537, ConL: 0.174933, LdConL: 0.006917, EyeConL: 0.000144, PhoConL: 0.012933, idConL: 0.710032
+Epoch: 1, Step: 322, Lr: 0.000100, TL: 0.324865, LdmkL: 0.005245, EyeL: 0.000112, RegL: 0.904320, PhoL: 0.009703, idL: 0.680654, ConL: 0.163880, LdConL: 0.005269, EyeConL: 0.000114, PhoConL: 0.009688, idConL: 0.695610
+Epoch: 1, Step: 323, Lr: 0.000100, TL: 0.314193, LdmkL: 0.007304, EyeL: 0.000151, RegL: 0.936663, PhoL: 0.010357, idL: 0.635020, ConL: 0.158926, LdConL: 0.007517, EyeConL: 0.000155, PhoConL: 0.010244, idConL: 0.653826
+Epoch: 1, Step: 324, Lr: 0.000100, TL: 0.334887, LdmkL: 0.009999, EyeL: 0.000145, RegL: 0.831967, PhoL: 0.011687, idL: 0.666524, ConL: 0.167981, LdConL: 0.010025, EyeConL: 0.000147, PhoConL: 0.011847, idConL: 0.670572
+Epoch: 1, Step: 325, Lr: 0.000100, TL: 0.334053, LdmkL: 0.006962, EyeL: 0.000167, RegL: 0.878980, PhoL: 0.012125, idL: 0.673960, ConL: 0.167794, LdConL: 0.006914, EyeConL: 0.000168, PhoConL: 0.012210, idConL: 0.681465
+Epoch: 1, Step: 326, Lr: 0.000100, TL: 0.346247, LdmkL: 0.007966, EyeL: 0.000115, RegL: 0.924731, PhoL: 0.010410, idL: 0.712749, ConL: 0.174703, LdConL: 0.008035, EyeConL: 0.000115, PhoConL: 0.010653, idConL: 0.726237
+Epoch: 1, Step: 327, Lr: 0.000100, TL: 0.353983, LdmkL: 0.009492, EyeL: 0.000138, RegL: 0.886594, PhoL: 0.009926, idL: 0.721174, ConL: 0.180178, LdConL: 0.009479, EyeConL: 0.000136, PhoConL: 0.010239, idConL: 0.750428
+Epoch: 1, Step: 328, Lr: 0.000100, TL: 0.334062, LdmkL: 0.014175, EyeL: 0.000141, RegL: 0.974036, PhoL: 0.012540, idL: 0.619792, ConL: 0.170610, LdConL: 0.014310, EyeConL: 0.000144, PhoConL: 0.012672, idConL: 0.654060
+Epoch: 1, Step: 329, Lr: 0.000100, TL: 0.330948, LdmkL: 0.016179, EyeL: 0.000141, RegL: 0.953056, PhoL: 0.013240, idL: 0.599759, ConL: 0.168101, LdConL: 0.016272, EyeConL: 0.000142, PhoConL: 0.013375, idConL: 0.624690
+Epoch: 1, Step: 330, Lr: 0.000100, TL: 0.361176, LdmkL: 0.013236, EyeL: 0.000169, RegL: 0.838811, PhoL: 0.014137, idL: 0.694333, ConL: 0.180546, LdConL: 0.013236, EyeConL: 0.000169, PhoConL: 0.014137, idConL: 0.694333
+Epoch: 1, Step: 331, Lr: 0.000100, TL: 0.377912, LdmkL: 0.014552, EyeL: 0.000133, RegL: 0.911191, PhoL: 0.013577, idL: 0.728012, ConL: 0.190379, LdConL: 0.014562, EyeConL: 0.000144, PhoConL: 0.014048, idConL: 0.737881
+Epoch: 1, Step: 332, Lr: 0.000100, TL: 0.366664, LdmkL: 0.016426, EyeL: 0.000127, RegL: 0.906608, PhoL: 0.012276, idL: 0.704787, ConL: 0.184511, LdConL: 0.016295, EyeConL: 0.000129, PhoConL: 0.012366, idConL: 0.716780
+Epoch: 1, Step: 333, Lr: 0.000100, TL: 0.371622, LdmkL: 0.015394, EyeL: 0.000133, RegL: 0.901104, PhoL: 0.013144, idL: 0.708237, ConL: 0.188071, LdConL: 0.015320, EyeConL: 0.000136, PhoConL: 0.013361, idConL: 0.729459
+Epoch: 1, Step: 334, Lr: 0.000100, TL: 0.368036, LdmkL: 0.015859, EyeL: 0.000125, RegL: 0.921631, PhoL: 0.011955, idL: 0.710307, ConL: 0.185988, LdConL: 0.015979, EyeConL: 0.000124, PhoConL: 0.012154, idConL: 0.727884
+Epoch: 1, Step: 335, Lr: 0.000100, TL: 0.360326, LdmkL: 0.014776, EyeL: 0.000120, RegL: 0.923407, PhoL: 0.013017, idL: 0.681318, ConL: 0.183039, LdConL: 0.014920, EyeConL: 0.000119, PhoConL: 0.013431, idConL: 0.705687
+Epoch: 1, Step: 336, Lr: 0.000100, TL: 0.334197, LdmkL: 0.011732, EyeL: 0.000155, RegL: 0.882149, PhoL: 0.011140, idL: 0.664438, ConL: 0.167054, LdConL: 0.011732, EyeConL: 0.000155, PhoConL: 0.011140, idConL: 0.664438
+Epoch: 1, Step: 337, Lr: 0.000100, TL: 0.340529, LdmkL: 0.010480, EyeL: 0.000164, RegL: 0.939671, PhoL: 0.011695, idL: 0.673992, ConL: 0.171603, LdConL: 0.010453, EyeConL: 0.000163, PhoConL: 0.012172, idConL: 0.683220
+Epoch: 1, Step: 338, Lr: 0.000100, TL: 0.366091, LdmkL: 0.014764, EyeL: 0.000140, RegL: 0.823910, PhoL: 0.012287, idL: 0.707484, ConL: 0.185033, LdConL: 0.014689, EyeConL: 0.000139, PhoConL: 0.012370, idConL: 0.727320
+Epoch: 1, Step: 339, Lr: 0.000100, TL: 0.345700, LdmkL: 0.010226, EyeL: 0.000152, RegL: 0.830752, PhoL: 0.011940, idL: 0.685182, ConL: 0.174323, LdConL: 0.010214, EyeConL: 0.000154, PhoConL: 0.012140, idConL: 0.698369
+Epoch: 1, Step: 340, Lr: 0.000100, TL: 0.351238, LdmkL: 0.008820, EyeL: 0.000121, RegL: 0.884435, PhoL: 0.012690, idL: 0.703557, ConL: 0.176117, LdConL: 0.008777, EyeConL: 0.000123, PhoConL: 0.012603, idConL: 0.710055
+Epoch: 1, Step: 341, Lr: 0.000100, TL: 0.342576, LdmkL: 0.010868, EyeL: 0.000127, RegL: 0.949164, PhoL: 0.010719, idL: 0.678591, ConL: 0.174330, LdConL: 0.010702, EyeConL: 0.000127, PhoConL: 0.010914, idConL: 0.708360
+Epoch: 1, Step: 342, Lr: 0.000100, TL: 0.356183, LdmkL: 0.008372, EyeL: 0.000137, RegL: 0.801756, PhoL: 0.012877, idL: 0.714666, ConL: 0.178906, LdConL: 0.008339, EyeConL: 0.000143, PhoConL: 0.013098, idConL: 0.721141
+Epoch: 1, Step: 343, Lr: 0.000100, TL: 0.363470, LdmkL: 0.009040, EyeL: 0.000148, RegL: 0.777445, PhoL: 0.011150, idL: 0.745117, ConL: 0.182880, LdConL: 0.008998, EyeConL: 0.000155, PhoConL: 0.011252, idConL: 0.756120
+Epoch: 1, Step: 344, Lr: 0.000100, TL: 0.326436, LdmkL: 0.010232, EyeL: 0.000145, RegL: 1.090339, PhoL: 0.012509, idL: 0.627934, ConL: 0.165345, LdConL: 0.010063, EyeConL: 0.000143, PhoConL: 0.012716, idConL: 0.648534
+Epoch: 1, Step: 345, Lr: 0.000100, TL: 0.328786, LdmkL: 0.008809, EyeL: 0.000138, RegL: 1.071698, PhoL: 0.011739, idL: 0.653028, ConL: 0.165649, LdConL: 0.008940, EyeConL: 0.000140, PhoConL: 0.011893, idConL: 0.663915
+Epoch: 1, Step: 346, Lr: 0.000100, TL: 0.340928, LdmkL: 0.008242, EyeL: 0.000155, RegL: 1.006049, PhoL: 0.012805, idL: 0.671932, ConL: 0.172435, LdConL: 0.008143, EyeConL: 0.000153, PhoConL: 0.012836, idConL: 0.692329
+Epoch: 1, Step: 347, Lr: 0.000100, TL: 0.358386, LdmkL: 0.008787, EyeL: 0.000148, RegL: 1.015709, PhoL: 0.011300, idL: 0.726377, ConL: 0.181475, LdConL: 0.008379, EyeConL: 0.000146, PhoConL: 0.011298, idConL: 0.751765
+Epoch: 1, Step: 348, Lr: 0.000100, TL: 0.347774, LdmkL: 0.008921, EyeL: 0.000139, RegL: 0.934210, PhoL: 0.012956, idL: 0.682238, ConL: 0.176262, LdConL: 0.008689, EyeConL: 0.000140, PhoConL: 0.013428, idConL: 0.702890
+Epoch: 1, Step: 349, Lr: 0.000100, TL: 0.341373, LdmkL: 0.007881, EyeL: 0.000124, RegL: 0.972952, PhoL: 0.012187, idL: 0.682886, ConL: 0.172319, LdConL: 0.007935, EyeConL: 0.000131, PhoConL: 0.012196, idConL: 0.699303
+Epoch: 1, Step: 350, Lr: 0.000100, TL: 0.336366, LdmkL: 0.010644, EyeL: 0.000198, RegL: 0.948037, PhoL: 0.013957, idL: 0.633507, ConL: 0.170813, LdConL: 0.010635, EyeConL: 0.000203, PhoConL: 0.014175, idConL: 0.658122
+Epoch: 1, Step: 351, Lr: 0.000100, TL: 0.342336, LdmkL: 0.009769, EyeL: 0.000220, RegL: 0.923063, PhoL: 0.013813, idL: 0.661042, ConL: 0.172420, LdConL: 0.009939, EyeConL: 0.000218, PhoConL: 0.013898, idConL: 0.672334
+Epoch: 1, Step: 352, Lr: 0.000100, TL: 0.329911, LdmkL: 0.009173, EyeL: 0.000133, RegL: 0.902095, PhoL: 0.011871, idL: 0.647721, ConL: 0.167228, LdConL: 0.009054, EyeConL: 0.000139, PhoConL: 0.012105, idConL: 0.669127
+Epoch: 1, Step: 353, Lr: 0.000100, TL: 0.315240, LdmkL: 0.007310, EyeL: 0.000125, RegL: 0.919993, PhoL: 0.009969, idL: 0.645871, ConL: 0.158600, LdConL: 0.007237, EyeConL: 0.000126, PhoConL: 0.009970, idConL: 0.656483
+Epoch: 1, Step: 354, Lr: 0.000100, TL: 0.315257, LdmkL: 0.008983, EyeL: 0.000119, RegL: 0.984600, PhoL: 0.011217, idL: 0.625978, ConL: 0.158426, LdConL: 0.009058, EyeConL: 0.000119, PhoConL: 0.011476, idConL: 0.631491
+Epoch: 1, Step: 355, Lr: 0.000100, TL: 0.308517, LdmkL: 0.006643, EyeL: 0.000140, RegL: 0.928659, PhoL: 0.010318, idL: 0.629421, ConL: 0.155121, LdConL: 0.006381, EyeConL: 0.000141, PhoConL: 0.010416, idConL: 0.638830
+Epoch: 1, Step: 356, Lr: 0.000100, TL: 0.337108, LdmkL: 0.006352, EyeL: 0.000159, RegL: 0.829832, PhoL: 0.010496, idL: 0.694526, ConL: 0.170617, LdConL: 0.006258, EyeConL: 0.000162, PhoConL: 0.010499, idConL: 0.715995
+Epoch: 1, Step: 357, Lr: 0.000100, TL: 0.307642, LdmkL: 0.004444, EyeL: 0.000155, RegL: 0.871222, PhoL: 0.010372, idL: 0.642171, ConL: 0.153777, LdConL: 0.004444, EyeConL: 0.000155, PhoConL: 0.010372, idConL: 0.642171
+Epoch: 1, Step: 358, Lr: 0.000100, TL: 0.296394, LdmkL: 0.005591, EyeL: 0.000116, RegL: 0.924348, PhoL: 0.009959, idL: 0.604043, ConL: 0.149867, LdConL: 0.005775, EyeConL: 0.000120, PhoConL: 0.009987, idConL: 0.619984
+Epoch: 1, Step: 359, Lr: 0.000100, TL: 0.316927, LdmkL: 0.005186, EyeL: 0.000111, RegL: 0.867840, PhoL: 0.011562, idL: 0.637350, ConL: 0.160950, LdConL: 0.005232, EyeConL: 0.000111, PhoConL: 0.011582, idConL: 0.662213
+Epoch: 1, Step: 360, Lr: 0.000100, TL: 0.306275, LdmkL: 0.006979, EyeL: 0.000204, RegL: 1.028859, PhoL: 0.011761, idL: 0.599511, ConL: 0.155565, LdConL: 0.007052, EyeConL: 0.000205, PhoConL: 0.011939, idConL: 0.622145
+Epoch: 1, Step: 361, Lr: 0.000100, TL: 0.303032, LdmkL: 0.006199, EyeL: 0.000185, RegL: 0.979115, PhoL: 0.009505, idL: 0.622468, ConL: 0.153046, LdConL: 0.006246, EyeConL: 0.000186, PhoConL: 0.009613, idConL: 0.636938
+Epoch: 1, Step: 362, Lr: 0.000100, TL: 0.318508, LdmkL: 0.008061, EyeL: 0.000149, RegL: 1.004797, PhoL: 0.008845, idL: 0.661538, ConL: 0.160198, LdConL: 0.008165, EyeConL: 0.000149, PhoConL: 0.008988, idConL: 0.669540
+Epoch: 1, Step: 363, Lr: 0.000100, TL: 0.310801, LdmkL: 0.007806, EyeL: 0.000120, RegL: 1.017872, PhoL: 0.010562, idL: 0.624998, ConL: 0.156650, LdConL: 0.007915, EyeConL: 0.000122, PhoConL: 0.010628, idConL: 0.636786
+Epoch: 1, Step: 364, Lr: 0.000100, TL: 0.348920, LdmkL: 0.007967, EyeL: 0.000149, RegL: 0.995215, PhoL: 0.012101, idL: 0.702532, ConL: 0.175998, LdConL: 0.007931, EyeConL: 0.000148, PhoConL: 0.012247, idConL: 0.717121
+Epoch: 1, Step: 365, Lr: 0.000100, TL: 0.349234, LdmkL: 0.008159, EyeL: 0.000151, RegL: 0.981309, PhoL: 0.013047, idL: 0.681605, ConL: 0.178412, LdConL: 0.008381, EyeConL: 0.000156, PhoConL: 0.012873, idConL: 0.720643
+Epoch: 1, Step: 366, Lr: 0.000100, TL: 0.360081, LdmkL: 0.008879, EyeL: 0.000186, RegL: 0.870665, PhoL: 0.012961, idL: 0.712121, ConL: 0.182582, LdConL: 0.008842, EyeConL: 0.000190, PhoConL: 0.013204, idConL: 0.735708
+Epoch: 1, Step: 367, Lr: 0.000100, TL: 0.344023, LdmkL: 0.006028, EyeL: 0.000181, RegL: 0.862068, PhoL: 0.012743, idL: 0.689073, ConL: 0.174427, LdConL: 0.006000, EyeConL: 0.000182, PhoConL: 0.012855, idConL: 0.712668
+Epoch: 1, Step: 368, Lr: 0.000100, TL: 0.340915, LdmkL: 0.004719, EyeL: 0.000161, RegL: 0.917696, PhoL: 0.010877, idL: 0.712711, ConL: 0.171647, LdConL: 0.004755, EyeConL: 0.000163, PhoConL: 0.011190, idConL: 0.721744
+Epoch: 1, Step: 369, Lr: 0.000100, TL: 0.349083, LdmkL: 0.003832, EyeL: 0.000166, RegL: 0.889064, PhoL: 0.010589, idL: 0.734092, ConL: 0.177000, LdConL: 0.003808, EyeConL: 0.000168, PhoConL: 0.010847, idConL: 0.756648
+Epoch: 1, Step: 370, Lr: 0.000100, TL: 0.343411, LdmkL: 0.007090, EyeL: 0.000144, RegL: 0.914500, PhoL: 0.013871, idL: 0.678403, ConL: 0.172664, LdConL: 0.007127, EyeConL: 0.000146, PhoConL: 0.013979, idConL: 0.687156
+Epoch: 1, Step: 371, Lr: 0.000100, TL: 0.318568, LdmkL: 0.005144, EyeL: 0.000134, RegL: 0.896718, PhoL: 0.011356, idL: 0.646449, ConL: 0.161199, LdConL: 0.005102, EyeConL: 0.000136, PhoConL: 0.011403, idConL: 0.665774
+Epoch: 1, Step: 372, Lr: 0.000100, TL: 0.324283, LdmkL: 0.006847, EyeL: 0.000135, RegL: 0.889679, PhoL: 0.010665, idL: 0.660433, ConL: 0.163795, LdConL: 0.006936, EyeConL: 0.000135, PhoConL: 0.010630, idConL: 0.677319
+Epoch: 1, Step: 373, Lr: 0.000100, TL: 0.320061, LdmkL: 0.008698, EyeL: 0.000122, RegL: 0.943871, PhoL: 0.011174, idL: 0.644071, ConL: 0.159983, LdConL: 0.008698, EyeConL: 0.000122, PhoConL: 0.011174, idConL: 0.644071
+Epoch: 1, Step: 374, Lr: 0.000100, TL: 0.306776, LdmkL: 0.005703, EyeL: 0.000138, RegL: 1.026331, PhoL: 0.010652, idL: 0.622706, ConL: 0.154985, LdConL: 0.005767, EyeConL: 0.000140, PhoConL: 0.010604, idConL: 0.639350
+Epoch: 1, Step: 375, Lr: 0.000100, TL: 0.291416, LdmkL: 0.006398, EyeL: 0.000157, RegL: 0.992005, PhoL: 0.008479, idL: 0.604713, ConL: 0.146862, LdConL: 0.006273, EyeConL: 0.000155, PhoConL: 0.008717, idConL: 0.614999
+Epoch: 1, Step: 376, Lr: 0.000100, TL: 0.365381, LdmkL: 0.015991, EyeL: 0.000136, RegL: 0.886757, PhoL: 0.014976, idL: 0.670884, ConL: 0.185037, LdConL: 0.016043, EyeConL: 0.000135, PhoConL: 0.015092, idConL: 0.693375
+Epoch: 1, Step: 377, Lr: 0.000100, TL: 0.364329, LdmkL: 0.014959, EyeL: 0.000127, RegL: 0.903226, PhoL: 0.013421, idL: 0.685751, ConL: 0.185159, LdConL: 0.014871, EyeConL: 0.000124, PhoConL: 0.013687, idConL: 0.713952
+Epoch: 1, Step: 378, Lr: 0.000100, TL: 0.336797, LdmkL: 0.007776, EyeL: 0.000142, RegL: 0.911738, PhoL: 0.011662, idL: 0.681931, ConL: 0.169077, LdConL: 0.007670, EyeConL: 0.000143, PhoConL: 0.011716, idConL: 0.689155
+Epoch: 1, Step: 379, Lr: 0.000100, TL: 0.338745, LdmkL: 0.008617, EyeL: 0.000125, RegL: 0.976488, PhoL: 0.013061, idL: 0.658358, ConL: 0.172113, LdConL: 0.008425, EyeConL: 0.000125, PhoConL: 0.013451, idConL: 0.683307
+Epoch: 1, Step: 380, Lr: 0.000100, TL: 0.343754, LdmkL: 0.015777, EyeL: 0.000151, RegL: 0.964295, PhoL: 0.012714, idL: 0.652357, ConL: 0.171829, LdConL: 0.015777, EyeConL: 0.000151, PhoConL: 0.012714, idConL: 0.652357
+Epoch: 1, Step: 381, Lr: 0.000100, TL: 0.345793, LdmkL: 0.013296, EyeL: 0.000146, RegL: 0.973172, PhoL: 0.012454, idL: 0.666720, ConL: 0.174002, LdConL: 0.013239, EyeConL: 0.000148, PhoConL: 0.012750, idConL: 0.675582
+Epoch: 1, Step: 382, Lr: 0.000100, TL: 0.343608, LdmkL: 0.009453, EyeL: 0.000138, RegL: 1.000834, PhoL: 0.013683, idL: 0.671311, ConL: 0.172288, LdConL: 0.009481, EyeConL: 0.000137, PhoConL: 0.013761, idConL: 0.675743
+Epoch: 1, Step: 383, Lr: 0.000100, TL: 0.335132, LdmkL: 0.008196, EyeL: 0.000133, RegL: 1.040250, PhoL: 0.012866, idL: 0.660106, ConL: 0.168945, LdConL: 0.008136, EyeConL: 0.000132, PhoConL: 0.013136, idConL: 0.672022
+Epoch: 1, Step: 384, Lr: 0.000100, TL: 0.321678, LdmkL: 0.009293, EyeL: 0.000136, RegL: 1.027723, PhoL: 0.011289, idL: 0.640341, ConL: 0.161501, LdConL: 0.009198, EyeConL: 0.000135, PhoConL: 0.011522, idConL: 0.645620
+Epoch: 1, Step: 385, Lr: 0.000100, TL: 0.316606, LdmkL: 0.009070, EyeL: 0.000121, RegL: 1.069790, PhoL: 0.012405, idL: 0.618832, ConL: 0.158731, LdConL: 0.008876, EyeConL: 0.000124, PhoConL: 0.012606, idConL: 0.622594
+Epoch: 1, Step: 386, Lr: 0.000100, TL: 0.307404, LdmkL: 0.005923, EyeL: 0.000193, RegL: 0.857900, PhoL: 0.012811, idL: 0.593698, ConL: 0.156840, LdConL: 0.005894, EyeConL: 0.000196, PhoConL: 0.012843, idConL: 0.625323
+Epoch: 1, Step: 387, Lr: 0.000100, TL: 0.316909, LdmkL: 0.008057, EyeL: 0.000194, RegL: 0.794815, PhoL: 0.011967, idL: 0.625048, ConL: 0.159636, LdConL: 0.007928, EyeConL: 0.000198, PhoConL: 0.012263, idConL: 0.634919
+Epoch: 1, Step: 388, Lr: 0.000100, TL: 0.311326, LdmkL: 0.004825, EyeL: 0.000167, RegL: 0.892184, PhoL: 0.011013, idL: 0.630264, ConL: 0.158165, LdConL: 0.004768, EyeConL: 0.000174, PhoConL: 0.011043, idConL: 0.655683
+Epoch: 1, Step: 389, Lr: 0.000100, TL: 0.313228, LdmkL: 0.007081, EyeL: 0.000173, RegL: 0.963423, PhoL: 0.010613, idL: 0.626163, ConL: 0.159418, LdConL: 0.007152, EyeConL: 0.000171, PhoConL: 0.010720, idConL: 0.653266
+Epoch: 1, Step: 390, Lr: 0.000100, TL: 0.360682, LdmkL: 0.010887, EyeL: 0.000168, RegL: 1.017764, PhoL: 0.013836, idL: 0.696810, ConL: 0.182492, LdConL: 0.010743, EyeConL: 0.000168, PhoConL: 0.014013, idConL: 0.717779
+Epoch: 1, Step: 391, Lr: 0.000100, TL: 0.319703, LdmkL: 0.005946, EyeL: 0.000152, RegL: 0.972294, PhoL: 0.013341, idL: 0.626094, ConL: 0.161606, LdConL: 0.005958, EyeConL: 0.000156, PhoConL: 0.013457, idConL: 0.642895
+Epoch: 1, Step: 392, Lr: 0.000100, TL: 0.352490, LdmkL: 0.010168, EyeL: 0.000160, RegL: 1.060236, PhoL: 0.013628, idL: 0.682755, ConL: 0.178249, LdConL: 0.009913, EyeConL: 0.000160, PhoConL: 0.013698, idConL: 0.703896
+Epoch: 1, Step: 393, Lr: 0.000100, TL: 0.358984, LdmkL: 0.012093, EyeL: 0.000174, RegL: 1.036593, PhoL: 0.012108, idL: 0.711420, ConL: 0.180113, LdConL: 0.012112, EyeConL: 0.000174, PhoConL: 0.012240, idConL: 0.716730
+Epoch: 1, Step: 394, Lr: 0.000100, TL: 0.342328, LdmkL: 0.008975, EyeL: 0.000178, RegL: 0.998773, PhoL: 0.014590, idL: 0.657411, ConL: 0.172412, LdConL: 0.008955, EyeConL: 0.000180, PhoConL: 0.014569, idConL: 0.670701
+Epoch: 1, Step: 395, Lr: 0.000100, TL: 0.351500, LdmkL: 0.009742, EyeL: 0.000173, RegL: 1.035574, PhoL: 0.015501, idL: 0.663611, ConL: 0.177758, LdConL: 0.009867, EyeConL: 0.000181, PhoConL: 0.015665, idConL: 0.681904
+Epoch: 1, Step: 396, Lr: 0.000100, TL: 0.341467, LdmkL: 0.006122, EyeL: 0.000162, RegL: 0.890564, PhoL: 0.013331, idL: 0.686589, ConL: 0.171114, LdConL: 0.005895, EyeConL: 0.000160, PhoConL: 0.013183, idConL: 0.693462
+Epoch: 1, Step: 397, Lr: 0.000100, TL: 0.347721, LdmkL: 0.009398, EyeL: 0.000169, RegL: 0.892958, PhoL: 0.011774, idL: 0.704651, ConL: 0.173587, LdConL: 0.009287, EyeConL: 0.000170, PhoConL: 0.011627, idConL: 0.704384
+Epoch: 1, Step: 398, Lr: 0.000100, TL: 0.350695, LdmkL: 0.009117, EyeL: 0.000156, RegL: 1.041803, PhoL: 0.016185, idL: 0.655763, ConL: 0.177795, LdConL: 0.009304, EyeConL: 0.000160, PhoConL: 0.016096, idConL: 0.680696
+Epoch: 1, Step: 399, Lr: 0.000100, TL: 0.346979, LdmkL: 0.008206, EyeL: 0.000136, RegL: 1.088326, PhoL: 0.013095, idL: 0.689416, ConL: 0.174454, LdConL: 0.008076, EyeConL: 0.000135, PhoConL: 0.013211, idConL: 0.699108
+Epoch: 1, Step: 400, Lr: 0.000100, TL: 0.349161, LdmkL: 0.010576, EyeL: 0.000182, RegL: 0.766954, PhoL: 0.012918, idL: 0.679949, ConL: 0.176500, LdConL: 0.010460, EyeConL: 0.000189, PhoConL: 0.012840, idConL: 0.700850
+Epoch: 1, Step: 401, Lr: 0.000100, TL: 0.367394, LdmkL: 0.011384, EyeL: 0.000176, RegL: 0.895063, PhoL: 0.012711, idL: 0.721483, ConL: 0.186024, LdConL: 0.011472, EyeConL: 0.000179, PhoConL: 0.013122, idConL: 0.740642
+Epoch: 1, Step: 402, Lr: 0.000100, TL: 0.352349, LdmkL: 0.010005, EyeL: 0.000165, RegL: 1.065016, PhoL: 0.012507, idL: 0.694164, ConL: 0.178226, LdConL: 0.010007, EyeConL: 0.000173, PhoConL: 0.012463, idConL: 0.715597
+Epoch: 1, Step: 403, Lr: 0.000100, TL: 0.343055, LdmkL: 0.008766, EyeL: 0.000178, RegL: 0.930401, PhoL: 0.013254, idL: 0.675899, ConL: 0.172330, LdConL: 0.008739, EyeConL: 0.000182, PhoConL: 0.013194, idConL: 0.685103
+Epoch: 1, Step: 404, Lr: 0.000100, TL: 0.322996, LdmkL: 0.009990, EyeL: 0.000176, RegL: 0.877492, PhoL: 0.012843, idL: 0.616951, ConL: 0.163666, LdConL: 0.009968, EyeConL: 0.000176, PhoConL: 0.013098, idConL: 0.636632
+Epoch: 1, Step: 405, Lr: 0.000100, TL: 0.335353, LdmkL: 0.009632, EyeL: 0.000212, RegL: 0.842815, PhoL: 0.013400, idL: 0.645819, ConL: 0.169461, LdConL: 0.009326, EyeConL: 0.000218, PhoConL: 0.013113, idConL: 0.668446
+Epoch: 1, Step: 406, Lr: 0.000100, TL: 0.344950, LdmkL: 0.006338, EyeL: 0.000176, RegL: 0.928873, PhoL: 0.015289, idL: 0.665505, ConL: 0.174665, LdConL: 0.006249, EyeConL: 0.000182, PhoConL: 0.015343, idConL: 0.687735
+Epoch: 1, Step: 407, Lr: 0.000100, TL: 0.338597, LdmkL: 0.008069, EyeL: 0.000194, RegL: 0.901480, PhoL: 0.014990, idL: 0.649431, ConL: 0.170378, LdConL: 0.008048, EyeConL: 0.000193, PhoConL: 0.014856, idConL: 0.662124
+Epoch: 1, Step: 408, Lr: 0.000100, TL: 0.354211, LdmkL: 0.009346, EyeL: 0.000162, RegL: 0.915717, PhoL: 0.010694, idL: 0.708652, ConL: 0.181494, LdConL: 0.009296, EyeConL: 0.000161, PhoConL: 0.010674, idConL: 0.753447
+Epoch: 1, Step: 409, Lr: 0.000100, TL: 0.372670, LdmkL: 0.012140, EyeL: 0.000145, RegL: 0.919264, PhoL: 0.012951, idL: 0.737302, ConL: 0.186930, LdConL: 0.012067, EyeConL: 0.000148, PhoConL: 0.012987, idConL: 0.743703
+Epoch: 1, Step: 410, Lr: 0.000100, TL: 0.362197, LdmkL: 0.015563, EyeL: 0.000131, RegL: 0.938403, PhoL: 0.014266, idL: 0.679072, ConL: 0.182063, LdConL: 0.015664, EyeConL: 0.000128, PhoConL: 0.014428, idConL: 0.687070
+Epoch: 1, Step: 411, Lr: 0.000100, TL: 0.372380, LdmkL: 0.016176, EyeL: 0.000118, RegL: 0.980958, PhoL: 0.015329, idL: 0.695944, ConL: 0.186141, LdConL: 0.016176, EyeConL: 0.000118, PhoConL: 0.015329, idConL: 0.695944
+Epoch: 1, Step: 412, Lr: 0.000100, TL: 0.330053, LdmkL: 0.011439, EyeL: 0.000147, RegL: 0.865543, PhoL: 0.012670, idL: 0.638110, ConL: 0.165419, LdConL: 0.011450, EyeConL: 0.000144, PhoConL: 0.012542, idConL: 0.643707
+Epoch: 1, Step: 413, Lr: 0.000100, TL: 0.334343, LdmkL: 0.012506, EyeL: 0.000147, RegL: 0.895312, PhoL: 0.012399, idL: 0.638666, ConL: 0.169069, LdConL: 0.012560, EyeConL: 0.000147, PhoConL: 0.012606, idConL: 0.655752
+Epoch: 1, Step: 414, Lr: 0.000100, TL: 0.338906, LdmkL: 0.016634, EyeL: 0.000176, RegL: 0.900306, PhoL: 0.013304, idL: 0.631332, ConL: 0.169132, LdConL: 0.016511, EyeConL: 0.000172, PhoConL: 0.013348, idConL: 0.628761
+Epoch: 1, Step: 415, Lr: 0.000100, TL: 0.342986, LdmkL: 0.017098, EyeL: 0.000154, RegL: 0.946433, PhoL: 0.012626, idL: 0.634482, ConL: 0.173490, LdConL: 0.016982, EyeConL: 0.000155, PhoConL: 0.012782, idConL: 0.653941
+Epoch: 1, Step: 416, Lr: 0.000100, TL: 0.355697, LdmkL: 0.017309, EyeL: 0.000118, RegL: 0.986013, PhoL: 0.011083, idL: 0.675666, ConL: 0.180871, LdConL: 0.017172, EyeConL: 0.000121, PhoConL: 0.011310, idConL: 0.704792
+Epoch: 1, Step: 417, Lr: 0.000100, TL: 0.340672, LdmkL: 0.016199, EyeL: 0.000115, RegL: 1.028906, PhoL: 0.010623, idL: 0.655295, ConL: 0.171951, LdConL: 0.016257, EyeConL: 0.000112, PhoConL: 0.010731, idConL: 0.670597
+Epoch: 1, Step: 418, Lr: 0.000100, TL: 0.366119, LdmkL: 0.015956, EyeL: 0.000186, RegL: 0.929372, PhoL: 0.015072, idL: 0.663955, ConL: 0.186949, LdConL: 0.015959, EyeConL: 0.000185, PhoConL: 0.014988, idConL: 0.704144
+Epoch: 1, Step: 419, Lr: 0.000100, TL: 0.360253, LdmkL: 0.016559, EyeL: 0.000164, RegL: 0.952178, PhoL: 0.014652, idL: 0.671069, ConL: 0.179918, LdConL: 0.016519, EyeConL: 0.000163, PhoConL: 0.014356, idConL: 0.672616
+Epoch: 1, Step: 420, Lr: 0.000100, TL: 0.375704, LdmkL: 0.015946, EyeL: 0.000182, RegL: 1.080233, PhoL: 0.012605, idL: 0.721459, ConL: 0.189966, LdConL: 0.015654, EyeConL: 0.000188, PhoConL: 0.012695, idConL: 0.743666
+Epoch: 1, Step: 421, Lr: 0.000100, TL: 0.351700, LdmkL: 0.014539, EyeL: 0.000198, RegL: 1.045494, PhoL: 0.011093, idL: 0.690015, ConL: 0.176668, LdConL: 0.014354, EyeConL: 0.000196, PhoConL: 0.011230, idConL: 0.698298
+Epoch: 1, Step: 422, Lr: 0.000100, TL: 0.346998, LdmkL: 0.015694, EyeL: 0.000142, RegL: 1.070775, PhoL: 0.013340, idL: 0.644611, ConL: 0.175452, LdConL: 0.015294, EyeConL: 0.000136, PhoConL: 0.013243, idConL: 0.667677
+Epoch: 1, Step: 423, Lr: 0.000100, TL: 0.345199, LdmkL: 0.016862, EyeL: 0.000169, RegL: 1.055638, PhoL: 0.011450, idL: 0.660734, ConL: 0.173015, LdConL: 0.016891, EyeConL: 0.000168, PhoConL: 0.011537, idConL: 0.664415
+Epoch: 1, Step: 424, Lr: 0.000100, TL: 0.372356, LdmkL: 0.014599, EyeL: 0.000148, RegL: 1.003172, PhoL: 0.013284, idL: 0.717314, ConL: 0.187478, LdConL: 0.013926, EyeConL: 0.000146, PhoConL: 0.013267, idConL: 0.734358
+Epoch: 1, Step: 425, Lr: 0.000100, TL: 0.366350, LdmkL: 0.014923, EyeL: 0.000148, RegL: 1.021463, PhoL: 0.014406, idL: 0.685221, ConL: 0.185321, LdConL: 0.015091, EyeConL: 0.000147, PhoConL: 0.014830, idConL: 0.702112
+Epoch: 1, Step: 426, Lr: 0.000100, TL: 0.336477, LdmkL: 0.010662, EyeL: 0.000119, RegL: 1.039833, PhoL: 0.012951, idL: 0.657526, ConL: 0.168186, LdConL: 0.010662, EyeConL: 0.000119, PhoConL: 0.012951, idConL: 0.657525
+Epoch: 1, Step: 427, Lr: 0.000100, TL: 0.334009, LdmkL: 0.010216, EyeL: 0.000162, RegL: 1.029682, PhoL: 0.010424, idL: 0.673623, ConL: 0.167955, LdConL: 0.010232, EyeConL: 0.000166, PhoConL: 0.010345, idConL: 0.684335
+Epoch: 1, Step: 428, Lr: 0.000100, TL: 0.357078, LdmkL: 0.008506, EyeL: 0.000151, RegL: 1.085595, PhoL: 0.012971, idL: 0.712213, ConL: 0.179927, LdConL: 0.008579, EyeConL: 0.000152, PhoConL: 0.013195, idConL: 0.724030
+Epoch: 1, Step: 429, Lr: 0.000100, TL: 0.362804, LdmkL: 0.010910, EyeL: 0.000123, RegL: 1.062379, PhoL: 0.011514, idL: 0.724224, ConL: 0.183793, LdConL: 0.010708, EyeConL: 0.000118, PhoConL: 0.011670, idConL: 0.748131
+Epoch: 1, Step: 430, Lr: 0.000100, TL: 0.317216, LdmkL: 0.009827, EyeL: 0.000146, RegL: 0.979311, PhoL: 0.011750, idL: 0.613185, ConL: 0.161009, LdConL: 0.009695, EyeConL: 0.000148, PhoConL: 0.011541, idConL: 0.640415
+Epoch: 1, Step: 431, Lr: 0.000100, TL: 0.328991, LdmkL: 0.010056, EyeL: 0.000115, RegL: 0.922889, PhoL: 0.010959, idL: 0.656570, ConL: 0.165494, LdConL: 0.009999, EyeConL: 0.000120, PhoConL: 0.010855, idConL: 0.668324
+Epoch: 1, Step: 432, Lr: 0.000100, TL: 0.355113, LdmkL: 0.016630, EyeL: 0.000155, RegL: 0.982931, PhoL: 0.009698, idL: 0.700587, ConL: 0.178715, LdConL: 0.016567, EyeConL: 0.000156, PhoConL: 0.009831, idConL: 0.711648
+Epoch: 1, Step: 433, Lr: 0.000100, TL: 0.345974, LdmkL: 0.016260, EyeL: 0.000191, RegL: 0.960569, PhoL: 0.010273, idL: 0.675567, ConL: 0.173768, LdConL: 0.016354, EyeConL: 0.000193, PhoConL: 0.010460, idConL: 0.681505
+Epoch: 1, Step: 434, Lr: 0.000100, TL: 0.339849, LdmkL: 0.013358, EyeL: 0.000165, RegL: 1.075418, PhoL: 0.012766, idL: 0.654078, ConL: 0.169871, LdConL: 0.013358, EyeConL: 0.000165, PhoConL: 0.012766, idConL: 0.654078
+Epoch: 1, Step: 435, Lr: 0.000100, TL: 0.341899, LdmkL: 0.012101, EyeL: 0.000172, RegL: 1.043798, PhoL: 0.012883, idL: 0.654787, ConL: 0.172797, LdConL: 0.012290, EyeConL: 0.000172, PhoConL: 0.013037, idConL: 0.671304
+Epoch: 1, Step: 436, Lr: 0.000100, TL: 0.345440, LdmkL: 0.014276, EyeL: 0.000171, RegL: 1.047373, PhoL: 0.010644, idL: 0.676635, ConL: 0.174274, LdConL: 0.014093, EyeConL: 0.000174, PhoConL: 0.010581, idConL: 0.694223
+Epoch: 1, Step: 437, Lr: 0.000100, TL: 0.343181, LdmkL: 0.011799, EyeL: 0.000126, RegL: 1.000372, PhoL: 0.011203, idL: 0.677508, ConL: 0.173248, LdConL: 0.011590, EyeConL: 0.000123, PhoConL: 0.011304, idConL: 0.694630
+Epoch: 1, Step: 438, Lr: 0.000100, TL: 0.353999, LdmkL: 0.011848, EyeL: 0.000115, RegL: 0.884644, PhoL: 0.011950, idL: 0.697313, ConL: 0.178586, LdConL: 0.011848, EyeConL: 0.000113, PhoConL: 0.011933, idConL: 0.713791
+Epoch: 1, Step: 439, Lr: 0.000100, TL: 0.350537, LdmkL: 0.012701, EyeL: 0.000119, RegL: 0.950670, PhoL: 0.012178, idL: 0.677692, ConL: 0.177727, LdConL: 0.012897, EyeConL: 0.000122, PhoConL: 0.012300, idConL: 0.700549
+Epoch: 1, Step: 440, Lr: 0.000100, TL: 0.353892, LdmkL: 0.008748, EyeL: 0.000166, RegL: 0.896878, PhoL: 0.012784, idL: 0.705538, ConL: 0.178212, LdConL: 0.008698, EyeConL: 0.000169, PhoConL: 0.013015, idConL: 0.716575
+Epoch: 1, Step: 441, Lr: 0.000100, TL: 0.350642, LdmkL: 0.008855, EyeL: 0.000161, RegL: 0.972110, PhoL: 0.012535, idL: 0.694660, ConL: 0.177528, LdConL: 0.008833, EyeConL: 0.000161, PhoConL: 0.012618, idConL: 0.716480
+Epoch: 1, Step: 442, Lr: 0.000100, TL: 0.377614, LdmkL: 0.013251, EyeL: 0.000145, RegL: 0.964433, PhoL: 0.013025, idL: 0.735741, ConL: 0.190922, LdConL: 0.013419, EyeConL: 0.000150, PhoConL: 0.013119, idConL: 0.755582
+Epoch: 1, Step: 443, Lr: 0.000100, TL: 0.384449, LdmkL: 0.014794, EyeL: 0.000157, RegL: 0.889625, PhoL: 0.012051, idL: 0.761285, ConL: 0.193050, LdConL: 0.014847, EyeConL: 0.000157, PhoConL: 0.012158, idConL: 0.768647
+Epoch: 1, Step: 444, Lr: 0.000100, TL: 0.372911, LdmkL: 0.011219, EyeL: 0.000166, RegL: 0.888521, PhoL: 0.016143, idL: 0.702547, ConL: 0.188641, LdConL: 0.011036, EyeConL: 0.000167, PhoConL: 0.016188, idConL: 0.725311
+Epoch: 1, Step: 445, Lr: 0.000100, TL: 0.379229, LdmkL: 0.013009, EyeL: 0.000166, RegL: 0.918477, PhoL: 0.017901, idL: 0.702004, ConL: 0.189759, LdConL: 0.012965, EyeConL: 0.000170, PhoConL: 0.018228, idConL: 0.700840
+Epoch: 1, Step: 446, Lr: 0.000100, TL: 0.313067, LdmkL: 0.011099, EyeL: 0.000113, RegL: 0.866889, PhoL: 0.011574, idL: 0.601791, ConL: 0.158262, LdConL: 0.011080, EyeConL: 0.000116, PhoConL: 0.011824, idConL: 0.617085
+Epoch: 1, Step: 447, Lr: 0.000100, TL: 0.322304, LdmkL: 0.010636, EyeL: 0.000117, RegL: 0.879678, PhoL: 0.010683, idL: 0.642944, ConL: 0.161508, LdConL: 0.010507, EyeConL: 0.000118, PhoConL: 0.010471, idConL: 0.649697
+Epoch: 1, Step: 448, Lr: 0.000100, TL: 0.340089, LdmkL: 0.010838, EyeL: 0.000149, RegL: 0.910972, PhoL: 0.011629, idL: 0.668884, ConL: 0.171977, LdConL: 0.010633, EyeConL: 0.000154, PhoConL: 0.011915, idConL: 0.686807
+Epoch: 1, Step: 449, Lr: 0.000100, TL: 0.323731, LdmkL: 0.010711, EyeL: 0.000146, RegL: 0.978088, PhoL: 0.010587, idL: 0.641380, ConL: 0.163326, LdConL: 0.010716, EyeConL: 0.000147, PhoConL: 0.010738, idConL: 0.654930
+Epoch: 1, Step: 450, Lr: 0.000100, TL: 0.320694, LdmkL: 0.009474, EyeL: 0.000124, RegL: 0.890634, PhoL: 0.010834, idL: 0.636948, ConL: 0.161949, LdConL: 0.009412, EyeConL: 0.000128, PhoConL: 0.010900, idConL: 0.653042
+Epoch: 1, Step: 451, Lr: 0.000100, TL: 0.318080, LdmkL: 0.010606, EyeL: 0.000144, RegL: 0.900400, PhoL: 0.009015, idL: 0.650380, ConL: 0.159135, LdConL: 0.010599, EyeConL: 0.000142, PhoConL: 0.009191, idConL: 0.650066
+Epoch: 1, Step: 452, Lr: 0.000100, TL: 0.346791, LdmkL: 0.009350, EyeL: 0.000163, RegL: 0.950475, PhoL: 0.011614, idL: 0.686943, ConL: 0.176566, LdConL: 0.009164, EyeConL: 0.000168, PhoConL: 0.011774, idConL: 0.718426
+Epoch: 1, Step: 453, Lr: 0.000100, TL: 0.348419, LdmkL: 0.011639, EyeL: 0.000154, RegL: 1.003627, PhoL: 0.013011, idL: 0.678310, ConL: 0.174841, LdConL: 0.011383, EyeConL: 0.000157, PhoConL: 0.013028, idConL: 0.686219
+Epoch: 1, Step: 454, Lr: 0.000100, TL: 0.356910, LdmkL: 0.009566, EyeL: 0.000141, RegL: 0.960367, PhoL: 0.012181, idL: 0.718163, ConL: 0.179113, LdConL: 0.009522, EyeConL: 0.000144, PhoConL: 0.012086, idConL: 0.726381
+Epoch: 1, Step: 455, Lr: 0.000100, TL: 0.362659, LdmkL: 0.009030, EyeL: 0.000166, RegL: 0.931247, PhoL: 0.011469, idL: 0.732392, ConL: 0.183952, LdConL: 0.008675, EyeConL: 0.000171, PhoConL: 0.011731, idConL: 0.758217
+Epoch: 1, Step: 456, Lr: 0.000100, TL: 0.345599, LdmkL: 0.009520, EyeL: 0.000146, RegL: 0.991923, PhoL: 0.011356, idL: 0.684317, ConL: 0.176259, LdConL: 0.009467, EyeConL: 0.000147, PhoConL: 0.011469, idConL: 0.718532
+Epoch: 1, Step: 457, Lr: 0.000100, TL: 0.346513, LdmkL: 0.008792, EyeL: 0.000159, RegL: 1.078296, PhoL: 0.013370, idL: 0.677898, ConL: 0.175134, LdConL: 0.008754, EyeConL: 0.000153, PhoConL: 0.013238, idConL: 0.698750
+Epoch: 1, Step: 458, Lr: 0.000100, TL: 0.340179, LdmkL: 0.009888, EyeL: 0.000148, RegL: 0.962772, PhoL: 0.011233, idL: 0.687692, ConL: 0.170042, LdConL: 0.009888, EyeConL: 0.000148, PhoConL: 0.011233, idConL: 0.687692
+Epoch: 1, Step: 459, Lr: 0.000100, TL: 0.343183, LdmkL: 0.009873, EyeL: 0.000140, RegL: 1.000262, PhoL: 0.010784, idL: 0.695926, ConL: 0.172316, LdConL: 0.009817, EyeConL: 0.000141, PhoConL: 0.011072, idConL: 0.701071
+Epoch: 1, Step: 460, Lr: 0.000100, TL: 0.356693, LdmkL: 0.010336, EyeL: 0.000165, RegL: 1.045487, PhoL: 0.011938, idL: 0.711105, ConL: 0.179992, LdConL: 0.010116, EyeConL: 0.000169, PhoConL: 0.011906, idConL: 0.729474
+Epoch: 1, Step: 461, Lr: 0.000100, TL: 0.362990, LdmkL: 0.011162, EyeL: 0.000173, RegL: 1.020900, PhoL: 0.012369, idL: 0.716927, ConL: 0.183429, LdConL: 0.010921, EyeConL: 0.000177, PhoConL: 0.012568, idConL: 0.735980
+Epoch: 1, Step: 462, Lr: 0.000100, TL: 0.372551, LdmkL: 0.011571, EyeL: 0.000161, RegL: 0.877225, PhoL: 0.012594, idL: 0.736499, ConL: 0.188243, LdConL: 0.011449, EyeConL: 0.000160, PhoConL: 0.012666, idConL: 0.756508
+Epoch: 1, Step: 463, Lr: 0.000100, TL: 0.382234, LdmkL: 0.007566, EyeL: 0.000189, RegL: 0.912396, PhoL: 0.012589, idL: 0.766207, ConL: 0.195970, LdConL: 0.007594, EyeConL: 0.000188, PhoConL: 0.012747, idConL: 0.813469
+Epoch: 1, Step: 464, Lr: 0.000100, TL: 0.356071, LdmkL: 0.010481, EyeL: 0.000163, RegL: 1.063244, PhoL: 0.014155, idL: 0.686818, ConL: 0.179648, LdConL: 0.010407, EyeConL: 0.000162, PhoConL: 0.014147, idConL: 0.703924
+Epoch: 1, Step: 465, Lr: 0.000100, TL: 0.355081, LdmkL: 0.012572, EyeL: 0.000156, RegL: 1.059990, PhoL: 0.012690, idL: 0.686149, ConL: 0.179638, LdConL: 0.011984, EyeConL: 0.000162, PhoConL: 0.012734, idConL: 0.710117
+Epoch: 1, Step: 466, Lr: 0.000100, TL: 0.329128, LdmkL: 0.013060, EyeL: 0.000188, RegL: 1.005236, PhoL: 0.011345, idL: 0.622191, ConL: 0.168651, LdConL: 0.012975, EyeConL: 0.000184, PhoConL: 0.011647, idConL: 0.660994
+Epoch: 1, Step: 467, Lr: 0.000100, TL: 0.312645, LdmkL: 0.008841, EyeL: 0.000156, RegL: 0.988545, PhoL: 0.014748, idL: 0.588903, ConL: 0.156273, LdConL: 0.008841, EyeConL: 0.000156, PhoConL: 0.014748, idConL: 0.588903
+Epoch: 1, Step: 468, Lr: 0.000100, TL: 0.356303, LdmkL: 0.007803, EyeL: 0.000163, RegL: 0.954186, PhoL: 0.012475, idL: 0.711874, ConL: 0.180918, LdConL: 0.007559, EyeConL: 0.000165, PhoConL: 0.012678, idConL: 0.739188
+Epoch: 1, Step: 469, Lr: 0.000100, TL: 0.349225, LdmkL: 0.009448, EyeL: 0.000170, RegL: 1.032592, PhoL: 0.013570, idL: 0.679372, ConL: 0.176490, LdConL: 0.009383, EyeConL: 0.000178, PhoConL: 0.013951, idConL: 0.695131
+Epoch: 1, Step: 470, Lr: 0.000100, TL: 0.362372, LdmkL: 0.010521, EyeL: 0.000191, RegL: 0.984215, PhoL: 0.013219, idL: 0.706686, ConL: 0.183786, LdConL: 0.010533, EyeConL: 0.000193, PhoConL: 0.013345, idConL: 0.731851
+Epoch: 1, Step: 471, Lr: 0.000100, TL: 0.355107, LdmkL: 0.011115, EyeL: 0.000188, RegL: 0.995210, PhoL: 0.013215, idL: 0.698858, ConL: 0.177504, LdConL: 0.011115, EyeConL: 0.000188, PhoConL: 0.013215, idConL: 0.698858
+Epoch: 1, Step: 472, Lr: 0.000100, TL: 0.332772, LdmkL: 0.009165, EyeL: 0.000117, RegL: 1.050713, PhoL: 0.013637, idL: 0.637405, ConL: 0.168630, LdConL: 0.009082, EyeConL: 0.000115, PhoConL: 0.013597, idConL: 0.661193
+Epoch: 1, Step: 473, Lr: 0.000100, TL: 0.321295, LdmkL: 0.007809, EyeL: 0.000103, RegL: 0.984927, PhoL: 0.010978, idL: 0.643631, ConL: 0.162601, LdConL: 0.007714, EyeConL: 0.000108, PhoConL: 0.011325, idConL: 0.660646
+Epoch: 1, Step: 474, Lr: 0.000100, TL: 0.294627, LdmkL: 0.009296, EyeL: 0.000136, RegL: 1.069216, PhoL: 0.011742, idL: 0.568625, ConL: 0.147879, LdConL: 0.009428, EyeConL: 0.000135, PhoConL: 0.011766, idConL: 0.573919
+Epoch: 1, Step: 475, Lr: 0.000100, TL: 0.296567, LdmkL: 0.010061, EyeL: 0.000147, RegL: 1.077074, PhoL: 0.011287, idL: 0.576386, ConL: 0.148400, LdConL: 0.010134, EyeConL: 0.000146, PhoConL: 0.011314, idConL: 0.577458
+Epoch: 1, Step: 476, Lr: 0.000100, TL: 0.349350, LdmkL: 0.009471, EyeL: 0.000130, RegL: 0.969789, PhoL: 0.013578, idL: 0.680297, ConL: 0.176437, LdConL: 0.009281, EyeConL: 0.000128, PhoConL: 0.013748, idConL: 0.697665
+Epoch: 1, Step: 477, Lr: 0.000100, TL: 0.337909, LdmkL: 0.008771, EyeL: 0.000147, RegL: 1.024158, PhoL: 0.013241, idL: 0.649643, ConL: 0.172479, LdConL: 0.008715, EyeConL: 0.000145, PhoConL: 0.013500, idConL: 0.683096
+Epoch: 1, Step: 478, Lr: 0.000100, TL: 0.389936, LdmkL: 0.015992, EyeL: 0.000192, RegL: 0.904908, PhoL: 0.013196, idL: 0.761735, ConL: 0.194923, LdConL: 0.015992, EyeConL: 0.000192, PhoConL: 0.013196, idConL: 0.761735
+Epoch: 1, Step: 479, Lr: 0.000100, TL: 0.383931, LdmkL: 0.013680, EyeL: 0.000194, RegL: 0.837626, PhoL: 0.013537, idL: 0.734229, ConL: 0.196053, LdConL: 0.013737, EyeConL: 0.000189, PhoConL: 0.013591, idConL: 0.774729
+Epoch: 1, Step: 480, Lr: 0.000100, TL: 0.368349, LdmkL: 0.007306, EyeL: 0.000198, RegL: 1.032407, PhoL: 0.013927, idL: 0.731298, ConL: 0.186629, LdConL: 0.007563, EyeConL: 0.000198, PhoConL: 0.014152, idConL: 0.752817
+Epoch: 1, Step: 481, Lr: 0.000100, TL: 0.372654, LdmkL: 0.011781, EyeL: 0.000170, RegL: 0.987822, PhoL: 0.011801, idL: 0.744146, ConL: 0.188174, LdConL: 0.011947, EyeConL: 0.000170, PhoConL: 0.011796, idConL: 0.762321
+Epoch: 1, Step: 482, Lr: 0.000100, TL: 0.342937, LdmkL: 0.009225, EyeL: 0.000166, RegL: 1.143708, PhoL: 0.014251, idL: 0.663915, ConL: 0.172147, LdConL: 0.009026, EyeConL: 0.000167, PhoConL: 0.014348, idConL: 0.671288
+Epoch: 1, Step: 483, Lr: 0.000100, TL: 0.366178, LdmkL: 0.013462, EyeL: 0.000145, RegL: 1.068507, PhoL: 0.012465, idL: 0.717623, ConL: 0.184010, LdConL: 0.013425, EyeConL: 0.000145, PhoConL: 0.012426, idConL: 0.727947
+Epoch: 1, Step: 484, Lr: 0.000100, TL: 0.346385, LdmkL: 0.010846, EyeL: 0.000129, RegL: 1.201378, PhoL: 0.016437, idL: 0.635738, ConL: 0.175268, LdConL: 0.010799, EyeConL: 0.000131, PhoConL: 0.016816, idConL: 0.653536
+Epoch: 1, Step: 485, Lr: 0.000100, TL: 0.345014, LdmkL: 0.011259, EyeL: 0.000131, RegL: 1.126551, PhoL: 0.012804, idL: 0.669731, ConL: 0.173958, LdConL: 0.011242, EyeConL: 0.000125, PhoConL: 0.012947, idConL: 0.683478
+Epoch: 1, Step: 486, Lr: 0.000100, TL: 0.339087, LdmkL: 0.011418, EyeL: 0.000107, RegL: 0.987591, PhoL: 0.012800, idL: 0.661857, ConL: 0.169492, LdConL: 0.011326, EyeConL: 0.000105, PhoConL: 0.012844, idConL: 0.661868
+Epoch: 1, Step: 487, Lr: 0.000100, TL: 0.340733, LdmkL: 0.010431, EyeL: 0.000138, RegL: 0.973575, PhoL: 0.010501, idL: 0.683377, ConL: 0.172390, LdConL: 0.010382, EyeConL: 0.000139, PhoConL: 0.010539, idConL: 0.703947
+Epoch: 1, Step: 488, Lr: 0.000100, TL: 0.384799, LdmkL: 0.019418, EyeL: 0.000159, RegL: 0.998981, PhoL: 0.015579, idL: 0.693192, ConL: 0.195325, LdConL: 0.019474, EyeConL: 0.000156, PhoConL: 0.015642, idConL: 0.722054
+Epoch: 1, Step: 489, Lr: 0.000100, TL: 0.403816, LdmkL: 0.020298, EyeL: 0.000155, RegL: 1.075070, PhoL: 0.014989, idL: 0.740533, ConL: 0.205171, LdConL: 0.020215, EyeConL: 0.000159, PhoConL: 0.014850, idConL: 0.775483
+Epoch: 1, Step: 490, Lr: 0.000100, TL: 0.357796, LdmkL: 0.015533, EyeL: 0.000186, RegL: 0.989344, PhoL: 0.012984, idL: 0.672224, ConL: 0.181565, LdConL: 0.015631, EyeConL: 0.000187, PhoConL: 0.013004, idConL: 0.698699
+Epoch: 1, Step: 491, Lr: 0.000100, TL: 0.374291, LdmkL: 0.016695, EyeL: 0.000190, RegL: 0.966940, PhoL: 0.013964, idL: 0.699237, ConL: 0.189535, LdConL: 0.016596, EyeConL: 0.000191, PhoConL: 0.013980, idConL: 0.723939
+Epoch: 1, Step: 492, Lr: 0.000100, TL: 0.416295, LdmkL: 0.024288, EyeL: 0.000184, RegL: 0.976789, PhoL: 0.016252, idL: 0.750281, ConL: 0.209164, LdConL: 0.024375, EyeConL: 0.000183, PhoConL: 0.016236, idConL: 0.760670
+Epoch: 1, Step: 493, Lr: 0.000100, TL: 0.421226, LdmkL: 0.024909, EyeL: 0.000177, RegL: 1.001758, PhoL: 0.017570, idL: 0.745562, ConL: 0.211789, LdConL: 0.024872, EyeConL: 0.000178, PhoConL: 0.017559, idConL: 0.758106
+Epoch: 1, Step: 494, Lr: 0.000100, TL: 0.347254, LdmkL: 0.015075, EyeL: 0.000180, RegL: 1.110441, PhoL: 0.012371, idL: 0.654501, ConL: 0.176246, LdConL: 0.014996, EyeConL: 0.000176, PhoConL: 0.012319, idConL: 0.682176
+Epoch: 1, Step: 495, Lr: 0.000100, TL: 0.340313, LdmkL: 0.012946, EyeL: 0.000149, RegL: 1.173067, PhoL: 0.012957, idL: 0.649587, ConL: 0.171269, LdConL: 0.012810, EyeConL: 0.000150, PhoConL: 0.012789, idConL: 0.663649
+Epoch: 1, Step: 496, Lr: 0.000100, TL: 0.392553, LdmkL: 0.023962, EyeL: 0.000164, RegL: 0.928748, PhoL: 0.013742, idL: 0.705240, ConL: 0.199802, LdConL: 0.023645, EyeConL: 0.000167, PhoConL: 0.013832, idConL: 0.741632
+Epoch: 1, Step: 497, Lr: 0.000100, TL: 0.379995, LdmkL: 0.018622, EyeL: 0.000152, RegL: 0.925118, PhoL: 0.013157, idL: 0.712082, ConL: 0.192398, LdConL: 0.018934, EyeConL: 0.000160, PhoConL: 0.013128, idConL: 0.735245
+Epoch: 1, Step: 498, Lr: 0.000100, TL: 0.357303, LdmkL: 0.013742, EyeL: 0.000180, RegL: 1.059176, PhoL: 0.012628, idL: 0.680124, ConL: 0.181994, LdConL: 0.013695, EyeConL: 0.000181, PhoConL: 0.012907, idConL: 0.711520
+Epoch: 1, Step: 499, Lr: 0.000100, TL: 0.369912, LdmkL: 0.012720, EyeL: 0.000172, RegL: 1.031217, PhoL: 0.013810, idL: 0.710201, ConL: 0.187256, LdConL: 0.012701, EyeConL: 0.000171, PhoConL: 0.013772, idConL: 0.734204
+Epoch: 1, Step: 500, Lr: 0.000100, TL: 0.358128, LdmkL: 0.016607, EyeL: 0.000174, RegL: 1.041034, PhoL: 0.011456, idL: 0.684927, ConL: 0.181346, LdConL: 0.016647, EyeConL: 0.000174, PhoConL: 0.011759, idConL: 0.705033
+Epoch: 1, Step: 501, Lr: 0.000100, TL: 0.361455, LdmkL: 0.014133, EyeL: 0.000184, RegL: 1.021500, PhoL: 0.012149, idL: 0.698998, ConL: 0.182939, LdConL: 0.014377, EyeConL: 0.000178, PhoConL: 0.012312, idConL: 0.718796
+Epoch: 1, Step: 502, Lr: 0.000100, TL: 0.355856, LdmkL: 0.013610, EyeL: 0.000173, RegL: 1.126190, PhoL: 0.014094, idL: 0.667906, ConL: 0.180191, LdConL: 0.013609, EyeConL: 0.000175, PhoConL: 0.014193, idConL: 0.690100
+Epoch: 1, Step: 503, Lr: 0.000100, TL: 0.360642, LdmkL: 0.016464, EyeL: 0.000160, RegL: 1.071859, PhoL: 0.013684, idL: 0.670463, ConL: 0.182451, LdConL: 0.016529, EyeConL: 0.000162, PhoConL: 0.013854, idConL: 0.690262srun: Force Terminated job 10147336
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+slurmstepd: *** STEP 10147336.0 ON SH-IDC1-10-5-37-43 CANCELLED AT 2021-05-19T00:39:21 ***
+srun: error: SH-IDC1-10-5-37-43: task 0: Terminated

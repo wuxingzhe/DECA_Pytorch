@@ -1,19 +1,21 @@
 common: &common
   eval_train: False
+eval_train: False
 dataset:
   image_size: 224
   uv_size: 256
 
 model:
-  topology_path: './data/head_template.obj'
-  dense_template_path: './data/texture_data_256.npy'
-  fixed_displacement_path: './data/fixed_displacement_256.npy'
-  flame_model_path: './data/generic_model.pkl'
-  flame_lmk_embedding_path: './data/landmark_embedding.npy'
-  face_mask_path: './data/uv_face_mask.png'
-  face_eye_mask_path: './data/uv_face_eye_mask.png'
-  mean_tex_path: './data/mean_texture.jpg'
-  tex_path: './data/FLAME_albedo_from_BFM.npz'
+  uv_size: 256
+  topology_path: '../data/head_template.obj'
+  dense_template_path: '../data/texture_data_256.npy'
+  fixed_displacement_path: '../data/fixed_displacement_256.npy'
+  flame_model_path: '../data/generic_model.pkl'
+  flame_lmk_embedding_path: '../data/landmark_embedding.npy'
+  face_mask_path: '../data/uv_face_mask.png'
+  face_eye_mask_path: '../data/uv_face_eye_mask.png'
+  mean_tex_path: '../data/mean_texture.jpg'
+  tex_path: '../data/FLAME_albedo_from_BFM.npz'
   tex_type: 'BFM'
   useTex: True
   use_tex: True
@@ -31,7 +33,7 @@ model:
   max_z: 0.01
 
 pretrained_model:
-  recog_network: ''
+  recog_network: 'net-data/Iter_007000_net.ckpt'
 
 train_params:
   ldmk_loss_factors: [0.0001, 1.0]
@@ -39,6 +41,7 @@ train_params:
   regular_loss_factors: [0.0001, 0.0001]
   shape_consistency_loss_factor: 1.0
   photometric_loss_factor: 2.0
+  identity_loss_factor: 0.2
 
   norm_type_ldmk: 'mse'
   norm_type_eye_closure: 'mse'
@@ -52,15 +55,15 @@ train_params:
   iscrop: False
 
   kpts_gt_dir: 'ldmk_gt'
-  seg_masks_dir: 'face_seg_res'
-  train_list: ''
-  train_subject_list: ''
+  seg_masks_dir: 'face_seg_mask'
+  train_list: 'utils/train_images.txt'
+  train_subject_list: 'utils/train_subject_images.txt'
 
-  ldmk_weights_file: ''
-  eye_closure_ldmk_idx_file: ''
+  ldmk_weights_file: '../data/ldmk_weights.npy'
+  eye_closure_ldmk_idx_file: '../data/ldmk_eye_closure_idx.npy'
 
-  person_size:
-  size_per_person:
+  person_size: 250000
+  size_per_person: 8
   person_num_in_batch: 8
   size_per_person_in_batch: 4
 
@@ -81,8 +84,7 @@ test_params:
   crop_size: 224
   scale: 1.0
   iscrop: False
-  qualitative_test_list:
+  qualitative_test_list: 'utils/qualitative_test_images.txt'
 
 recog_params:
-  feature_dim:
-  drop_ratio:
+  feature_dim: 512

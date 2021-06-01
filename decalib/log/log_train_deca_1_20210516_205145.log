@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/mnt/lustre/wuxingzhe/DECA_Pytorch/decalib/main.py", line 3, in <module>
+    import yaml
+ModuleNotFoundError: No module named 'yaml'
+srun: error: SH-IDC1-10-5-37-43: task 0: Exited with exit code 1

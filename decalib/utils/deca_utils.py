@@ -1,7 +1,7 @@
 import numpy as np
-from .utils.renderer import SRenderY
-from .utils import util
-from .utils.rotation_converter import batch_euler2axis
+from .renderer import SRenderY
+from . import util
+from .rotation_converter import batch_euler2axis
 
 def decompose_code(code, num_dict):
     ''' Convert a flattened parameter vector to a dictionary of parameters

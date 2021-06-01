@@ -1,0 +1,156 @@
+{'common': {'eval_train': True},
+ 'config': 'configs/exp6.yaml',
+ 'convert': False,
+ 'convert_nart': False,
+ 'count_op': False,
+ 'dataset': {'image_size': 224, 'uv_size': 256},
+ 'eval_train': True,
+ 'evaluate': False,
+ 'gpus': '0,1',
+ 'image_path': None,
+ 'model': {'dense_template_path': '../data/texture_data_256.npy',
+           'face_eye_mask_path': '../data/uv_face_eye_mask.png',
+           'face_mask_path': '../data/uv_face_mask.png',
+           'fixed_displacement_path': '../data/fixed_displacement_256.npy',
+           'flame_lmk_embedding_path': '../data/landmark_embedding.npy',
+           'flame_model_path': '../data/generic_model.pkl',
+           'jaw_type': 'aa',
+           'max_z': 0.01,
+           'mean_tex_path': '../data/mean_texture.jpg',
+           'n_cam': 3,
+           'n_detail': 128,
+           'n_exp': 50,
+           'n_light': 27,
+           'n_pose': 6,
+           'n_shape': 100,
+           'n_tex': 50,
+           'param_list': ['shape', 'tex', 'exp', 'pose', 'cam', 'light'],
+           'tex_path': '../data/FLAME_albedo_from_BFM.npz',
+           'tex_type': 'BFM',
+           'topology_path': '../data/head_template.obj',
+           'useTex': True,
+           'use_tex': True,
+           'uv_size': 256},
+ 'output_path': None,
+ 'pretrained_model': {'fixed_model': '../data/deca_model.tar',
+                      'recog_network': 'net-data/Iter_007000_net.ckpt'},
+ 'recog_params': {'feature_dim': 512},
+ 'save_dict_path': 'snapshot/',
+ 'save_mesh_path': 'results/',
+ 'test': False,
+ 'test_params': {'batch_size': 3,
+                 'crop_size': 224,
+                 'iscrop': False,
+                 'qualitative_test_list': 'utils/qualitative_test_images.txt',
+                 'scale': 1.0,
+                 'works': 1},
+ 'train_coarse': True,
+ 'train_detail': False,
+ 'train_params': {'batch_sizes': [64, 32],
+                  'crop_size': 224,
+                  'epoch_phase': 0,
+                  'eye_closure_ldmk_idx_file': '../data/ldmk_eye_closure_idx.npy',
+                  'eye_closure_loss_factors': [1.0, 1.0],
+                  'identity_loss_factor': 0.2,
+                  'iscrop': False,
+                  'kpts_gt_dir': 'ldmk_gt',
+                  'ldmk_loss_factors': [0.0001, 1.0],
+                  'ldmk_weights_file': '../data/ldmk_weights.npy',
+                  'norm_type_eye_closure': 'mse',
+                  'norm_type_ldmk': 'mse',
+                  'norm_type_photometric': 'mse',
+                  'norm_type_reg': 'mse',
+                  'optimizer': {'kwargs': {'lr': 0.0001,
+                                           'weight_decay': 0.0005},
+                                'type': 'Adam'},
+                  'person_num_in_batch': 8,
+                  'person_size': 250000,
+                  'photometric_loss_factor': 2.0,
+                  'regular_loss_factors': [0.0001, 0.0001],
+                  'scale': 1.0,
+                  'scheduler': {'epochs': 4,
+                                'gamma': 0.5,
+                                'milestones': [5, 10]},
+                  'seg_masks_dir': 'face_seg_mask',
+                  'shape_consistency_loss_factor': 1.0,
+                  'size_per_person': 8,
+                  'size_per_person_in_batch': 4,
+                  'train_list': 'utils/train_images.txt',
+                  'train_subject_list': 'utils/train_subject_images.txt',
+                  'workers': 4},
+ 'visualize': False}
+make save path: snapshot/configs/exp6.yaml_20210519_004236
+make result path: results/configs/exp6.yaml_20210519_004236
+fc.weight  not available in reconstructed resnet
+fc.bias  not available in reconstructed resnet
+creating the FLAME Decoder
+total 9 images
+load recog model: net-data/Iter_007000_net.ckpt
+total 2000000 images
+total 250000 persons
+train half iters: 31250.0
+Build the code well for train_coarse
+make save path: snapshot/configs/exp6.yaml_20210519_004325
+make result path: results/configs/exp6.yaml_20210519_004325
+fc.weight  not available in reconstructed resnet
+fc.bias  not available in reconstructed resnet
+creating the FLAME Decoder
+total 9 images
+load recog model: net-data/Iter_007000_net.ckpt
+total 2000000 images
+total 250000 persons
+train half iters: 31250.0
+Build the code well for train_coarse
+Training ..... 
+total 2000000 images
+total 250000 persons
+train half iters: 31250.0
+main.py:39: YAMLLoadWarning: calling yaml.load() without Loader=... is deprecated, as the default Loader is unsafe. Please read https://msg.pyyaml.org/load for full details.
+  config = yaml.load(f)
+/mnt/lustre/wuxingzhe/anaconda3.5.1/envs/deca/lib/python3.8/site-packages/pytorch3d/io/obj_io.py:70: UserWarning: Faces have invalid indices
+  warnings.warn("Faces have invalid indices")
+/mnt/lustre/wuxingzhe/anaconda3.5.1/envs/deca/lib/python3.8/site-packages/pytorch3d/io/obj_io.py:484: UserWarning: Mtl file does not exist: ../data/template.mtl
+  warnings.warn(f"Mtl file does not exist: {f_mtl}")
+/mnt/lustre/wuxingzhe/anaconda3.5.1/envs/deca/lib/python3.8/site-packages/torch/optim/lr_scheduler.py:117: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  warnings.warn("Detected call of `lr_scheduler.step()` before `optimizer.step()`. "
+Epoch: 1, Step: 0, Lr: 0.000100, TL: 0.397951, LdmkL: 0.001857, EyeL: 0.000068, RegL: 0.261383, PhoL: 0.011927, idL: 0.860626, ConL: 0.200020, LdConL: 0.001904, EyeConL: 0.000068, PhoConL: 0.012349, idConL: 0.866747
+Epoch: 1, Step: 1, Lr: 0.000100, TL: 0.374534, LdmkL: 0.001165, EyeL: 0.000063, RegL: 0.272235, PhoL: 0.010677, idL: 0.817294, ConL: 0.188465, LdConL: 0.001182, EyeConL: 0.000063, PhoConL: 0.010722, idConL: 0.828880
+Epoch: 1, Step: 2, Lr: 0.000100, TL: 0.379657, LdmkL: 0.000976, EyeL: 0.000048, RegL: 0.253755, PhoL: 0.009634, idL: 0.841930, ConL: 0.190952, LdConL: 0.000988, EyeConL: 0.000049, PhoConL: 0.009777, idConL: 0.851804
+Epoch: 1, Step: 3, Lr: 0.000100, TL: 0.377325, LdmkL: 0.001186, EyeL: 0.000057, RegL: 0.239451, PhoL: 0.009874, idL: 0.833310, ConL: 0.189649, LdConL: 0.001210, EyeConL: 0.000056, PhoConL: 0.010079, idConL: 0.841129
+Epoch: 1, Step: 4, Lr: 0.000100, TL: 0.393609, LdmkL: 0.001274, EyeL: 0.000069, RegL: 0.243064, PhoL: 0.010225, idL: 0.863600, ConL: 0.199072, LdConL: 0.001302, EyeConL: 0.000071, PhoConL: 0.010552, idConL: 0.882976
+Epoch: 1, Step: 5, Lr: 0.000100, TL: 0.398668, LdmkL: 0.001487, EyeL: 0.000073, RegL: 0.229932, PhoL: 0.012430, idL: 0.857683, ConL: 0.200688, LdConL: 0.001500, EyeConL: 0.000073, PhoConL: 0.012597, idConL: 0.869603
+Epoch: 1, Step: 6, Lr: 0.000100, TL: 0.431374, LdmkL: 0.002194, EyeL: 0.000103, RegL: 0.242139, PhoL: 0.012464, idL: 0.936405, ConL: 0.216844, LdConL: 0.002207, EyeConL: 0.000107, PhoConL: 0.012594, idConL: 0.946712
+Epoch: 1, Step: 7, Lr: 0.000100, TL: 0.417090, LdmkL: 0.001651, EyeL: 0.000068, RegL: 0.248976, PhoL: 0.011935, idL: 0.907157, ConL: 0.210045, LdConL: 0.001699, EyeConL: 0.000068, PhoConL: 0.012203, idConL: 0.919363
+Epoch: 1, Step: 8, Lr: 0.000100, TL: 0.381283, LdmkL: 0.001648, EyeL: 0.000058, RegL: 0.271434, PhoL: 0.010339, idL: 0.841213, ConL: 0.190628, LdConL: 0.001648, EyeConL: 0.000058, PhoConL: 0.010339, idConL: 0.841213
+Epoch: 1, Step: 9, Lr: 0.000100, TL: 0.374946, LdmkL: 0.001714, EyeL: 0.000068, RegL: 0.263842, PhoL: 0.009933, idL: 0.819029, ConL: 0.189465, LdConL: 0.001758, EyeConL: 0.000069, PhoConL: 0.010237, idConL: 0.835825
+Epoch: 1, Step: 10, Lr: 0.000100, TL: 0.397158, LdmkL: 0.001679, EyeL: 0.000062, RegL: 0.258799, PhoL: 0.009359, idL: 0.888171, ConL: 0.199038, LdConL: 0.001684, EyeConL: 0.000063, PhoConL: 0.009311, idConL: 0.893343
+Epoch: 1, Step: 11, Lr: 0.000100, TL: 0.392093, LdmkL: 0.001726, EyeL: 0.000054, RegL: 0.245801, PhoL: 0.009651, idL: 0.870798, ConL: 0.196825, LdConL: 0.001730, EyeConL: 0.000055, PhoConL: 0.009844, idConL: 0.876769
+Epoch: 1, Step: 12, Lr: 0.000100, TL: 0.347531, LdmkL: 0.001499, EyeL: 0.000067, RegL: 0.229975, PhoL: 0.008611, idL: 0.766994, ConL: 0.175320, LdConL: 0.001517, EyeConL: 0.000067, PhoConL: 0.008718, idConL: 0.781495
+Epoch: 1, Step: 13, Lr: 0.000100, TL: 0.334651, LdmkL: 0.001370, EyeL: 0.000056, RegL: 0.241773, PhoL: 0.007678, idL: 0.748244, ConL: 0.168196, LdConL: 0.001378, EyeConL: 0.000056, PhoConL: 0.007731, idConL: 0.756496
+Epoch: 1, Step: 14, Lr: 0.000100, TL: 0.368494, LdmkL: 0.001626, EyeL: 0.000056, RegL: 0.256825, PhoL: 0.009569, idL: 0.811774, ConL: 0.185293, LdConL: 0.001650, EyeConL: 0.000058, PhoConL: 0.009664, idConL: 0.821281
+Epoch: 1, Step: 15, Lr: 0.000100, TL: 0.344207, LdmkL: 0.001687, EyeL: 0.000069, RegL: 0.276584, PhoL: 0.008475, idL: 0.760917, ConL: 0.173290, LdConL: 0.001732, EyeConL: 0.000070, PhoConL: 0.008687, idConL: 0.770564
+Epoch: 1, Step: 16, Lr: 0.000100, TL: 0.396635, LdmkL: 0.001736, EyeL: 0.000102, RegL: 0.257631, PhoL: 0.012281, idL: 0.848965, ConL: 0.200416, LdConL: 0.001780, EyeConL: 0.000104, PhoConL: 0.012649, idConL: 0.866175
+Epoch: 1, Step: 17, Lr: 0.000100, TL: 0.396173, LdmkL: 0.002255, EyeL: 0.000076, RegL: 0.238330, PhoL: 0.010863, idL: 0.863736, ConL: 0.199346, LdConL: 0.002272, EyeConL: 0.000078, PhoConL: 0.011043, idConL: 0.874543
+Epoch: 1, Step: 18, Lr: 0.000100, TL: 0.402933, LdmkL: 0.002287, EyeL: 0.000108, RegL: 0.246474, PhoL: 0.012325, idL: 0.863425, ConL: 0.203178, LdConL: 0.002365, EyeConL: 0.000109, PhoConL: 0.012606, idConL: 0.877463
+Epoch: 1, Step: 19, Lr: 0.000100, TL: 0.408239, LdmkL: 0.002189, EyeL: 0.000082, RegL: 0.275617, PhoL: 0.015082, idL: 0.849217, ConL: 0.205933, LdConL: 0.002273, EyeConL: 0.000083, PhoConL: 0.015095, idConL: 0.866935
+Epoch: 1, Step: 20, Lr: 0.000100, TL: 0.367238, LdmkL: 0.002897, EyeL: 0.000060, RegL: 0.238656, PhoL: 0.010182, idL: 0.794400, ConL: 0.185014, LdConL: 0.002973, EyeConL: 0.000064, PhoConL: 0.010277, idConL: 0.807120
+Epoch: 1, Step: 21, Lr: 0.000100, TL: 0.347981, LdmkL: 0.002329, EyeL: 0.000081, RegL: 0.249648, PhoL: 0.009538, idL: 0.757271, ConL: 0.175017, LdConL: 0.002341, EyeConL: 0.000081, PhoConL: 0.009585, idConL: 0.767120
+Epoch: 1, Step: 22, Lr: 0.000100, TL: 0.379656, LdmkL: 0.002237, EyeL: 0.000048, RegL: 0.274711, PhoL: 0.009560, idL: 0.836185, ConL: 0.190986, LdConL: 0.002250, EyeConL: 0.000050, PhoConL: 0.009732, idConL: 0.846106
+Epoch: 1, Step: 23, Lr: 0.000100, TL: 0.374581, LdmkL: 0.002339, EyeL: 0.000049, RegL: 0.284203, PhoL: 0.008552, idL: 0.832915, ConL: 0.188478, LdConL: 0.002365, EyeConL: 0.000048, PhoConL: 0.008691, idConL: 0.843418
+Epoch: 1, Step: 24, Lr: 0.000100, TL: 0.373529, LdmkL: 0.002391, EyeL: 0.000069, RegL: 0.263492, PhoL: 0.008395, idL: 0.828780, ConL: 0.188497, LdConL: 0.002419, EyeConL: 0.000071, PhoConL: 0.008508, idConL: 0.844957
+Epoch: 1, Step: 25, Lr: 0.000100, TL: 0.367252, LdmkL: 0.002364, EyeL: 0.000062, RegL: 0.254696, PhoL: 0.009947, idL: 0.796421, ConL: 0.185621, LdConL: 0.002446, EyeConL: 0.000063, PhoConL: 0.010145, idConL: 0.814111
+Epoch: 1, Step: 26, Lr: 0.000100, TL: 0.370943, LdmkL: 0.002224, EyeL: 0.000068, RegL: 0.249297, PhoL: 0.010246, idL: 0.797014, ConL: 0.188731, LdConL: 0.002255, EyeConL: 0.000070, PhoConL: 0.010538, idConL: 0.826648
+Epoch: 1, Step: 27, Lr: 0.000100, TL: 0.362345, LdmkL: 0.001985, EyeL: 0.000069, RegL: 0.251317, PhoL: 0.009186, idL: 0.789214, ConL: 0.184052, LdConL: 0.002030, EyeConL: 0.000072, PhoConL: 0.009385, idConL: 0.815896
+Epoch: 1, Step: 28, Lr: 0.000100, TL: 0.387626, LdmkL: 0.002610, EyeL: 0.000070, RegL: 0.297781, PhoL: 0.012180, idL: 0.827321, ConL: 0.195093, LdConL: 0.002663, EyeConL: 0.000074, PhoConL: 0.012388, idConL: 0.837899
+Epoch: 1, Step: 29, Lr: 0.000100, TL: 0.386813, LdmkL: 0.002884, EyeL: 0.000071, RegL: 0.281367, PhoL: 0.012530, idL: 0.822898, ConL: 0.194189, LdConL: 0.002912, EyeConL: 0.000073, PhoConL: 0.012679, idConL: 0.829227
+Epoch: 1, Step: 30, Lr: 0.000100, TL: 0.365770, LdmkL: 0.002921, EyeL: 0.000076, RegL: 0.302365, PhoL: 0.011044, idL: 0.783520, ConL: 0.183950, LdConL: 0.002920, EyeConL: 0.000078, PhoConL: 0.011121, idConL: 0.793551
+Epoch: 1, Step: 31, Lr: 0.000100, TL: 0.382113, LdmkL: 0.002999, EyeL: 0.000076, RegL: 0.278440, PhoL: 0.011511, idL: 0.818794, ConL: 0.192230, LdConL: 0.003032, EyeConL: 0.000076, PhoConL: 0.011540, idConL: 0.830205
+Epoch: 1, Step: 32, Lr: 0.000100, TL: 0.358023, LdmkL: 0.002884, EyeL: 0.000069, RegL: 0.227771, PhoL: 0.010749, idL: 0.765849, ConL: 0.180378, LdConL: 0.002916, EyeConL: 0.000070, PhoConL: 0.010828, idConL: 0.778687
+Epoch: 1, Step: 33, Lr: 0.000100, TL: 0.379600, LdmkL: 0.002942, EyeL: 0.000045, RegL: 0.257568, PhoL: 0.013437, idL: 0.798107, ConL: 0.190092, LdConL: 0.002958, EyeConL: 0.000046, PhoConL: 0.013463, idConL: 0.800807
+Epoch: 1, Step: 34, Lr: 0.000100, TL: 0.370554, LdmkL: 0.003339, EyeL: 0.000069, RegL: 0.256258, PhoL: 0.010784, idL: 0.787460, ConL: 0.188060, LdConL: 0.003416, EyeConL: 0.000072, PhoConL: 0.010845, idConL: 0.814406
+Epoch: 1, Step: 35, Lr: 0.000100, TL: 0.380379, LdmkL: 0.002690, EyeL: 0.000066, RegL: 0.275052, PhoL: 0.012876, idL: 0.795560, ConL: 0.192731, LdConL: 0.002706, EyeConL: 0.000066, PhoConL: 0.012855, idConL: 0.821246
+Epoch: 1, Step: 36, Lr: 0.000100, TL: 0.342143, LdmkL: 0.002445, EyeL: 0.000076, RegL: 0.231473, PhoL: 0.009585, idL: 0.739268, ConL: 0.172575, LdConL: 0.002478, EyeConL: 0.000077, PhoConL: 0.009741, idConL: 0.752697
+Epoch: 1, Step: 37, Lr: 0.000100, TL: 0.349793, LdmkL: 0.002386, EyeL: 0.000084, RegL: 0.244632, PhoL: 0.008788, idL: 0.761354, ConL: 0.177452, LdConL: 0.002420, EyeConL: 0.000086, PhoConL: 0.008836, idConL: 0.786371srun: Force Terminated job 10147370
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+slurmstepd: *** STEP 10147370.0 ON SH-IDC1-10-5-37-43 CANCELLED AT 2021-05-19T00:45:04 ***
+srun: error: SH-IDC1-10-5-37-43: task 0: Terminated

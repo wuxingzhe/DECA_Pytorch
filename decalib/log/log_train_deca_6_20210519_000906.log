@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "main.py", line 5, in <module>
+    from deca_solver import deca_solver
+  File "/mnt/lustre/wuxingzhe/DECA_Pytorch/decalib/deca_solver.py", line 210
+    imgs = util.vis_ldmk_imgs((sample['image'].numpy(), (output['landmarks2d_shuffle']*223.0).detach().cpu().numpy(), (sample['kpts_gt']*223.0).numpy(), isScale = False)
+                                                                                                                                                                 ^
+SyntaxError: invalid syntax
+srun: error: SH-IDC1-10-5-37-43: task 0: Exited with exit code 1

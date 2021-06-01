@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "main.py", line 5, in <module>
+    from deca_solver import deca_solver
+  File "/mnt/lustre/wuxingzhe/DECA_Pytorch/decalib/deca_solver.py", line 23, in <module>
+    from .utils.renderer import SRenderY
+ImportError: attempted relative import with no known parent package
+srun: error: SH-IDC1-10-5-37-43: task 0: Exited with exit code 1

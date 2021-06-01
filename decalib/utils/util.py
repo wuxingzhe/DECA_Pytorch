@@ -599,3 +599,33 @@ def tensor_vis_landmarks(images, landmarks, gt_landmarks=None, color = 'g', isSc
     vis_landmarks = np.stack(vis_landmarks)
     vis_landmarks = torch.from_numpy(vis_landmarks[:,:,:,[2,1,0]].transpose(0,3,1,2))/255.#, dtype=torch.float32)
     return vis_landmarks
+
+def vis_ldmk_imgs(images, predicted_landmarks, gt_landmarks=None, color = 'g', isScale=True):
+    vis_landmarks = []
+    for i in range(images.shape[0]):
+        image = images[i]
+        image = image.transpose(1,2,0).copy(); image = (image*255)
+        if isScale:
+            predicted_landmark = predicted_landmarks[i]*image.shape[0]/2 + image.shape[0]/2
+        else:
+            predicted_landmark = predicted_landmarks[i]
+        if predicted_landmark.shape[0] == 68:
+            image_landmarks = plot_kpts(image, predicted_landmark, color)
+            if gt_landmarks is not None:
+                image_landmarks = plot_verts(image_landmarks, gt_landmarks[i], 'r')
+        else:
+            image_landmarks = plot_verts(image, predicted_landmark, color)
+            if gt_landmarks is not None:
+                image_landmarks = plot_verts(image_landmarks, gt_landmarks[i], 'r')
+        vis_landmarks.append(image_landmarks)
+
+    vis_landmarks = np.stack(vis_landmarks)
+    return vis_landmarks
+
+def vis_render_imgs(input_imgs, render_imgs):
+    render_imgs_tmp = render_imgs[:,[2,1,0],:,:]
+    res_imgs = np.concatenate([input_imgs, render_imgs, render_imgs_tmp], axis=3)
+    res_imgs = res_imgs.transpose((0,2,3,1))
+    res_imgs*=255
+
+    return res_imgs.astype(np.uint8)

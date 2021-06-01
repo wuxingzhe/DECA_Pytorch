@@ -1,0 +1,4 @@
+srun: Force Terminated job 10147476
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+slurmstepd: *** STEP 10147476.0 ON SH-IDC1-10-5-37-52 CANCELLED AT 2021-05-19T02:01:11 ***
+srun: error: SH-IDC1-10-5-37-52: task 0: Terminated

@@ -16,6 +16,7 @@
 *.rar
 *.tar
 *.zip
+*.log
 
 # OS generated files #
 ######################
@@ -42,7 +43,18 @@ __pycache__
 
 # results #
 TestSamples/examples/results/
+decalib/net-data/
+decalib/*obj
+decalib/*png
+decalib/*mtl
+decalib/results/
+decalib/snapshot/
+decalib/log/
 
 # models #
 deca_model.tar
 srun.sh
+
+# util files
+decalib/utils/train_subject_images.txt
+decalib/utils/train_images.txt

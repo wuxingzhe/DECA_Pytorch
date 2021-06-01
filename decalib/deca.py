@@ -35,7 +35,7 @@ from .utils.config import cfg
 torch.backends.cudnn.benchmark = True
 
 class DECA(object):
-    def __init__(self, config=None, device='cuda'):
+    def __init__(self, config=None, device='cuda', eval_detail = False):
         if config is None:
             self.cfg = cfg
         else:
@@ -43,6 +43,7 @@ class DECA(object):
         self.device = device
         self.image_size = self.cfg.dataset.image_size
         self.uv_size = self.cfg.model.uv_size
+        self.eval_detail = eval_detail
 
         self._create_model(self.cfg.model)
         self._setup_renderer(self.cfg.model)
@@ -78,23 +79,31 @@ class DECA(object):
         self.flame = FLAME(model_cfg).to(self.device)
         if model_cfg.use_tex:
             self.flametex = FLAMETex(model_cfg).to(self.device)
-        self.D_detail = Generator(latent_dim=self.n_detail+self.n_cond, out_channels=1, out_scale=model_cfg.max_z, sample_mode = 'bilinear').to(self.device)
+        if self.eval_detail:
+            self.D_detail = Generator(latent_dim=self.n_detail+self.n_cond, out_channels=1, out_scale=model_cfg.max_z, sample_mode = 'bilinear').to(self.device)
         # resume model
         model_path = self.cfg.pretrained_modelpath
-        if os.path.exists(model_path):
+        if os.path.exists(model_path) and os.path.basename(model_path) == 'deca_model.tar':
             print(f'trained model found. load {model_path}')
             checkpoint = torch.load(model_path)
             self.checkpoint = checkpoint
             util.copy_state_dict(self.E_flame.state_dict(), checkpoint['E_flame'])
             util.copy_state_dict(self.E_detail.state_dict(), checkpoint['E_detail'])
             util.copy_state_dict(self.D_detail.state_dict(), checkpoint['D_detail'])
+        elif os.path.exists(model_path):
+            self.E_flame.load_state_dict(torch.load(model_path)['net_state_dict'])
+            if self.eval_detail:
+                self.E_detail.load_state_dict(torch.load(model_path[:-10]+'detail.ckpt')['net_state_dict'])
+                self.D_detail.load_state_dict(torch.load(model_path[:-12]+'D_detail.ckpt')['net_state_dict'])
         else:
             print(f'please check model path: {model_path}')
             exit()
+
         # eval mode
         self.E_flame.eval()
-        self.E_detail.eval()
-        self.D_detail.eval()
+        if self.eval_detail:
+            self.E_detail.eval()
+            self.D_detail.eval()
 
     def decompose_code(self, code, num_dict):
         ''' Convert a flattened parameter vector to a dictionary of parameters
@@ -150,9 +159,10 @@ class DECA(object):
     def encode(self, images):
         batch_size = images.shape[0]
         parameters = self.E_flame(images)
-        detailcode = self.E_detail(images)
         codedict = self.decompose_code(parameters, self.param_dict)
-        codedict['detail'] = detailcode
+        if self.eval_detail:
+            detailcode = self.E_detail(images)
+            codedict['detail'] = detailcode
         codedict['images'] = images
         return codedict
 
@@ -163,7 +173,8 @@ class DECA(object):
         
         ## decode
         verts, landmarks2d, landmarks3d = self.flame(shape_params=codedict['shape'], expression_params=codedict['exp'], pose_params=codedict['pose'])
-        uv_z = self.D_detail(torch.cat([codedict['pose'][:,3:], codedict['exp'], codedict['detail']], dim=1))
+        if self.eval_detail:
+            uv_z = self.D_detail(torch.cat([codedict['pose'][:,3:], codedict['exp'], codedict['detail']], dim=1))
         if self.cfg.model.use_tex:
             albedo = self.flametex(codedict['tex'])
         else:
@@ -175,27 +186,30 @@ class DECA(object):
         
         ## rendering
         ops = self.render(verts, trans_verts, albedo, codedict['light'])
-        uv_detail_normals = self.displacement2normal(uv_z, verts, ops['normals'])
-        uv_shading = self.render.add_SHlight(uv_detail_normals, codedict['light'])
-        uv_texture = albedo*uv_shading
+        if self.eval_detail:
+            uv_detail_normals = self.displacement2normal(uv_z, verts, ops['normals'])
+            uv_shading = self.render.add_SHlight(uv_detail_normals, codedict['light'])
+            uv_texture = albedo*uv_shading
 
         landmarks3d_vis = self.visofp(ops['transformed_normals'])
         landmarks3d = torch.cat([landmarks3d, landmarks3d_vis], dim=2)
 
         ## render shape
         shape_images = self.render.render_shape(verts, trans_verts)
-        detail_normal_images = F.grid_sample(uv_detail_normals, ops['grid'], align_corners=False)*ops['alpha_images']
-        shape_detail_images = self.render.render_shape(verts, trans_verts, detail_normal_images=detail_normal_images)
+        if self.eval_detail:
+            detail_normal_images = F.grid_sample(uv_detail_normals, ops['grid'], align_corners=False)*ops['alpha_images']
+            shape_detail_images = self.render.render_shape(verts, trans_verts, detail_normal_images=detail_normal_images)
         
         ## extract texture
         ## TODO: current resolution 256x256, support higher resolution, and add visibility
         uv_pverts = self.render.world2uv(trans_verts)
         uv_gt = F.grid_sample(images, uv_pverts.permute(0,2,3,1)[:,:,:,:2], mode='bilinear')
-        if self.cfg.model.use_tex:
-            ## TODO: poisson blending should give better-looking results
-            uv_texture_gt = uv_gt[:,:3,:,:]*self.uv_face_eye_mask + (uv_texture[:,:3,:,:]*(1-self.uv_face_eye_mask)*0.7)
-        else:
-            uv_texture_gt = uv_gt[:,:3,:,:]*self.uv_face_eye_mask + (torch.ones_like(uv_gt[:,:3,:,:])*(1-self.uv_face_eye_mask)*0.7)
+        if self.eval_detail:
+            if self.cfg.model.use_tex:
+                ## TODO: poisson blending should give better-looking results
+                uv_texture_gt = uv_gt[:,:3,:,:]*self.uv_face_eye_mask + (uv_texture[:,:3,:,:]*(1-self.uv_face_eye_mask)*0.7)
+            else:
+                uv_texture_gt = uv_gt[:,:3,:,:]*self.uv_face_eye_mask + (torch.ones_like(uv_gt[:,:3,:,:])*(1-self.uv_face_eye_mask)*0.7)
             
         ## output
         opdict = {
@@ -204,13 +218,18 @@ class DECA(object):
             'transformed_vertices': trans_verts,
             'landmarks2d': landmarks2d,
             'landmarks3d': landmarks3d,
-            'uv_detail_normals': uv_detail_normals,
-            'uv_texture_gt': uv_texture_gt,
-            'displacement_map': uv_z+self.fixed_uv_dis[None,None,:,:],
+            # 'uv_detail_normals': uv_detail_normals,
+            # 'uv_texture_gt': uv_texture_gt,
+            # 'displacement_map': uv_z+self.fixed_uv_dis[None,None,:,:],
         }
+        if self.eval_detail:
+            opdict['uv_detail_normals'] = uv_detail_normals
+            opdict['uv_texture_gt'] = uv_texture_gt
+            opdict['displacement_map'] = uv_z+self.fixed_uv_dis[None,None,:,:]
         if self.cfg.model.use_tex:
             opdict['albedo'] = albedo
-            opdict['uv_texture'] = uv_texture
+            if self.eval_detail:
+                opdict['uv_texture'] = uv_texture
 
         visdict = {
             'inputs': images, 
@@ -219,8 +238,10 @@ class DECA(object):
             'trans_verts': util.tensor_vis_landmarks(images, trans_verts, isScale=False),
             'trans_verts_scale': util.tensor_vis_landmarks(images, trans_verts),
             'shape_images': shape_images,
-            'shape_detail_images': shape_detail_images
+            # 'shape_detail_images': shape_detail_images
         }
+        if self.eval_detail:
+            visdict['shape_detail_images'] = shape_detail_images
         if self.cfg.model.use_tex:
             visdict['rendered_images'] = ops['images']
         return opdict, visdict
@@ -246,13 +267,17 @@ class DECA(object):
         for i in range(opdict['vertices'].shape[0]):
             vertices = opdict['vertices'][i].cpu().numpy()
             faces = self.render.faces[0].cpu().numpy()
-            texture = util.tensor2image(opdict['uv_texture_gt'][i])
+            if self.eval_detail:
+                texture = util.tensor2image(opdict['uv_texture_gt'][i])
             uvcoords = self.render.raw_uvcoords[0].cpu().numpy()
             uvfaces = self.render.uvfaces[0].cpu().numpy()
             # save coarse mesh, with texture and normal map
-            normal_map = util.tensor2image(opdict['uv_detail_normals'][i]*0.5 + 0.5)
+            if self.eval_detail:
+                normal_map = util.tensor2image(opdict['uv_detail_normals'][i]*0.5 + 0.5)
             filename = os.path.join(savefolder, filenames[i], filenames[i]+'.obj')
-            util.write_obj(filename, vertices, faces, 
+
+            if self.eval_detail:
+                util.write_obj(filename, vertices, faces, 
                         texture=texture, 
                         uvcoords=uvcoords, 
                         uvfaces=uvfaces, 
@@ -264,11 +289,12 @@ class DECA(object):
                         uvfaces=uvfaces)
 
             # upsample mesh, save detailed mesh
-            texture = texture[:,:,[2,1,0]]
-            normals = opdict['normals'][i].cpu().numpy()
-            displacement_map = opdict['displacement_map'][i].cpu().numpy().squeeze()
-            dense_vertices, dense_colors, dense_faces = util.upsample_mesh(vertices, normals, faces, displacement_map, texture, self.dense_template)
-            util.write_obj(filename.replace('.obj', '_detail.obj'), 
+            if self.eval_detail:
+                texture = texture[:,:,[2,1,0]]
+                normals = opdict['normals'][i].cpu().numpy()
+                displacement_map = opdict['displacement_map'][i].cpu().numpy().squeeze()
+                dense_vertices, dense_colors, dense_faces = util.upsample_mesh(vertices, normals, faces, displacement_map, texture, self.dense_template)
+                util.write_obj(filename.replace('.obj', '_detail.obj'), 
                         dense_vertices, 
                         dense_faces,
                         colors = dense_colors,

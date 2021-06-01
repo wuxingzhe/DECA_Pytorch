@@ -27,6 +27,7 @@ from glob import glob
 import scipy.io
 
 from . import detectors
+from datasets.data_augment import TransformBuilder
 
 def video2sequence(video_path):
     videofolder = video_path.split('.')[0]
@@ -91,6 +92,9 @@ class TrainSubjectData(Dataset):
         self.iscrop = self.config.train_params.iscrop
         self.resolution_inp = self.config.train_params.crop_size
 
+        if hasattr(self.config, 'has_train_aug') and self.config.has_train_aug:
+            self.augment_builder = TransformBuilder(self.config.augmentation_params)
+
         if self.iscrop:
             if face_detector == 'fan':
                 self.face_detector = detectors.FAN()
@@ -127,13 +131,17 @@ class TrainSubjectData(Dataset):
     def __getitem__(self, index):
         ind_x, ind_y = self.get_list_index(index)
         imagepath = self.imagepath_list[ind_x][ind_y]
-        # imagename = imagepath.split('/')[-1].split('.')[0]
-        root_path = '/'.join(imagepath.split('/')[:-2])
+        if 'vggface' in imagepath:
+            root_path = '/'.join(imagepath.split('/')[:-3])
+            dir_name = imagepath.split('/')[-2]
+        else:
+            root_path = '/'.join(imagepath.split('/')[:-5])
+            dir_name = '/'.join(imagepath.split('/')[-3:-1])
         imagename = os.path.basename(imagepath)
-        kpts_gt = np.load(os.path.join(root_path, self.kpts_gt_dir, imagename[:-3]+'npy'))
-        seg_mask = np.load(os.path.join(root_path, self.seg_masks_dir, imagename[:-3]+'npy'))
+        kpts_gt = np.load(os.path.join(root_path, self.kpts_gt_dir, dir_name, imagename[:-3]+'npy'))
+        seg_mask = cv2.imread(os.path.join(root_path, self.seg_masks_dir, dir_name, imagename))
 
-        image = np.array(imread(imagepath))
+        image = cv2.imread(imagepath)
         if len(image.shape) == 2:
             image = image[:,:,None].repeat(1,1,3)
         if len(image.shape) == 3 and image.shape[2] > 3:
@@ -142,44 +150,15 @@ class TrainSubjectData(Dataset):
             image = cv2.resize(image, (self.image_size, self.image_size))
         if seg_mask.shape[0] != self.image_size:
             seg_mask = cv2.resize(seg_mask, (self.image_size, self.image_size))
+        sample = {'image': image, 'seg_mask': seg_mask, 'kpts_gt': kpts_gt}
 
-        h, w, _ = image.shape
-        if self.iscrop:
-            # provide kpt as txt file, or mat file (for AFLW2000)
-            kpt_matpath = imagepath.replace('.jpg', '.mat').replace('.png', '.mat')
-            kpt_txtpath = imagepath.replace('.jpg', '.txt').replace('.png', '.txt')
-            if os.path.exists(kpt_matpath):
-                kpt = scipy.io.loadmat(kpt_matpath)['pt3d_68'].T        
-                left = np.min(kpt[:,0]); right = np.max(kpt[:,0]); 
-                top = np.min(kpt[:,1]); bottom = np.max(kpt[:,1])
-                old_size, center = self.bbox2point(left, right, top, bottom, type='kpt68')
-            elif os.path.exists(kpt_txtpath):
-                kpt = np.loadtxt(kptpath)
-                left = np.min(kpt[:,0]); right = np.max(kpt[:,0]); 
-                top = np.min(kpt[:,1]); bottom = np.max(kpt[:,1])
-                old_size, center = self.bbox2point(left, right, top, bottom, type='kpt68')
-            else:
-                bbox, bbox_type = self.face_detector.run(image)
-                if len(bbox) < 4:
-                    print('no face detected! run original image')
-                    left = 0; right = h-1; top=0; bottom=w-1
-                else:
-                    left = bbox[0]; right=bbox[2]
-                    top = bbox[1]; bottom=bbox[3]
-                old_size, center = self.bbox2point(left, right, top, bottom, type=bbox_type)
-            size = int(old_size*self.scale)
-            src_pts = np.array([[center[0]-size/2, center[1]-size/2], [center[0] - size/2, center[1]+size/2], [center[0]+size/2, center[1]-size/2]])
-            DST_PTS = np.array([[0,0], [0,self.resolution_inp - 1], [self.resolution_inp - 1, 0]])
-            tform = estimate_transform('similarity', src_pts, DST_PTS)
-            image = warp(image, tform.inverse, output_shape=(self.resolution_inp, self.resolution_inp))
-        # else:
-        #     src_pts = np.array([[0, 0], [0, h-1], [w-1, 0]])
-        
-        # DST_PTS = np.array([[0,0], [0,self.resolution_inp - 1], [self.resolution_inp - 1, 0]])
-        # tform = estimate_transform('similarity', src_pts, DST_PTS)
-        
-        image = image/255.
-        kpts_gt = kpts_gt/255.
+        if hasattr(self.config, 'has_train_aug') and self.config.has_train_aug:
+            sample = self.augment_builder.train_transforms(sample)
+
+        h, w, _ = sample['image'].shape
+        image = (sample['image'])/255.
+        kpts_gt = (sample['kpts_gt'])/255.0
+        seg_mask = sample['seg_mask']
         seg_mask[seg_mask>100] = 255
         seg_mask[seg_mask<=100] = 0
         seg_mask = seg_mask/255.

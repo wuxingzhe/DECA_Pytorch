@@ -14,12 +14,11 @@ def parse_args():
     new_parser.add_argument('--config', default='configs/config.yaml')
     new_parser.add_argument('--save_dict_path', default='snapshot/')
     new_parser.add_argument('--save_mesh_path', default='results/')
-    new_parser.add_argument('--resume', type=str, default=None)
     new_parser.add_argument('--visualize', action='store_true')
     new_parser.add_argument('--image_path', type=str, default=None)
     new_parser.add_argument('--output_path', type=str, default=None)
 
-    new_parser.add_argument('--gpus', type=str, default='0,1')
+    new_parser.add_argument('--gpus', type=str, default='2,3')
     # exclusive arguments
     group = new_parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--train_coarse', action='store_true')
