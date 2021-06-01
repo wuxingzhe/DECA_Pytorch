@@ -85,9 +85,9 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='DECA: Detailed Expression Capture and Animation')
 
-    parser.add_argument('-i', '--inputpath', default='TestSamples/examples', type=str,
+    parser.add_argument('-i', '--inputpath', default='TestSamples/vggface2', type=str,
                         help='path to the test data, can be image folder, image path, image list, video')
-    parser.add_argument('-s', '--savefolder', default='TestSamples/examples/results', type=str,
+    parser.add_argument('-s', '--savefolder', default='TestSamples/vggface2/results', type=str,
                         help='path to the output directory, where results(obj, txt files) will be stored.')
     parser.add_argument('-m', '--model_path', default='', type=str,
                         help='path to the trained model')

@@ -100,6 +100,8 @@ class TestData(Dataset):
             image = image[:,:,None].repeat(1,1,3)
         if len(image.shape) == 3 and image.shape[2] > 3:
             image = image[:,:,:3]
+        if image.shape[0] != self.crop_size:
+            resize(image, (self.crop_size, self.crop_size))
 
         h, w, _ = image.shape
         if self.iscrop:

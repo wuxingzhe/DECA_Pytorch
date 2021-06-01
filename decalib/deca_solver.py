@@ -35,6 +35,7 @@ from datasets.train_datasets import TrainData
 from datasets.train_subject_datasets import TrainSubjectData
 
 from losses.unsupervised_losses import UnsupervisedLosses
+from losses.idmf_loss import IDMRFLoss, VGG19FeatLayer
 from utils.config import cfg
 from utils.deca_utils import decompose_code, displacement2normal, displacement2vertex
 torch.backends.cudnn.benchmark = True
@@ -160,7 +161,7 @@ class deca_solver(object):
                 codedict['detail']], dim=1))
             output['displacement_map'] = uv_z+self.fixed_uv_dis[None,None,:,:]
             dense_vertices, dense_faces = displacement2vertex(uv_z, verts, normals, self.unsupervised_losses_conductor.render)
-            uv_detail_normals = self.displacement2normal(uv_z, verts, normals, self.unsupervised_losses_conductor.render)
+            uv_detail_normals = displacement2normal(uv_z, verts, normals, self.unsupervised_losses_conductor.render)
             dense_trans_verts = util.batch_orth_proj(dense_vertices, codedict['cam'])
             dense_trans_verts[:,:,1:] = -dense_trans_verts[:,:,1:]
 
@@ -242,9 +243,12 @@ class deca_solver(object):
                         loss_eye_closure_consistency.item(), loss_photometric_consistency.item(), loss_identity_consistency.item()))
 
             elif self.mode == 'train_detail':
-                loss_regular = self.unsupervised_losses_conductor.regular_loss([codedict['detailcode']])
-                loss_photometric = self.unsupervised_losses_conductor.photometric_loss()
-               # loss_sym = self.unsupervised_losses_conductor.
+                loss_regular = self.unsupervised_losses_conductor.regular_loss([parameters['detailcode']], self.device, norm_type = norm_type = self.config.train_params.norm_type_reg)
+                loss_photometric, render_imgs = self.unsupervised_losses_conductor.photometric_loss(sample['image'].to(self.device), output, parameters['light'], sample['seg_mask'].to(self.device), norm_type = self.config.train_params.norm_type_photometric)
+                loss_sym = self.unsupervised_losses_conductor.symmetry_loss(output['displacement_map'], norm_type = self.config.train_params.norm_type_sym)
+                loss_idmrf = self.idmrf_loss_conductor(render_imgs[:,[2,1,0],:,:], sample['image'].to(self.device))
+                loss_total = loss_regular*self.config.train_params.regular_loss_factor + loss_photometric*self.config.train_params.photometric_loss_factor \
+                                + loss_sym*self.config.train_params.sym_loss_factor + self.config.train_params.idmrf_loss_factor*loss_idmrf
 
             self.lr_scheduler.optimizer.zero_grad()
             loss_total.backward()
@@ -455,6 +459,8 @@ class deca_solver(object):
 
     def _build_criterion(self):
         self.unsupervised_losses_conductor = UnsupervisedLosses(self.config, self.device)
+        # self.vgg_feat_network = VGG19FeatLayer()
+        self.idmrf_loss_conductor = IDMRFLoss()
 
     def _build_train_loader(self, epoch):
         if self.mode == 'train_coarse':
