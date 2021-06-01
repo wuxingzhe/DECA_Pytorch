@@ -124,7 +124,7 @@ class deca_solver(object):
         trans_verts[:,:,1:] = -trans_verts[:,:,1:]
         # trans_verts = trans_verts*self.image_size/2 + self.image_size/2
         # trans_verts /= (self.image_size - 1)
-        normals = util.vertex_normals(verts, self.faces.expand(batch_size, -1, -1))
+        normals = util.vertex_normals(verts, self.faces.expand(batch_size, -1, -1).to(self.device))
 
         output = {'albedo': albedo, 'verts': verts, 'trans_verts': trans_verts, \
                     'landmarks2d': landmarks2d, 'landmarks3d': landmarks3d, 'normals': normals}
@@ -244,7 +244,7 @@ class deca_solver(object):
             elif self.mode == 'train_detail':
                 loss_regular = self.unsupervised_losses_conductor.regular_loss([codedict['detailcode']])
                 loss_photometric = self.unsupervised_losses_conductor.photometric_loss()
-                loss_sym = self.unsupervised_losses_conductor.
+               # loss_sym = self.unsupervised_losses_conductor.
 
             self.lr_scheduler.optimizer.zero_grad()
             loss_total.backward()

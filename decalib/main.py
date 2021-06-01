@@ -18,7 +18,7 @@ def parse_args():
     new_parser.add_argument('--image_path', type=str, default=None)
     new_parser.add_argument('--output_path', type=str, default=None)
 
-    new_parser.add_argument('--gpus', type=str, default='2,3')
+    new_parser.add_argument('--gpus', type=str, default='1,2')
     # exclusive arguments
     group = new_parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--train_coarse', action='store_true')
