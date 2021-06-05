@@ -107,7 +107,7 @@ class SRenderY(nn.Module):
         self.register_buffer('face_uvcoords', face_uvcoords)
 
         # shape colors, for rendering shape overlay
-        colors = torch.tensor([180, 180, 180])[None, None, :].repeat(1, faces.max()+1, 1).float()/255.
+        colors = torch.tensor([74, 120, 168])[None, None, :].repeat(1, faces.max()+1, 1).float()/255.
         face_colors = util.face_vertices(colors, faces)
         self.register_buffer('face_colors', face_colors)
 
@@ -141,7 +141,7 @@ class SRenderY(nn.Module):
         attributes = torch.cat([self.face_uvcoords.expand(batch_size, -1, -1, -1), 
                                 transformed_face_normals.detach(), 
                                 face_vertices.detach(), 
-                                face_normals], 
+                                face_normals.detach()], 
                                 -1)
         # rasterize
         rendering = self.rasterizer(transformed_vertices, self.faces.expand(batch_size, -1, -1), attributes)
@@ -167,10 +167,12 @@ class SRenderY(nn.Module):
                 if light_type=='point':
                     vertice_images = rendering[:, 6:9, :, :].detach()
                     shading = self.add_pointlight(vertice_images.permute(0,2,3,1).reshape([batch_size, -1, 3]), normal_images.permute(0,2,3,1).reshape([batch_size, -1, 3]), lights)
-                    shading_images = shading.reshape([batch_size, albedo_images.shape[2], albedo_images.shape[3], 3]).permute(0,3,1,2)
+                    shading_images = shading.reshape([batch_size, lights.shape[1], albedo_images.shape[2], albedo_images.shape[3], 3]).permute(0,1,4,2,3)
+                    shading_images = shading_images.mean(1)
                 else:
                     shading = self.add_directionlight(normal_images.permute(0,2,3,1).reshape([batch_size, -1, 3]), lights)
-                    shading_images = shading.reshape([batch_size, albedo_images.shape[2], albedo_images.shape[3], 3]).permute(0,3,1,2)
+                    shading_images = shading.reshape([batch_size, lights.shape[1], albedo_images.shape[2], albedo_images.shape[3], 3]).permute(0,1,4,2,3)
+                    shading_images = shading_images.mean(1)
             images = albedo_images*shading_images
         else:
             images = albedo_images
@@ -184,7 +186,7 @@ class SRenderY(nn.Module):
             'shading_images': shading_images,
             'grid': grid,
             'normals': normals,
-            'normal_images': normal_images*alpha_images,
+            'normal_images': normal_images*alpha_idmages,
             'transformed_normals': transformed_normals,
         }
         
@@ -243,14 +245,11 @@ class SRenderY(nn.Module):
         if lights is None:
             light_positions = torch.tensor(
                 [
-                [-1,1,1],
-                [1,1,1],
-                [-1,-1,1],
-                [1,-1,1],
+                [-0.1,-0.1,0.2],
                 [0,0,1]
                 ]
             )[None,:,:].expand(batch_size, -1, -1).float()
-            light_intensities = torch.ones_like(light_positions).float()*1.7
+            light_intensities = torch.ones_like(light_positions).float()
             lights = torch.cat((light_positions, light_intensities), 2).to(vertices.device)
         transformed_vertices[:,:,2] = transformed_vertices[:,:,2] + 10
 
@@ -261,7 +260,7 @@ class SRenderY(nn.Module):
         attributes = torch.cat([self.face_colors.expand(batch_size, -1, -1, -1), 
                         transformed_face_normals.detach(), 
                         face_vertices.detach(), 
-                        face_normals], 
+                        face_normals.detach()], 
                         -1)
         # rasterize
         rendering = self.rasterizer(transformed_vertices, self.faces.expand(batch_size, -1, -1), attributes)
@@ -281,6 +280,18 @@ class SRenderY(nn.Module):
         if detail_normal_images is not None:
             normal_images = detail_normal_images
 
+        if lights.shape[1] == 9:
+            shading_images = self.add_SHlight(normal_images, lights)
+        else:
+            print('directional')
+            shading = self.add_directionlight(normal_images.permute(0, 2, 3, 1).reshape([batch_size, -1, 3]), lights)
+
+            shading_images = shading.reshape(
+                [batch_size, lights.shape[1], albedo_images.shape[2], albedo_images.shape[3], 3]).permute(0, 1, 4, 2, 3)
+            shading_images = shading_images.mean(1)
+        shape_images = albedo_images * shading_images
+
+        """
         shading = self.add_directionlight(normal_images.permute(0,2,3,1).reshape([batch_size, -1, 3]), lights)
         shading_images = shading.reshape([batch_size, albedo_images.shape[2], albedo_images.shape[3], 3]).permute(0,3,1,2).contiguous()        
         shaded_images = albedo_images*shading_images
@@ -290,6 +301,7 @@ class SRenderY(nn.Module):
             shape_images = shaded_images*alpha_images + torch.zeros_like(shaded_images).to(vertices.device)*(1-alpha_images)
         else:
             shape_images = shaded_images*alpha_images + images*(1-alpha_images)
+        """
         return shape_images
     
     def render_depth(self, transformed_vertices):
@@ -335,6 +347,6 @@ class SRenderY(nn.Module):
         uv_vertices: [bz, 3, h, w]
         '''
         batch_size = vertices.shape[0]
-        face_vertices = util.face_vertices(vertices, self.faces.expand(batch_size, -1, -1))
+        face_vertices = util.face_vertices(vertices, self.faces.expand(batch_size, -1, -1)).clone().detach()
         uv_vertices = self.uv_rasterizer(self.uvcoords.expand(batch_size, -1, -1), self.uvfaces.expand(batch_size, -1, -1), face_vertices)[:, :3]
         return uv_vertices

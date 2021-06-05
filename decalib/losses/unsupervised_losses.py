@@ -90,14 +90,14 @@ class UnsupervisedLosses(object):
         losses_regular = []
         for param in params:
             if norm_type == 'mse':
-                losses_regular.append(torch.mean(param ** 2))
+                losses_regular.append(torch.sum(param ** 2)/2.0)
             elif norm_type == 'l1':
-                losses_regular.append(torch.mean(torch.abs(param)))
+                losses_regular.append(torch.sum(torch.abs(param))/2.0)
 
         return torch.sum(torch.tensor(losses_regular).float().to(device))
 
     def symmetry_loss(self, displacement_map, norm_type = 'mse'):
-        displacement_map_flip = displacement_map[:,:,::-1,:]
+        displacement_map_flip = displacement_map[:,:,:,::-1]
         if norm_type == 'mse':
             return torch.mean((displacement_map_flip * self.uv_face_mask - displacement_map * self.uv_face_mask) ** 2)
         elif norm_type == 'l1':
