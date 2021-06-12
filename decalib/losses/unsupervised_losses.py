@@ -64,8 +64,11 @@ class UnsupervisedLosses(object):
         elif norm_type == 'l1':
             return torch.mean(torch.abs(sub_gt - sub_pred))
 
-    def photometric_loss(self, imgs_input, output, lights, skin_seg_res, norm_type = 'mse'):
-        ops = self.render(output['verts'], output['trans_verts'], output['albedo'], lights)
+    def photometric_loss(self, imgs_input, output, lights, skin_seg_res, norm_type = 'mse', uv_normal_maps = None, return_ops = False):
+        if uv_normal_maps is not None:
+            ops = self.render(output['verts'], output['trans_verts'], output['albedo'], lights, uv_normal_maps = uv_normal_maps)
+        else:
+            ops = self.render(output['verts'], output['trans_verts'], output['albedo'], lights)
         imgs_render = ops['images']
         imgs_render = imgs_render[:,[2,1,0],:,:]
         # imgs_render /= 255.0
@@ -74,7 +77,10 @@ class UnsupervisedLosses(object):
         elif norm_type == 'l1':
             loss_photometric = torch.mean(skin_seg_res * torch.abs(imgs_input - imgs_render))
 
-        return loss_photometric, imgs_render
+        if return_ops:
+            return loss_photometric, imgs_render, ops
+        else:
+            return loss_photometric, imgs_render
 
     def identity_loss(self, imgs_input, imgs_render):
         embs_input, _  = self.recog_network(imgs_input)

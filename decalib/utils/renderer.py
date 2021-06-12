@@ -118,7 +118,7 @@ class SRenderY(nn.Module):
                            (pi/4)*(3)*(np.sqrt(5/(12*pi))), (pi/4)*(3/2)*(np.sqrt(5/(12*pi))), (pi/4)*(1/2)*(np.sqrt(5/(4*pi)))]).float()
         self.register_buffer('constant_factor', constant_factor)
     
-    def forward(self, vertices, transformed_vertices, albedos, lights=None, light_type='point'):
+    def forward(self, vertices, transformed_vertices, albedos, lights=None, uv_normal_maps=None, light_type='point'):
         '''
         -- Texture Rendering
         vertices: [batch_size, V, 3], vertices in world space, for calculating normals, then shading
@@ -160,6 +160,8 @@ class SRenderY(nn.Module):
 
         # shading
         normal_images = rendering[:, 9:12, :, :]
+        if uv_normal_maps is not None:
+            normal_images = F.grid_sample(uv_normal_maps, grid, align_corners=False)
         if lights is not None:
             if lights.shape[1] == 9:
                 shading_images = self.add_SHlight(normal_images, lights)

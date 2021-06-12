@@ -160,11 +160,13 @@ class deca_solver(object):
             uv_z = self.D_detail(torch.cat([codedict['pose'][:,3:], codedict['exp'], \
                 codedict['detail']], dim=1))
             output['displacement_map'] = uv_z+self.fixed_uv_dis[None,None,:,:]
-            dense_vertices, dense_faces = displacement2vertex(uv_z, verts, normals, self.unsupervised_losses_conductor.render)
+            dense_vertices_maps, dense_faces = displacement2vertex(uv_z, verts, normals, self.unsupervised_losses_conductor.render)
             uv_detail_normals = displacement2normal(uv_z, verts, normals, self.unsupervised_losses_conductor.render)
+            dense_vertices = F.grid_sample(dense_vertices_maps, self.uvcoords_grid, align_corners=False)
             dense_trans_verts = util.batch_orth_proj(dense_vertices, codedict['cam'])
             dense_trans_verts[:,:,1:] = -dense_trans_verts[:,:,1:]
 
+            output['detail_verts_maps'] = dense_vertices_maps
             output['detail_verts'] = dense_vertices
             output['detail_trans_verts'] = dense_trans_verts
             output['detail_faces'] = dense_faces
@@ -244,9 +246,9 @@ class deca_solver(object):
 
             elif self.mode == 'train_detail':
                 loss_regular = self.unsupervised_losses_conductor.regular_loss([parameters['detailcode']], self.device, norm_type = self.config.train_params.norm_type_reg)
-                loss_photometric, render_imgs = self.unsupervised_losses_conductor.photometric_loss(sample['image'].to(self.device), output, parameters['light'], sample['seg_mask'].to(self.device), norm_type = self.config.train_params.norm_type_photometric)
+                loss_photometric, render_imgs, ops = self.unsupervised_losses_conductor.photometric_loss(sample['image'].to(self.device), output, parameters['light'], sample['seg_mask'].to(self.device), norm_type = self.config.train_params.norm_type_photometric, uv_normal_maps = output['uv_detail_normals'], return_ops = True)
                 loss_sym = self.unsupervised_losses_conductor.symmetry_loss(output['displacement_map'], norm_type = self.config.train_params.norm_type_sym)
-                loss_idmrf = self.idmrf_loss_conductor(render_imgs[:,[2,1,0],:,:], sample['image'].to(self.device))
+                loss_idmrf = self.idmrf_loss_conductor(render_imgs[:,[2,1,0],:,:], (sample['image'][:,[2,1,0],:,:]).to(self.device))
                 loss_total = loss_regular*self.config.train_params.regular_loss_factor + loss_photometric*self.config.train_params.photometric_loss_factor \
                                 + loss_sym*self.config.train_params.sym_loss_factor + self.config.train_params.idmrf_loss_factor*loss_idmrf
 
@@ -361,6 +363,7 @@ class deca_solver(object):
         self.faces = faces.verts_idx[None, ...] 
         self.uvcoords = aux.verts_uvs[None, ...]      # (N, V, 2)
         self.uvfaces = faces.textures_idx[None, ...] # (N, F, 3)
+        self.uvcoords_grid = self.uvcoords*2 - 1; self.uvcoords_grid[...,1] = -self.uvcoords_grid[...,1]
 
         # encoders
         self.E_flame = ResnetEncoder(outsize=self.n_param)
