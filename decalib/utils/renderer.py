@@ -186,7 +186,7 @@ class SRenderY(nn.Module):
             'shading_images': shading_images,
             'grid': grid,
             'normals': normals,
-            'normal_images': normal_images*alpha_idmages,
+            'normal_images': normal_images*alpha_images,
             'transformed_normals': transformed_normals,
         }
         
@@ -234,7 +234,7 @@ class SRenderY(nn.Module):
         # normals_dot_lights = (normals[:,None,:,:]*directions_to_lights).sum(dim=3)
         normals_dot_lights = torch.clamp((normals[:,None,:,:]*directions_to_lights).sum(dim=3), 0., 1.)
         shading = normals_dot_lights[:,:,:,None]*light_intensities[:,:,None,:]
-        return shading.mean(1)
+        return shading
 
     def render_shape(self, vertices, transformed_vertices, images=None, detail_normal_images=None, lights=None):
         '''

@@ -44,6 +44,7 @@ __pycache__
 # results #
 TestSamples/examples/results/
 TestSamples/vggface2/results/
+TestSamples/vggface2/
 decalib/net-data/
 decalib/*obj
 decalib/*png

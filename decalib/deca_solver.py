@@ -243,7 +243,7 @@ class deca_solver(object):
                         loss_eye_closure_consistency.item(), loss_photometric_consistency.item(), loss_identity_consistency.item()))
 
             elif self.mode == 'train_detail':
-                loss_regular = self.unsupervised_losses_conductor.regular_loss([parameters['detailcode']], self.device, norm_type = norm_type = self.config.train_params.norm_type_reg)
+                loss_regular = self.unsupervised_losses_conductor.regular_loss([parameters['detailcode']], self.device, norm_type = self.config.train_params.norm_type_reg)
                 loss_photometric, render_imgs = self.unsupervised_losses_conductor.photometric_loss(sample['image'].to(self.device), output, parameters['light'], sample['seg_mask'].to(self.device), norm_type = self.config.train_params.norm_type_photometric)
                 loss_sym = self.unsupervised_losses_conductor.symmetry_loss(output['displacement_map'], norm_type = self.config.train_params.norm_type_sym)
                 loss_idmrf = self.idmrf_loss_conductor(render_imgs[:,[2,1,0],:,:], sample['image'].to(self.device))
@@ -266,11 +266,12 @@ class deca_solver(object):
         print('Training ..... ')
 
         for epoch in range(self.start_epoch, config.train_params.scheduler.epochs + 1):
-            self.lr_scheduler.step()
+            # self.lr_scheduler.step()
             self.lr = self.lr_scheduler.get_lr()[0]
             if epoch > self.epoch_phase:
                 self._build_train_loader(epoch)
             self.train(epoch)
+            self.lr_scheduler.step()
             self._save_model_dict(epoch)
             self.validate(epoch)
 
@@ -460,7 +461,7 @@ class deca_solver(object):
     def _build_criterion(self):
         self.unsupervised_losses_conductor = UnsupervisedLosses(self.config, self.device)
         # self.vgg_feat_network = VGG19FeatLayer()
-        self.idmrf_loss_conductor = IDMRFLoss()
+        # self.idmrf_loss_conductor = IDMRFLoss()
 
     def _build_train_loader(self, epoch):
         if self.mode == 'train_coarse':

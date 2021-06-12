@@ -35,7 +35,7 @@ from .utils.config import cfg
 torch.backends.cudnn.benchmark = True
 
 class DECA(object):
-    def __init__(self, config=None, device='cuda', eval_detail = False):
+    def __init__(self, config=None, device='cuda', eval_detail = False, is_ori = True):
         if config is None:
             self.cfg = cfg
         else:
@@ -44,6 +44,7 @@ class DECA(object):
         self.image_size = self.cfg.dataset.image_size
         self.uv_size = self.cfg.model.uv_size
         self.eval_detail = eval_detail
+        self.is_ori = is_ori
 
         self._create_model(self.cfg.model)
         self._setup_renderer(self.cfg.model)
@@ -231,15 +232,26 @@ class DECA(object):
             if self.eval_detail:
                 opdict['uv_texture'] = uv_texture
 
-        visdict = {
-            'inputs': images, 
-            'landmarks2d': util.tensor_vis_landmarks(images, landmarks2d, isScale=False),
-            'landmarks3d': util.tensor_vis_landmarks(images, landmarks3d, isScale=False),
-            'trans_verts': util.tensor_vis_landmarks(images, trans_verts, isScale=False),
-            'trans_verts_scale': util.tensor_vis_landmarks(images, trans_verts),
-            'shape_images': shape_images,
-            # 'shape_detail_images': shape_detail_images
-        }
+        if self.is_ori:
+            visdict = {
+                'inputs': images, 
+                'landmarks2d': util.tensor_vis_landmarks(images, landmarks2d, isScale=False),
+                'landmarks3d': util.tensor_vis_landmarks(images, landmarks3d, isScale=False),
+                'trans_verts': util.tensor_vis_landmarks(images, trans_verts, isScale=False),
+                'trans_verts_scale': util.tensor_vis_landmarks(images, trans_verts),
+                'shape_images': shape_images,
+                # 'shape_detail_images': shape_detail_images
+            }
+        else:
+            visdict = {
+                'inputs': images[:, [2,1,0], :,:],
+                'landmarks2d': util.tensor_vis_landmarks(images[:, [2,1,0], :,:], landmarks2d, isScale=False),
+                'landmarks3d': util.tensor_vis_landmarks(images[:, [2,1,0], :,:], landmarks3d, isScale=False),
+                'trans_verts': util.tensor_vis_landmarks(images[:, [2,1,0], :,:], trans_verts, isScale=False),
+                'trans_verts_scale': util.tensor_vis_landmarks(images, trans_verts),
+                'shape_images': shape_images,
+                # 'shape_detail_images': shape_detail_images
+            }
         if self.eval_detail:
             visdict['shape_detail_images'] = shape_detail_images
         if self.cfg.model.use_tex:

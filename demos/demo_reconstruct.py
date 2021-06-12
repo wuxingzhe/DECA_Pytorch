@@ -24,6 +24,7 @@ from tqdm import tqdm
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from decalib.deca import DECA
 from decalib.datasets import datasets 
+from decalib.datasets.demo_datasets import DemoTestData
 from torch.utils.data import DataLoader
 from decalib.utils import util
 from decalib.utils.config import cfg as deca_cfg
@@ -33,9 +34,13 @@ def main(args):
     device = args.device
     os.makedirs(savefolder, exist_ok=True)
     print(str(args.iscrop))
+    print(str(args.isOri))
 
     # load test images 
-    testdata = datasets.TestData(args.inputpath, iscrop=args.iscrop, face_detector=args.detector)
+    if args.isOri:
+        testdata = datasets.TestData(args.inputpath, iscrop=args.iscrop, face_detector=args.detector)
+    else:
+        testdata = DemoTestData(args.inputpath, iscrop=args.iscrop, face_detector=args.detector)
     test_data_loader = DataLoader(testdata, batch_size=3,
                                     num_workers=4,
                                     shuffle=True, pin_memory=True, drop_last=True)
@@ -45,7 +50,7 @@ def main(args):
     if args.model_path != '':
         deca_cfg.pretrained_modelpath = args.model_path
     
-    deca = DECA(config = deca_cfg, device=device, eval_detail = False)
+    deca = DECA(config = deca_cfg, device=device, eval_detail = False, is_ori = args.isOri)
     # for i in range(len(testdata)):
     for i, sample in enumerate(test_data_loader):
         names = sample['imagename']
@@ -87,7 +92,7 @@ if __name__ == '__main__':
 
     parser.add_argument('-i', '--inputpath', default='TestSamples/vggface2', type=str,
                         help='path to the test data, can be image folder, image path, image list, video')
-    parser.add_argument('-s', '--savefolder', default='TestSamples/vggface2/results', type=str,
+    parser.add_argument('-s', '--savefolder', default='TestSamples/vggface2/results16', type=str,
                         help='path to the output directory, where results(obj, txt files) will be stored.')
     parser.add_argument('-m', '--model_path', default='', type=str,
                         help='path to the trained model')
@@ -96,6 +101,9 @@ if __name__ == '__main__':
     # process test images
     parser.add_argument('--iscrop', default=True, type=lambda x: x.lower() in ['true', '1'],
                         help='whether to crop input image, set false only when the test image are well cropped' )
+    parser.add_argument('--isOri', default=True, type=lambda x: x.lower() in ['true', '1'],
+                        help='whether is origin model' )
+
     parser.add_argument('--detector', default='fan', type=str,
                         help='detector for cropping face, check decalib/detectors.py for details' )
     # save
