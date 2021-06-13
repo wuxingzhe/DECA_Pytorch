@@ -18,6 +18,7 @@ class UnsupervisedLosses(object):
         # ldmk supervision config
         self.ldmk_weights = torch.from_numpy(np.load(self.config.train_params.ldmk_weights_file))[None,:,:].to(self.device)
         self.eye_closure_ldmk_idx = np.load(self.config.train_params.eye_closure_ldmk_idx_file)
+        self.mouth_closure_ldmk_idx = np.load(self.config.train_params.mouth_closure_ldmk_idx_file)
 
         # identity recog network
         self.recog_network = SEResNet_IR_ori_224(50, feature_dim=self.config.recog_params.feature_dim, mode='ir')
@@ -58,6 +59,15 @@ class UnsupervisedLosses(object):
     def landmarks_eye_closure_loss(self, ldmks_gt, ldmks_pred, norm_type = 'mse'):
         sub_gt = ldmks_gt[:,self.eye_closure_ldmk_idx[0,:],:] - ldmks_gt[:,self.eye_closure_ldmk_idx[1,:],:]
         sub_pred = ldmks_pred[:,self.eye_closure_ldmk_idx[0,:],:] - ldmks_pred[:,self.eye_closure_ldmk_idx[1,:],:]
+
+        if norm_type == 'mse':
+            return torch.mean((sub_gt - sub_pred) ** 2)
+        elif norm_type == 'l1':
+            return torch.mean(torch.abs(sub_gt - sub_pred))
+
+    def landmarks_mouth_closure_loss(self, ldmks_gt, ldmks_pred, norm_type = 'mse'):
+        sub_gt = ldmks_gt[:,self.mouth_closure_ldmk_idx[0,:],:] - ldmks_gt[:,self.mouth_closure_ldmk_idx[1,:],:]
+        sub_pred = ldmks_pred[:,self.mouth_closure_ldmk_idx[0,:],:] - ldmks_pred[:,self.mouth_closure_ldmk_idx[1,:],:]
 
         if norm_type == 'mse':
             return torch.mean((sub_gt - sub_pred) ** 2)

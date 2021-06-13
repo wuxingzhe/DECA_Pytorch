@@ -193,14 +193,22 @@ class deca_solver(object):
                         sample['kpts_gt'].to(self.device), output['landmarks2d'], norm_type = self.config.train_params.norm_type_ldmk)
                 loss_eye_closure = self.unsupervised_losses_conductor.landmarks_eye_closure_loss( \
                         sample['kpts_gt'].to(self.device), output['landmarks2d'], norm_type = self.config.train_params.norm_type_eye_closure)
+                if hasattr(self.config.train_params, 'mouth_closure_loss_factors'):
+                    loss_mouth_closure = self.unsupervised_losses_conductor.landmarks_mouth_closure_loss( \
+                            sample['kpts_gt'].to(self.device), output['landmarks2d'], norm_type = self.config.train_params.norm_type_mouth_closure)
                 loss_regular = self.unsupervised_losses_conductor.regular_loss( \
                         [parameters['shape'], parameters['exp'], parameters['tex']], self.device, norm_type = self.config.train_params.norm_type_reg)
 
                 if epoch <= self.epoch_phase:
                     loss_total = self.config.train_params.ldmk_loss_factors[0] * loss_ldmk + self.config.train_params.regular_loss_factors[0] * loss_regular \
                         + self.config.train_params.eye_closure_loss_factors[0] * loss_eye_closure
-                    print('Epoch: %d, Step: %d, Lr: %f, TL: %f, LdmkL: %f, EyeL: %f, RegL: %f' % (epoch, i, self.lr, \
-                        loss_total.item(), loss_ldmk.item(), loss_eye_closure.item(), loss_regular.item()))
+                    if hasattr(self.config.train_params, 'mouth_closure_loss_factors'):
+                        loss_total += self.config.train_params.mouth_closure_loss_factors[0] * loss_mouth_closure
+                        print('Epoch: %d, Step: %d, Lr: %f, TL: %f, LdmkL: %f, EyeL: %f, MouL: %f, RegL: %f' % (epoch, i, self.lr, \
+                            loss_total.item(), loss_ldmk.item(), loss_eye_closure.item(), loss_mouth_closure.item(), loss_regular.item()))
+                    else:
+                        print('Epoch: %d, Step: %d, Lr: %f, TL: %f, LdmkL: %f, EyeL: %f, RegL: %f' % (epoch, i, self.lr, \
+                            loss_total.item(), loss_ldmk.item(), loss_eye_closure.item(), loss_regular.item()))
                         
                 else:
                     loss_photometric, render_imgs = self.unsupervised_losses_conductor.photometric_loss( \
@@ -209,6 +217,8 @@ class deca_solver(object):
                     loss_total = loss_photometric * self.config.train_params.photometric_loss_factor + \
                         self.config.train_params.ldmk_loss_factors[1] * loss_ldmk + self.config.train_params.regular_loss_factors[1] * loss_regular \
                             + self.config.train_params.eye_closure_loss_factors[1] * loss_eye_closure + loss_identity * self.config.train_params.identity_loss_factor
+                    if hasattr(self.config.train_params, 'mouth_closure_loss_factors'):
+                        loss_total += self.config.train_params.mouth_closure_loss_factors[1] * loss_mouth_closure
 
                     """
                     if self.config.eval_train and i==0 and epoch == 1:
@@ -226,23 +236,40 @@ class deca_solver(object):
                         sample['kpts_gt'].to(self.device), output['landmarks2d_shuffle'], norm_type = self.config.train_params.norm_type_ldmk)
                     loss_eye_closure_consistency = self.unsupervised_losses_conductor.landmarks_eye_closure_loss( \
                         sample['kpts_gt'].to(self.device), output['landmarks2d_shuffle'], norm_type = self.config.train_params.norm_type_eye_closure)
+                    if hasattr(self.config.train_params, 'mouth_closure_loss_factors'):
+                        loss_mouth_closure_consistency = self.unsupervised_losses_conductor.landmarks_mouth_closure_loss( \
+                            sample['kpts_gt'].to(self.device), output['landmarks2d_shuffle'], norm_type = self.config.train_params.norm_type_mouth_closure)
                     
                     output['verts'] = output['verts_shuffle']
                     output['trans_verts'] = output['trans_verts_shuffle']
                     loss_photometric_consistency, render_imgs_consistency = self.unsupervised_losses_conductor.photometric_loss( \
                         sample['image'].to(self.device), output, parameters['light'], sample['seg_mask'].to(self.device), norm_type = self.config.train_params.norm_type_photometric)
                     loss_identity_consistency = self.unsupervised_losses_conductor.identity_loss(sample['image'].to(self.device), render_imgs_consistency)
-                    loss_consistency =  ( \
-                        loss_photometric_consistency * self.config.train_params.photometric_loss_factor + \
-                        loss_ldmk_consistency * self.config.train_params.ldmk_loss_factors[1] + \
-                        loss_identity_consistency * self.config.train_params.identity_loss_factor + \
-                        loss_eye_closure_consistency * self.config.train_params.eye_closure_loss_factors[1])
+                    if hasattr(self.config.train_params, 'mouth_closure_loss_factors'):
+                        loss_consistency =  ( \
+                            loss_photometric_consistency * self.config.train_params.photometric_loss_factor + \
+                            loss_ldmk_consistency * self.config.train_params.ldmk_loss_factors[1] + \
+                            loss_identity_consistency * self.config.train_params.identity_loss_factor + \
+                            loss_eye_closure_consistency * self.config.train_params.eye_closure_loss_factors[1] + \
+                            loss_mouth_closure_consistency * self.config.train_params.mouth_closure_loss_factors[1])
+                    else:
+                        loss_consistency =  ( \
+                            loss_photometric_consistency * self.config.train_params.photometric_loss_factor + \
+                            loss_ldmk_consistency * self.config.train_params.ldmk_loss_factors[1] + \
+                            loss_identity_consistency * self.config.train_params.identity_loss_factor + \
+                            loss_eye_closure_consistency * self.config.train_params.eye_closure_loss_factors[1])
                     loss_total += self.config.train_params.shape_consistency_loss_factor * loss_consistency
 
-                    print('Epoch: %d, Step: %d, Lr: %f, TL: %f, LdmkL: %f, EyeL: %f, RegL: %f, PhoL: %f, idL: %f, ConL: %f, LdConL: %f, EyeConL: %f, PhoConL: %f, idConL: %f' \
-                        % (epoch, i, self.lr, loss_total.item(), loss_ldmk.item(), loss_eye_closure.item(), loss_regular.item(), \
-                        loss_photometric.item(), loss_identity.item(), loss_consistency.item(), loss_ldmk_consistency.item(), \
-                        loss_eye_closure_consistency.item(), loss_photometric_consistency.item(), loss_identity_consistency.item()))
+                    if hasattr(self.config.train_params, 'mouth_closure_loss_factors'):
+                        print('Epoch: %d, Step: %d, Lr: %f, TL: %f, LdmkL: %f, EyeL: %f, MouL: %f, RegL: %f, PhoL: %f, idL: %f, ConL: %f, LdConL: %f, EyeConL: %f, MouConL: %f, PhoConL: %f, idConL: %f' \
+                            % (epoch, i, self.lr, loss_total.item(), loss_ldmk.item(), loss_eye_closure.item(), loss_mouth_closure.item(), loss_regular.item(), \
+                            loss_photometric.item(), loss_identity.item(), loss_consistency.item(), loss_ldmk_consistency.item(), \
+                            loss_eye_closure_consistency.item(), loss_mouth_closure_consistency.item(), loss_photometric_consistency.item(), loss_identity_consistency.item()))
+                    else:
+                        print('Epoch: %d, Step: %d, Lr: %f, TL: %f, LdmkL: %f, EyeL: %f, RegL: %f, PhoL: %f, idL: %f, ConL: %f, LdConL: %f, EyeConL: %f, PhoConL: %f, idConL: %f' \
+                            % (epoch, i, self.lr, loss_total.item(), loss_ldmk.item(), loss_eye_closure.item(), loss_regular.item(), \
+                            loss_photometric.item(), loss_identity.item(), loss_consistency.item(), loss_ldmk_consistency.item(), \
+                            loss_eye_closure_consistency.item(), loss_photometric_consistency.item(), loss_identity_consistency.item()))
 
             elif self.mode == 'train_detail':
                 loss_regular = self.unsupervised_losses_conductor.regular_loss([parameters['detailcode']], self.device, norm_type = self.config.train_params.norm_type_reg)
@@ -393,21 +420,21 @@ class deca_solver(object):
             if hasattr(self.config.pretrained_model, 'encoder_coarse') \
                 and os.path.exists(self.config.pretrained_model.encoder_coarse):
                 self.E_flame.load_state_dict( \
-                    torch.load(self.config.pretrained_model.encoder_coarse))
+                    torch.load(self.config.pretrained_model.encoder_coarse)['net_state_dict'])
                 print('load encoder coarse pretrained model: ' + \
                     self.config.pretrained_model.encoder_coarse)
 
             if hasattr(self.config.pretrained_model, 'encoder_detail') \
                 and os.path.exists(self.config.pretrained_model.encoder_detail):
                 self.E_detail.load_state_dict( \
-                    torch.load(self.config.pretrained_model.encoder_detail))
+                    torch.load(self.config.pretrained_model.encoder_detail)['net_state_dict'])
                 print('load encoder detail pretrained model: ' + \
                     self.config.pretrained_model.encoder_detail)
 
             if hasattr(self.config.pretrained_model, 'decoder_detail') \
                 and os.path.exists(self.config.pretrained_model.encoder_detail):
                 self.D_detail.load_state_dict( \
-                    torch.load(self.config.pretrained_model.decoder_detail))
+                    torch.load(self.config.pretrained_model.decoder_detail)['net_state_dict'])
                 print('load decoder detail pretrained model: ' + \
                     self.config.pretrained_model.decoder_detail)
 
