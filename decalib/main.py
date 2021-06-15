@@ -18,7 +18,7 @@ def parse_args():
     new_parser.add_argument('--image_path', type=str, default=None)
     new_parser.add_argument('--output_path', type=str, default=None)
 
-    new_parser.add_argument('--gpus', type=str, default='6,7')
+    new_parser.add_argument('--gpus', type=str, default='4,5')
     # exclusive arguments
     group = new_parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--train_coarse', action='store_true')
@@ -42,12 +42,14 @@ def main():
         config[k] = v
     pprint(config)
 
-    agent = deca_solver(config)
+    # agent = deca_solver(config)
 
     if args.train_coarse:
+        print('train coarse')
         agent = deca_solver(config, mode='train_coarse')
         agent.trainval()
     elif args.train_detail:
+        print('train detail')
         agent = deca_solver(config, mode='train_detail')
         agent.trainval()
     elif args.test:

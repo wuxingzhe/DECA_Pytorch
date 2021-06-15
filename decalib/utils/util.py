@@ -629,3 +629,13 @@ def vis_render_imgs(input_imgs, render_imgs):
     res_imgs*=255
 
     return res_imgs.astype(np.uint8)
+
+def vis_normal_imgs(input_imgs, render_imgs):
+    render_imgs = (render_imgs+1.0)/2.0
+    render_imgs_tmp = render_imgs[:,[2,1,0],:,:]
+    # render_imgs_tmp
+    res_imgs = np.concatenate([input_imgs, render_imgs, render_imgs_tmp], axis=3)
+    res_imgs = res_imgs.transpose((0,2,3,1))
+    res_imgs*=255
+
+    return res_imgs.astype(np.uint8)

@@ -113,10 +113,10 @@ class UnsupervisedLosses(object):
         return torch.sum(torch.tensor(losses_regular).float().to(device))
 
     def symmetry_loss(self, displacement_map, norm_type = 'mse'):
-        displacement_map_flip = displacement_map[:,:,:,::-1]
+        displacement_map_flip = torch.flip(displacement_map, [3])
         if norm_type == 'mse':
-            return torch.mean((displacement_map_flip * self.uv_face_mask - displacement_map * self.uv_face_mask) ** 2)
+            return torch.mean((displacement_map_flip * self.uv_face_eye_mask - displacement_map * self.uv_face_eye_mask) ** 2)
         elif norm_type == 'l1':
-            return torch.mean(torch.abs(displacement_map_flip * self.uv_face_mask - displacement_map * self.uv_face_mask))
+            return torch.mean(torch.abs(displacement_map_flip * self.uv_face_eye_mask - displacement_map * self.uv_face_eye_mask))
 
     

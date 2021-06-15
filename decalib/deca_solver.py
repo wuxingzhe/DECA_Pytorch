@@ -12,10 +12,12 @@ import shutil
 import logging
 import numpy as np
 import random
+import itertools
 from easydict import EasyDict
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
 from torch.optim.lr_scheduler import MultiStepLR
@@ -42,14 +44,15 @@ torch.backends.cudnn.benchmark = True
 
 class deca_solver(object):
     def __init__(self, config=None, mode = 'train_coarse', device='cuda'):
+        print('mode: '+mode)
         self.config = EasyDict(config)
         self.device = device
         self.mode = mode
         self.image_size = self.config.dataset.image_size
         self.uv_size = self.config.model.uv_size
 
-        if self.mode == 'train_coarse':
-            self.epoch_phase = self.config.train_params.epoch_phase
+        # if self.mode == 'train_coarse':
+        self.epoch_phase = self.config.train_params.epoch_phase
 
         # torch.backends.cudnn.benchmark = True
         self.multi_gpus = False
@@ -68,6 +71,7 @@ class deca_solver(object):
             os.makedirs(self.result_path)
             print('make result path: '+self.result_path)
 
+        print('Start Building the code well for {}'.format(self.mode))
         self._build()
         print('Build the code well for {}'.format(self.mode))
         # self._create_model(self.cfg.model)
@@ -159,15 +163,18 @@ class deca_solver(object):
         if self.mode == 'train_detail':
             uv_z = self.D_detail(torch.cat([codedict['pose'][:,3:], codedict['exp'], \
                 codedict['detail']], dim=1))
-            output['displacement_map'] = uv_z+self.fixed_uv_dis[None,None,:,:]
-            dense_vertices_maps, dense_faces = displacement2vertex(uv_z, verts, normals, self.unsupervised_losses_conductor.render)
-            uv_detail_normals = displacement2normal(uv_z, verts, normals, self.unsupervised_losses_conductor.render)
-            dense_vertices = F.grid_sample(dense_vertices_maps, self.uvcoords_grid, align_corners=False)
+            output['displacement_map'] = uv_z+self.unsupervised_losses_conductor.fixed_uv_dis[None,None,:,:]
+            dense_vertices_maps, dense_faces = displacement2vertex(uv_z, verts, normals, self.unsupervised_losses_conductor.render, self.unsupervised_losses_conductor.uv_face_eye_mask, self.unsupervised_losses_conductor.fixed_uv_dis)
+            uv_detail_normals = displacement2normal(uv_z, verts, normals, self.unsupervised_losses_conductor.render, self.unsupervised_losses_conductor.uv_face_eye_mask, self.unsupervised_losses_conductor.fixed_uv_dis)
+            dense_vertices = torch.squeeze(F.grid_sample(dense_vertices_maps, self.uvcoords_grid.repeat(dense_vertices_maps.shape[0],1,1,1).to(self.device), align_corners=False)).permute(0,2,1)
+            # dense_vertices = torch.transpose(dense_vertices, (0,2,1))
             dense_trans_verts = util.batch_orth_proj(dense_vertices, codedict['cam'])
             dense_trans_verts[:,:,1:] = -dense_trans_verts[:,:,1:]
 
             output['detail_verts_maps'] = dense_vertices_maps
             output['detail_verts'] = dense_vertices
+            # print('detail verts shape: '+str(dense_vertices.shape))
+            # sys.stdout.flush()
             output['detail_trans_verts'] = dense_trans_verts
             output['detail_faces'] = dense_faces
             output['uv_detail_normals'] = uv_detail_normals
@@ -272,12 +279,35 @@ class deca_solver(object):
                             loss_eye_closure_consistency.item(), loss_photometric_consistency.item(), loss_identity_consistency.item()))
 
             elif self.mode == 'train_detail':
-                loss_regular = self.unsupervised_losses_conductor.regular_loss([parameters['detailcode']], self.device, norm_type = self.config.train_params.norm_type_reg)
+                loss_regular = self.unsupervised_losses_conductor.regular_loss([parameters['detail']], self.device, norm_type = self.config.train_params.norm_type_reg)
+                if hasattr(self.config.train_params, 'detail_verts_rendering') and self.config.train_params.detail_verts_rendering:
+                    output['verts'] = output['detail_verts']
+                    output['trans_verts'] = output['detail_trans_verts']
                 loss_photometric, render_imgs, ops = self.unsupervised_losses_conductor.photometric_loss(sample['image'].to(self.device), output, parameters['light'], sample['seg_mask'].to(self.device), norm_type = self.config.train_params.norm_type_photometric, uv_normal_maps = output['uv_detail_normals'], return_ops = True)
                 loss_sym = self.unsupervised_losses_conductor.symmetry_loss(output['displacement_map'], norm_type = self.config.train_params.norm_type_sym)
                 loss_idmrf = self.idmrf_loss_conductor(render_imgs[:,[2,1,0],:,:], (sample['image'][:,[2,1,0],:,:]).to(self.device))
                 loss_total = loss_regular*self.config.train_params.regular_loss_factor + loss_photometric*self.config.train_params.photometric_loss_factor \
                                 + loss_sym*self.config.train_params.sym_loss_factor + self.config.train_params.idmrf_loss_factor*loss_idmrf
+
+                print('Epoch:%d, Step: %d, Lr: %f, TL: %f, RegL: %f, PhoL: %f, SymL: %f, IDMRF: %f' % (epoch, i, self.lr, loss_total.item(), \
+                            loss_regular.item(), loss_photometric.item(), loss_sym.item(), loss_idmrf.item()))
+
+                if self.config.eval_train and i==0 and epoch == 1:
+                    imgs = util.vis_render_imgs(sample['image'].numpy(), render_imgs.detach().cpu().numpy())
+                    for kk in range(imgs.shape[0]):
+                        cv2.imwrite(os.path.join(self.result_path, 'render_'+os.path.basename(sample['imagename'][kk])), imgs[kk])
+                    detail_render_imgs = self.unsupervised_losses_conductor.render(output['detail_verts'], output['detail_trans_verts'], output['albedo'], parameters['light'], uv_normal_maps = output['uv_detail_normals'])['images']
+                    detail_render_imgs = detail_render_imgs[:, [2,1,0], :,:]
+                    imgs = util.vis_render_imgs(sample['image'].numpy(), detail_render_imgs.detach().cpu().numpy())
+                    for kk in range(imgs.shape[0]):
+                        cv2.imwrite(os.path.join(self.result_path, 'render_detail_'+os.path.basename(sample['imagename'][kk])), imgs[kk])
+
+                    imgs = util.vis_normal_imgs(sample['image'].numpy(), ops['normal_images'].detach().cpu().numpy())
+                    for kk in range(imgs.shape[0]):
+                        cv2.imwrite(os.path.join(self.result_path, 'normal_'+os.path.basename(sample['imagename'][kk])), imgs[kk])
+                    # imgs = util.vis_normal_imgs(sample['image'].numpy(), output['uv_detail_normals'].detach().cpu().numpy())
+                    # for kk in range(imgs.shape[0]):
+                    #     cv2.imwrite(os.path.join(self.result_path, 'uv_normal_'+os.path.basename(sample['imagename'][kk])), imgs[kk])
 
             self.lr_scheduler.optimizer.zero_grad()
             loss_total.backward()
@@ -388,7 +418,7 @@ class deca_solver(object):
 
         verts, faces, aux = load_obj(model_cfg.topology_path)
         self.faces = faces.verts_idx[None, ...] 
-        self.uvcoords = aux.verts_uvs[None, ...]      # (N, V, 2)
+        self.uvcoords = aux.verts_uvs[None, None, ...]      # (N, V, 2)
         self.uvfaces = faces.textures_idx[None, ...] # (N, F, 3)
         self.uvcoords_grid = self.uvcoords*2 - 1; self.uvcoords_grid[...,1] = -self.uvcoords_grid[...,1]
 
@@ -412,9 +442,11 @@ class deca_solver(object):
                     out_scale=model_cfg.max_z, sample_mode = 'bilinear')
 
         # resume model
+        """
         if self.config.eval_train:
             self.E_flame.load_state_dict( \
                     torch.load(self.config.pretrained_model.fixed_model)['E_flame'])
+        """
 
         if hasattr(self.config, 'pretrained_model'):
             if hasattr(self.config.pretrained_model, 'encoder_coarse') \
@@ -491,7 +523,8 @@ class deca_solver(object):
     def _build_criterion(self):
         self.unsupervised_losses_conductor = UnsupervisedLosses(self.config, self.device)
         # self.vgg_feat_network = VGG19FeatLayer()
-        # self.idmrf_loss_conductor = IDMRFLoss()
+        if 'detail' in self.mode:
+            self.idmrf_loss_conductor = IDMRFLoss(self.config, self.device)
 
     def _build_train_loader(self, epoch):
         if self.mode == 'train_coarse':
@@ -509,6 +542,13 @@ class deca_solver(object):
                 self.half_iters = len(self.train_dataset)/(self.config.train_params.batch_sizes[1])//2
             print('train half iters: '+str(self.half_iters))
 
+        elif self.mode == 'train_detail':
+            self.train_dataset = TrainSubjectData(self.config)
+            self.train_loader = DataLoader(self.train_dataset, batch_size = self.config.train_params.batch_size,
+                                    num_workers = self.config.train_params.workers,
+                                    shuffle = False, pin_memory=True, drop_last = True)
+            self.half_iters = len(self.train_dataset)/(self.config.train_params.batch_size)//2
+            print('train half iters: '+str(self.half_iters))
     
     def _build_val_loader(self):
         # qualitative validation dataset
