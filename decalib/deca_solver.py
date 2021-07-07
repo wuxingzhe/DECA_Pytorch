@@ -356,10 +356,17 @@ class deca_solver(object):
                     img_name = 'half_' + img_name
 
                 faces = self.faces[0].cpu().numpy()
-                uvcoords = self.uvcoords[0].cpu().numpy()
+                uvcoords = self.uvcoords[0,0].cpu().numpy()
                 uvfaces = self.uvfaces[0].cpu().numpy()
 
-                util.write_obj(os.path.join(self.result_path, img_name), verts_j, faces, 
+                if 'detail' in self.mode:
+                    displacement_map = output['displacement_map'][j].cpu().numpy().squeeze()
+                    normals_j = output['normals'][j].cpu().numpy()
+                    dense_vertices, dense_colors, dense_faces = util.upsample_mesh(verts_j, normals_j, faces, displacement_map, texture_j, self.unsupervised_losses_conductor.dense_template)
+                    util.write_obj(os.path.join(self.result_path, img_name), dense_vertices, dense_faces,
+                        colors = dense_colors, inverse_face_order = True)
+                else:
+                    util.write_obj(os.path.join(self.result_path, img_name), verts_j, faces, 
                         texture=texture_j, 
                         uvcoords=uvcoords, 
                         uvfaces=uvfaces)

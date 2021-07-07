@@ -35,7 +35,7 @@ from .utils.config import cfg
 torch.backends.cudnn.benchmark = True
 
 class DECA(object):
-    def __init__(self, config=None, device='cuda', eval_detail = False, is_ori = True):
+    def __init__(self, config=None, device='cuda', eval_detail = False, is_ori = True, eval_exp_mesh = True):
         if config is None:
             self.cfg = cfg
         else:
@@ -45,9 +45,19 @@ class DECA(object):
         self.uv_size = self.cfg.model.uv_size
         self.eval_detail = eval_detail
         self.is_ori = is_ori
+        self.eval_exp_mesh = eval_exp_mesh
+
+        self.neural_exp_params = np.zeros((1, 50))
+        self.neural_pose_params = np.zeros((1, 3))
 
         self._create_model(self.cfg.model)
         self._setup_renderer(self.cfg.model)
+
+    def _set_neural_params(self, exp_params, pose_params):
+        self.neural_pose_params = pose_params
+        self.neural_pose_params = torch.tensor(self.neural_pose_params.astype(np.float32)).to(self.device)
+        self.neural_exp_params = exp_params
+        self.neural_exp_params = torch.tensor(self.neural_exp_params.astype(np.float32)).to(self.device)
 
     def _setup_renderer(self, model_cfg):
         self.render = SRenderY(self.image_size, obj_filename=model_cfg.topology_path, uv_size=model_cfg.uv_size).to(self.device)
@@ -94,8 +104,8 @@ class DECA(object):
         elif os.path.exists(model_path):
             self.E_flame.load_state_dict(torch.load(model_path)['net_state_dict'])
             if self.eval_detail:
-                self.E_detail.load_state_dict(torch.load(model_path[:-10]+'detail.ckpt')['net_state_dict'])
-                self.D_detail.load_state_dict(torch.load(model_path[:-12]+'D_detail.ckpt')['net_state_dict'])
+                self.E_detail.load_state_dict(torch.load(self.cfg.pretrained_detail_modelpath)['net_state_dict'])
+                self.D_detail.load_state_dict(torch.load(self.cfg.pretrained_detail_modelpath[:-13]+'D_detail.ckpt')['net_state_dict'])
         else:
             print(f'please check model path: {model_path}')
             exit()
@@ -173,7 +183,11 @@ class DECA(object):
         batch_size = images.shape[0]
         
         ## decode
-        verts, landmarks2d, landmarks3d = self.flame(shape_params=codedict['shape'], expression_params=codedict['exp'], pose_params=codedict['pose'])
+        if self.eval_exp_mesh:
+            verts, landmarks2d, landmarks3d = self.flame(shape_params=codedict['shape'], expression_params=codedict['exp'], pose_params=codedict['pose'])
+        else:
+            pose_params = torch.cat((codedict['pose'][:,:3], self.neural_pose_params.repeat(batch_size, 1)), dim=1)
+            verts, landmarks2d, landmarks3d = self.flame(shape_params=codedict['shape'], expression_params=self.neural_exp_params.repeat(batch_size, 1), pose_params=pose_params)
         if self.eval_detail:
             uv_z = self.D_detail(torch.cat([codedict['pose'][:,3:], codedict['exp'], codedict['detail']], dim=1))
         if self.cfg.model.use_tex:
@@ -269,8 +283,31 @@ class DECA(object):
         grid_image = (grid.numpy().transpose(0,2,3,1).copy()*255)[:,:,:,[2,1,0]]
         grid_image = np.minimum(np.maximum(grid_image, 0), 255).astype(np.uint8)
         return grid_image
+
+    def write_pp(self, vertices, pp_file):
+        w1 = open(pp_file, 'w')
+        w1.write('<!DOCTYPE PickedPoints>\n')
+        w1.write('<PickedPoints>\n')
+        w1.write(' <DocumentData>\n')
+        w1.write(' </DocumentData>\n')
+
+        for i, vertice in enumerate(vertices):
+            [x, y, z] = vertice
+            w1.write(' <point y="%f" name="%d" active="1" z="%f" x="%f"/>\n' % (y, i, z, x)) # must change the sequence
+        w1.write('</PickedPoints>\n')
+        w1.close()
+
+    def save_mesh_pp(self, savefolder, filenames, opdict, pp_idx, pp_bary_coords, make_dirs = True):
+        verts = opdict['vertices'].cpu().numpy()
+        pps = np.sum(verts[:, pp_idx, :]*pp_bary_coords[None, :, :, None], axis=2)
+        for i in range(pps.shape[0]):
+            if make_dirs:
+                filename = os.path.join(savefolder, filenames[i], filenames[i]+'.pp')
+            else:
+                filename = os.path.join(savefolder, filenames[i]+'.pp')
+            self.write_pp(pps[i,:,:], filename)
     
-    def save_obj(self, savefolder, filenames, opdict):
+    def save_obj(self, savefolder, filenames, opdict, make_dirs = True):
         '''
         vertices: [nv, 3], tensor
         texture: [3, h, w], tensor
@@ -279,21 +316,26 @@ class DECA(object):
         for i in range(opdict['vertices'].shape[0]):
             vertices = opdict['vertices'][i].cpu().numpy()
             faces = self.render.faces[0].cpu().numpy()
-            if self.eval_detail:
-                texture = util.tensor2image(opdict['uv_texture_gt'][i])
+            # if self.eval_detail:
+            #     texture = util.tensor2image(opdict['uv_texture_gt'][i])
             uvcoords = self.render.raw_uvcoords[0].cpu().numpy()
             uvfaces = self.render.uvfaces[0].cpu().numpy()
             # save coarse mesh, with texture and normal map
             if self.eval_detail:
                 normal_map = util.tensor2image(opdict['uv_detail_normals'][i]*0.5 + 0.5)
-            filename = os.path.join(savefolder, filenames[i], filenames[i]+'.obj')
+            if make_dirs:
+                filename = os.path.join(savefolder, filenames[i], filenames[i]+'.obj')
+            else:
+                filename = os.path.join(savefolder, filenames[i]+'.obj')
 
+            """
             if self.eval_detail:
                 util.write_obj(filename, vertices, faces, 
                         texture=texture, 
                         uvcoords=uvcoords, 
                         uvfaces=uvfaces, 
                         normal_map=normal_map)
+            """
             texture = util.tensor2image(opdict['albedo'][i])
             util.write_obj(filename.replace('.obj', '_albedo.obj'), vertices, faces, 
                         texture=texture, 
@@ -302,7 +344,7 @@ class DECA(object):
 
             # upsample mesh, save detailed mesh
             if self.eval_detail:
-                texture = texture[:,:,[2,1,0]]
+                # texture = texture[:,:,[2,1,0]]
                 normals = opdict['normals'][i].cpu().numpy()
                 displacement_map = opdict['displacement_map'][i].cpu().numpy().squeeze()
                 dense_vertices, dense_colors, dense_faces = util.upsample_mesh(vertices, normals, faces, displacement_map, texture, self.dense_template)

@@ -1,0 +1,96 @@
+common: &common
+  eval_train: True
+eval_train: True
+has_train_aug: False
+dataset:
+  image_size: 224
+  uv_size: 256
+
+model:
+  uv_size: 256
+  topology_path: '../data/head_template.obj'
+  dense_template_path: '../data/texture_data_256.npy'
+  fixed_displacement_path: '../data/fixed_displacement_256.npy'
+  flame_model_path: '../data/generic_model.pkl'
+  flame_lmk_embedding_path: '../data/landmark_embedding.npy'
+  face_mask_path: '../data/uv_face_mask.png'
+  face_eye_mask_path: '../data/uv_face_eye_mask.png'
+  mean_tex_path: '../data/mean_texture.jpg'
+  tex_path: '../data/FLAME_albedo_from_BFM.npz'
+  tex_type: 'BFM'
+  useTex: True
+  use_tex: True
+  jaw_type: 'aa'
+
+  param_list: ['shape', 'tex', 'exp', 'pose', 'cam', 'light']
+  n_shape: 100
+  n_tex: 50
+  n_exp: 50
+  n_cam: 3
+  n_pose: 6
+  n_light: 27
+
+  n_detail: 128
+  max_z: 0.01
+
+pretrained_model:
+  recog_network: 'net-data/Iter_007000_net.ckpt'
+  encoder_coarse: 'snapshot/configs/exp25.yaml_20210618_142631/Epoch_000002_E_flame.ckpt'
+
+train_params:
+  regular_loss_factor: 0.005
+  photometric_loss_factor: 3.0
+  sym_loss_factor: 0.005
+  idmrf_loss_factor: 0.2
+
+  norm_type_reg: 'l1'
+  norm_type_photometric: 'l1'
+  norm_type_sym: 'l1'
+
+  batch_size: 6
+  workers: 4
+  crop_size: 224
+  scale: 1.0
+  iscrop: False
+
+  kpts_gt_dir: 'ldmk_gt'
+  seg_masks_dir: 'face_seg_mask'
+  train_list: 'utils/train_images.txt'
+  train_subject_list: 'utils/train_detail_subject_images.txt'
+
+  ldmk_weights_file: '../data/ldmk_weights.npy'
+  eye_closure_ldmk_idx_file: '../data/ldmk_eye_closure_idx.npy'
+  mouth_closure_ldmk_idx_file: '../data/ldmk_mouth_closure_idx.npy'
+
+  person_size: 240000
+  size_per_person: 6
+  person_num_in_batch: 2
+  size_per_person_in_batch: 3
+
+  optimizer:
+    type: Adam
+    kwargs:
+      lr: 0.0001
+      weight_decay: 0.0005
+  scheduler:
+    epochs: 3
+    milestones: [5, 10]
+    gamma: 0.5
+  epoch_phase: 0
+
+test_params:
+  batch_size: 3
+  works: 1
+  crop_size: 224
+  scale: 1.0
+  iscrop: False
+  qualitative_test_list: 'utils/qualitative_test_images2.txt'
+
+augmentation_params:
+  has_noise_aug: True
+  occ_ratio: 0.2
+  crop_size: 224
+  has_channel_scale: True
+
+recog_params:
+  feature_dim: 512

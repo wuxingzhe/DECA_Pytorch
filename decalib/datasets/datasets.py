@@ -45,14 +45,20 @@ def video2sequence(video_path):
     return imagepath_list
 
 class TestData(Dataset):
-    def __init__(self, testpath, iscrop=True, crop_size=224, scale=1.25, face_detector='mtcnn'):
+    def __init__(self, testpath, iscrop=True, crop_size=224, scale=1.25, face_detector='mtcnn', names_file = None):
         '''
             testpath: folder, imagepath_list, image path, video path
         '''
         if isinstance(testpath, list):
             self.imagepath_list = testpath
         elif os.path.isdir(testpath): 
-            self.imagepath_list = glob(testpath + '/*.jpg') +  glob(testpath + '/*.png') + glob(testpath + '/*.bmp')
+            if names_file is not None:
+                r1 = open(names_file)
+                names = r1.readlines()
+                r1.close()
+                self.imagepath_list = [os.path.join(testpath, name.strip()) for name in names]
+            else:
+                self.imagepath_list = glob(testpath + '/*.jpg') +  glob(testpath + '/*.png') + glob(testpath + '/*.bmp')
         elif os.path.isfile(testpath) and (testpath[-3:] in ['jpg', 'png', 'bmp']):
             self.imagepath_list = [testpath]
         elif os.path.isfile(testpath) and (testpath[-3:] in ['mp4', 'csv', 'vid', 'ebm']):
@@ -60,6 +66,7 @@ class TestData(Dataset):
         else:
             print(f'please check the test path: {testpath}')
             exit()
+
         print('total {} images'.format(len(self.imagepath_list)))
         self.imagepath_list = sorted(self.imagepath_list)
         self.crop_size = crop_size
@@ -141,6 +148,7 @@ class TestData(Dataset):
         dst_image = dst_image.transpose(2,0,1)
         return {'image': torch.tensor(dst_image).float(),
                 'imagename': imagename,
+                'imagepath': imagepath
                 # 'tform': tform,
                 # 'original_image': torch.tensor(image.transpose(2,0,1)).float(),
                 }
